@@ -1,0 +1,53 @@
+ SELECT xte.entity_id,
+        xhs.company_code,
+        prl.attribute1 main_asset_number,
+        nvl(prl.attribute2, 0) asset_subnumber,
+        to_char(rt.creation_date, 'YYYYMMDD') document_date,
+        to_char(xah.accounting_date, 'YYYYMMDD') posting_date,
+        prl.item_description,
+        pv.segment1 reference,
+        pha.segment1 allocation,
+        pha.currency_code,
+        decode(rt.transaction_type,
+               'DELIVER',
+               rt.quantity * rt.po_unit_price * rt.currency_conversion_rate,
+               rt.quantity * rt.po_unit_price * rt.currency_conversion_rate * (-1)) amount,
+        prl.org_id,
+        rt.transaction_id,
+        rt.creation_date,
+        xe.process_status_code
+   FROM apps.rcv_transactions         rt,
+        apps.rcv_shipment_headers     rsh,
+        apps.po_lines_all             pl,
+        apps.po_requisition_lines_all prl,
+        apps.po_distributions_all     pod,
+        apps.po_req_distributions_all pord,
+        xla.xla_transaction_entities  xte,                           --xla.前缀
+        apps.xxgl_hfs_system_options  xhs,
+        apps.po_vendors               pv,
+        apps.po_headers_all           pha,
+        apps.xla_ae_headers           xah,
+        apps.xla_events               xe
+  WHERE rt.po_line_id = pl.po_line_id(+)
+    AND pl.po_line_id = pod.po_line_id(+)
+    AND pod.req_distribution_id = pord.distribution_id(+)
+    AND pord.requisition_line_id = prl.requisition_line_id(+)
+    AND rt.transaction_id = xte.source_id_int_1
+    AND xhs.ledger_id = xte.ledger_id
+    --AND nvl(xhs.inactive_date, SYSDATE + 1) >= SYSDATE
+    AND rt.shipment_header_id = rsh.shipment_header_id
+    AND pha.vendor_id = pv.vendor_id
+    AND pha.po_header_id = pl.po_header_id
+    AND xte.entity_id = xah.entity_id
+    AND xah.event_id = xe.event_id
+    AND xe.process_status_code = 'P'
+    AND xte.application_id = xah.application_id
+    AND xte.application_id = 707
+    AND xte.entity_code = 'RCV_ACCOUNTING_EVENTS'
+    AND (rt.transaction_type = 'RETURN TO RECEIVING' or
+        rt.transaction_type = 'DELIVER')
+    AND prl.attribute1 IS NOT NULL
+    AND xte.ledger_id = '2021'
+    AND length(prl.attribute1) > 10
+    AND xah.completed_date BETWEEN to_date('2015-04-01', 'YYYY-MM-DD') AND to_date('2015-07-14', 'YYYY-MM-DD')
+   --from 参数日期 to 系统日期

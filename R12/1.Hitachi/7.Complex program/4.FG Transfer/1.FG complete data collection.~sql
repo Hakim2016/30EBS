@@ -1,0 +1,1196 @@
+/*CURSOR cur_fac_fg IS*/
+--Non 'HO - HEA Project FG', non-oversea data
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'HO-PROJECT' sub_type,
+       ho1.organization_id org_id,
+       ho1.name operation_ou,
+       ppe.proj_element_id mfg_id,
+       ppe.element_number mfg_number,
+       ppa.gl_period_name gl_period,
+       pt.project_type,
+       ho.organization_id expenditure_org_id,
+       ho.name expenditure_org,
+       p.project_id,
+       p.segment1 project_number,
+       t.task_id,
+       t.task_number,
+       last_day(to_date(ppe.attribute1, 'YYYY-MM-DD')) expenditure_item_date,
+       last_day(to_date(ppe.attribute1, 'YYYY-MM-DD')) +
+       decode(to_char(last_day(to_date(ppe.attribute1, 'YYYY-MM-DD')), 'D'),
+              1,
+              0,
+              8 - (to_char(last_day(to_date(ppe.attribute1, 'YYYY-MM-DD')), 'D'))) expenditure_ending_date,
+       'FAC FG Completion'/*p_cost_type_expd*/  expenditure_type,
+       round((-1) * (ei.burden_cost), 2) expenditure_amount, -- IF THERE IS WARNING SUBMIT COST COLLECTING AND CREAT ACCOUNTING
+       ei.expenditure_type orig_expenditure_type,
+       ei.burden_cost orig_expenditure_amount,
+       to_char(ppa.end_date, 'YYYYMMDD') expenditure_reference,
+       'PA_EXPENDITURE_ITEMS_ALL' source_table,
+       ei.expenditure_item_id source_line_id,
+       NULL line_type
+  FROM pa_projects              p,
+       pa_tasks                 t,
+       pa_expenditure_items_all ei,
+       pa_expenditures_all      x,
+       pa_project_types_all     pt,
+       --PA_TRANSACTION_SOURCES    TR,
+       hr_all_organization_units ho,
+       hr_organization_units     ho1,
+       pa_proj_elements          ppe,
+       pa_periods_all            ppa
+ WHERE 1 = 1
+      /* AND HO1.NAME = 'SHE_OU'*/
+   AND p.project_id = t.project_id
+   AND p.project_id = ei.project_id
+   AND t.task_id = ei.task_id
+   AND ei.expenditure_id = x.expenditure_id
+   AND ei.burden_cost <> 0
+   AND p.project_type = pt.project_type
+   AND nvl(pt.attribute9, 0) != 'HO - HEA Project FG'
+   AND nvl(pt.attribute7, '-1') <> 'OVERSEA'
+      --add by colin.chen at 2013-03-28 begin
+   AND pt.attribute7 IS NOT NULL
+      --end add
+   AND nvl(ei.override_to_organization_id, x.incurred_by_organization_id) = ho.organization_id
+   AND ho.name = 'SHE_FAC_ORG'
+   AND pt.org_id = ho1.organization_id
+   AND t.top_task_id = ppe.proj_element_id
+   AND ppe.object_type = 'PA_TASKS'
+   AND p.org_id = ppa.org_id
+   AND ppa.end_date = last_day(to_date(ppe.attribute1, 'YYYY-MM-DD'))
+   AND ei.expenditure_item_date <= last_day(to_date(ppe.attribute1, 'YYYY-MM-DD'))
+   AND ei.attribute8 IS NULL
+   AND ppa.gl_period_name = '18-Apr' /*g_period_name*/ --1 modify by jingjinghe 20180119
+      --AND p.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_EXPENDITURE_ITEMS_ALL'
+                       AND xcfd.source_line_id = ei.expenditure_item_id))
+/*AND P.SEGMENT1 = '21000230'*/
+--end add by colin.chen at 2013-03-28 begin
+UNION ALL
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'NON-OVERSER-ACCUAL' sub_type,
+       ho.organization_id org_id,
+       ho.name operation_unit,
+       t1.task_id mfg_id,
+       t1.task_number mfg_number,
+       ppa.gl_period_name gl_period,
+       p.project_type proj_type,
+       ho1.organization_id expenditure_org_id,
+       ho1.name expenditure_org,
+       p.project_id,
+       p.segment1 proj_num,
+       t.task_id,
+       t.task_number task_num,
+       ppa.end_date expenditure_item_date,
+       ppa.end_date + decode(to_char(ppa.end_date, 'D'), 1, 0, 8 - (to_char(ppa.end_date, 'D'))) expenditure_ending_date,
+       'FAC FG Completion'/*p_cost_type_expd*/  expenditure_type,
+       round((-1) * ct.tot_cmt_burdened_cost, 2) expenditure_amount,
+       ct.expenditure_type orig_expenditure_type,
+       ct.tot_cmt_burdened_cost orig_expenditure_amount,
+       'ACCRUAL:' || ct.cmt_number || '.' || ct.cmt_line_number || '.' || ct.cmt_distribution_id expenditure_reference,
+       'PA_COMMITMENT_TXNS' source_table,
+       ct.cmt_distribution_id source_line_id,
+       ct.line_type
+  FROM pa_resource_accum_details rad,
+       pa_txn_accum_details      tad,
+       pa_commitment_txns        ct,
+       pa_tasks                  t,
+       pa_tasks                  t1,
+       pa_proj_elements          ppe,
+       hr_organization_units     ho,
+       hr_organization_units     ho1,
+       pa_projects_all           p,
+       pa_periods_all            ppa,
+       pa_project_types_all      ppt
+ WHERE 1 = 1
+   AND ho.name = 'SHE_OU'
+   AND rad.txn_accum_id = tad.txn_accum_id
+   AND tad.line_type = 'M'
+   AND tad.cmt_line_id = ct.cmt_line_id
+   AND ct.tot_cmt_burdened_cost <> 0
+   AND ct.task_id = t.task_id
+   AND ct.organization_id = ho1.organization_id
+   AND ct.project_id = p.project_id
+   AND ho1.name = 'SHE_FAC_ORG'
+   AND t.project_id = t1.project_id
+   AND t.top_task_id = t1.task_id
+   AND p.project_id = t.project_id
+   AND t.project_id = ppe.project_id
+   AND t.top_task_id = ppe.proj_element_id
+   AND ppe.object_type = 'PA_TASKS'
+   AND ppa.end_date = last_day(to_date(ppe.attribute1, 'YYYY-MM-DD'))
+   AND p.org_id = ho.organization_id
+   AND ppa.org_id = p.org_id
+   AND p.org_id = ppt.org_id
+   AND p.project_type = ppt.project_type
+   AND nvl(ppt.attribute9, 0) != 'HO - HEA Project FG'
+   AND nvl(ppt.attribute7, '-1') <> 'OVERSEA'
+   AND ppt.attribute7 IS NOT NULL
+   AND ppt.attribute9 IS NOT NULL
+   AND trunc(ct.expenditure_item_date) <= ppa.end_date
+      /*AND ppa.end_date = xxpa_get_last_invoice_period(ho.organization_id,
+      p.project_id,
+      t1.task_id,
+      NULL)*/
+   AND ppa.gl_period_name = '18-Apr' /*g_period_name*/ --1 modify by jingjinghe 20180119
+      --AND p.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_COMMITMENT_TXNS'
+                       AND xcfd.source_line_id = ct.cmt_distribution_id
+                       AND xcfd.attribute1 = ct.line_type))
+--end add
+UNION ALL
+--Oversea transfered finish goods
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'OVERSEA-TXNED' sub_type,
+       ho1.organization_id org_id,
+       ho1.name operation_ou,
+       ppe.proj_element_id mfg_id,
+       ppe.element_number mfg#,
+       ppa.gl_period_name gl_period,
+       pt.project_type,
+       ho.organization_id expenditure_org_id,
+       ho.name expenditure_org,
+       p.project_id,
+       p.segment1 proj_num,
+       t.task_id,
+       t.task_number,
+       ppa.end_date expenditure_item_date,
+       ppa.end_date + decode(to_char(ppa.end_date, 'D'), 1, 0, 8 - (to_char(ppa.end_date, 'D'))) expenditure_ending_date,
+       parts_pet.expenditure_type expenditure_type,
+       round((-1) * (ei.burden_cost), 2) expenditure_amt, -- IF THERE IS WARNING SUBMIT COST COLLECTING AND CREAT ACCOUNTING
+       ei.expenditure_type orig_expenditure_type,
+       ei.burden_cost orig_expenditure_amt,
+       to_char(ppa.end_date, 'YYYYMMDD') expenditure_reference,
+       'PA_EXPENDITURE_ITEMS_ALL' source_table,
+       ei.expenditure_item_id source_line_id,
+       NULL line_type
+  FROM pa_projects              p,
+       pa_tasks                 t,
+       pa_expenditure_items_all ei,
+       pa_expenditure_types     pet,
+       
+       pa_expenditure_types parts_pet, -- add by gusenlin 20130724  for 11 parts
+       pa_expenditures_all  x,
+       pa_project_types_all pt,
+       --PA_TRANSACTION_SOURCES    TR,
+       hr_all_organization_units ho,
+       hr_organization_units     ho1,
+       pa_proj_elements          ppe,
+       pa_periods_all            ppa
+ WHERE 1 = 1
+      /* AND HO1.NAME = 'SHE_OU'*/
+   AND p.project_id = t.project_id
+   AND p.project_id = ei.project_id
+   AND t.task_id = ei.task_id
+   AND ei.burden_cost <> 0
+   AND ei.expenditure_id = x.expenditure_id
+   AND ei.expenditure_type = pet.expenditure_type
+   AND pet.expenditure_category = 'FG Completion'
+      
+   AND pet.attribute15 = parts_pet.attribute15
+   AND parts_pet.expenditure_category = 'FG Completion'
+   AND parts_pet.attribute15 IS NOT NULL
+      
+   AND parts_pet.end_date_active IS NULL -- add by gusenlin 20130723  for 11 parts
+   AND p.project_type = pt.project_type
+   AND nvl(pt.attribute7, '-1') = 'OVERSEA'
+   AND nvl(ei.override_to_organization_id, x.incurred_by_organization_id) = ho.organization_id
+   AND ho.name = 'SHE_FAC_ORG'
+   AND pt.org_id = ho1.organization_id
+   AND t.top_task_id = ppe.proj_element_id
+   AND ppe.object_type = 'PA_TASKS'
+   AND p.org_id = ppa.org_id
+   AND ei.attribute8 IS NULL
+   AND ei.expenditure_item_date <= ppa.end_date
+   AND (
+       
+        (SELECT MIN(mmt.transaction_date)
+           FROM mtl_material_transactions  mmt,
+                wip_discrete_jobs          wdj,
+                apps.mtl_item_categories_v msc
+          WHERE mmt.transaction_type_id = 44 --WIP Completion
+            AND msc.inventory_item_id = mmt.inventory_item_id
+            AND msc.organization_id = mmt.organization_id
+            AND msc.category_set_name = 'GSCM Item Category Set'
+            AND msc.category_concat_segs = pet.attribute15
+            AND mmt.transaction_source_id = wdj.wip_entity_id
+            AND mmt.organization_id = nvl(ei.override_to_organization_id, x.incurred_by_organization_id)
+            AND wdj.project_id = p.project_id
+            AND wdj.task_id = t.task_id
+            AND mmt.final_completion_flag = 'Y') BETWEEN ppa.start_date AND ppa.end_date + 0.99999 OR
+        (ppa.end_date = xxpa_get_min_period(ho1.organization_id, p.project_id, ppe.proj_element_id, ei.attribute9) AND
+        EXISTS (SELECT 1 --Only so pick judge invoice
+                  FROM xxpa_cost_flow_dtls_all xcfd
+                 WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                   AND xcfd.sub_type = 'SO-PICK'
+                   AND xcfd.source_table = 'MTL_MATERIAL_TRANSACTIONS'
+                   AND xcfd.project_id = p.project_id
+                   AND xcfd.task_id = t.task_id
+                   AND xcfd.expenditure_type = pet.expenditure_type))
+       
+       -- add by gusenlin 2013-08-30 start
+        OR (ppa.end_date = xxpa_get_min_period(ho1.organization_id, p.project_id, ppe.proj_element_id, pet.attribute9) AND
+        pet.attribute15 = 'OTS' AND x.expenditure_group NOT IN ('SO 1PJ58487') AND EXISTS
+         (SELECT 1
+               FROM oe_order_lines_all        ool2,
+                    ra_customer_trx_lines_all rctl,
+                    ra_customer_trx_all       rct,
+                    pa_tasks                  pt_ol
+              WHERE rctl.line_type = 'LINE'
+                AND rctl.org_id = ool2.org_id
+                AND rctl.customer_trx_id = rct.customer_trx_id
+                AND rctl.interface_line_attribute6 = to_char(ool2.line_id)
+                AND ool2.project_id = p.project_id
+                AND ool2.task_id = pt_ol.task_id
+                AND ool2.org_id = ho1.organization_id
+                AND pt_ol.top_task_id = ppe.proj_element_id
+                AND pt_ol.project_id = p.project_id
+                AND nvl(pet.attribute15, '@#$') = nvl(ool2.attribute5, '@#$')
+                AND rct.trx_date <= ppa.end_date + 0.99999))
+       -- add by gusenlin 2013-08-30 end
+       )
+   AND ppa.gl_period_name = '18-Apr' /*g_period_name*/ --1 modify by jingjinghe 20180119
+      --AND p.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_EXPENDITURE_ITEMS_ALL'
+                       AND xcfd.source_line_id = ei.expenditure_item_id))
+      --add for Makul at 2013-03-28 begin
+   AND x.expenditure_group NOT IN ('SO FGPJ58490', 'SO 2PJ58488', 'Reverse SO2')
+--end add
+UNION ALL
+--Oversea wip transaction
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'OVERSEA-WIP-M' sub_type,
+       hou.organization_id org_id,
+       hou.name operation_ou,
+       mfg.task_id mfg_id,
+       mfg.task_number mfg#,
+       pp.gl_period_name,
+       ppt.project_type,
+       ood.organization_id exp_org_id,
+       ood.organization_name exp_org,
+       ppa.project_id,
+       ppa.segment1 project_number,
+       pt.task_id,
+       pt.task_number,
+       pp.end_date expenditure_item_date,
+       pp.end_date + decode(to_char(pp.end_date, 'D'), 1, 0, 8 - (to_char(pp.end_date, 'D'))) expenditure_ending_date,
+       pet.expenditure_type,
+       round((-1 * mta.base_transaction_value), 2) actual_cost,
+       we.wip_entity_name,
+       (mta.base_transaction_value) orig_cost,
+       to_char(pp.end_date, 'YYYYMMDD') expenditure_ref,
+       'MTL_TRANSACTION_ACCOUNTS' source_table,
+       mta.inv_sub_ledger_id source_line_id,
+       NULL line_type
+  FROM apps.mtl_material_transactions mmt,
+       apps.mtl_transaction_types     mtt,
+       mtl_transaction_accounts       mta,
+       org_organization_definitions   ood,
+       hr_operating_units             hou,
+       apps.wip_discrete_jobs         wdj,
+       wip_entities                   we,
+       apps.pa_projects               ppa,
+       pa_project_types_all           ppt,
+       apps.pa_tasks                  pt,
+       pa_tasks                       mfg,
+       apps.mtl_item_categories_v     msc,
+       pa_expenditure_types           pet,
+       pa_periods_all                 pp
+ WHERE 1 = 1
+   AND msc.inventory_item_id = wdj.primary_item_id
+   AND msc.organization_id = wdj.organization_id
+   AND msc.category_set_name = 'GSCM Item Category Set'
+   AND mmt.transaction_type_id = mtt.transaction_type_id
+   AND mmt.organization_id = ood.organization_id
+   AND ood.operating_unit = hou.organization_id
+   AND ood.organization_name = 'SHE_FAC_ORG'
+   AND mtt.transaction_type_name IN ('WIP Issue', 'WIP Return')
+   AND mmt.transaction_id = mta.transaction_id
+   AND mta.accounting_line_type = 7 --WIP valuation
+   AND mta.base_transaction_value <> 0
+   AND mmt.transaction_source_id = wdj.wip_entity_id
+   AND wdj.wip_entity_id = we.wip_entity_id
+   AND wdj.project_id = ppa.project_id
+   AND ppa.project_type = ppt.project_type
+   AND ppt.attribute7 = 'OVERSEA'
+   AND wdj.task_id = pt.task_id
+   AND pt.top_task_id = mfg.task_id
+   AND mmt.organization_id = wdj.organization_id
+   AND msc.category_concat_segs = pet.attribute15
+   AND pet.end_date_active IS NULL -- add by gusenlin 20130723  for 11 parts
+   AND ppa.org_id = pp.org_id
+   AND mmt.transaction_date <= pp.end_date + 0.99999
+      --v3.00 modify by irene.wang on 2017/05/15 begin
+      /*AND (SELECT MIN(mmt.transaction_date)
+       FROM mtl_material_transactions mmt
+      WHERE mmt.organization_id = ood.organization_id
+        AND mmt.project_id = pt.project_id
+        AND mmt.task_id = pt.task_id
+        AND mmt.transaction_source_id = we.wip_entity_id
+        AND mmt.transaction_type_id = 44 --WIP Completion
+        AND mmt.final_completion_flag = 'Y')*/
+   AND EXISTS (SELECT 1
+          FROM mtl_material_transactions mmt
+         WHERE mmt.transaction_source_id = we.wip_entity_id
+           AND mmt.transaction_type_id = 44 --WIP Completion
+           AND mmt.final_completion_flag = 'Y')
+   AND (SELECT MIN(mmt.transaction_date)
+          FROM mtl_material_transactions  mmt,
+               wip_discrete_jobs          wdj,
+               apps.mtl_item_categories_v msc
+         WHERE mmt.transaction_type_id = 44 --WIP Completion
+           AND msc.inventory_item_id = mmt.inventory_item_id
+           AND msc.organization_id = mmt.organization_id
+           AND msc.category_set_name = 'GSCM Item Category Set'
+           AND msc.category_concat_segs = pet.attribute15
+           AND mmt.transaction_source_id = wdj.wip_entity_id
+           AND mmt.organization_id = ood.organization_id
+           AND wdj.project_id = ppa.project_id
+           AND wdj.task_id = pt.task_id
+           AND mmt.final_completion_flag = 'Y')
+      --end
+       BETWEEN pp.start_date AND pp.end_date + 0.99999
+   AND pp.gl_period_name = '18-Apr' /*g_period_name*/ --modify by jingjinghe 20180119--p_period_name
+      --AND ppa.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'MTL_TRANSACTION_ACCOUNTS'
+                       AND xcfd.source_line_id = mta.inv_sub_ledger_id))
+UNION ALL
+--Oversea wip resource transaction
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'OVERSEA-WIP-R' sub_type,
+       hou.organization_id org_id,
+       hou.name operation_ou,
+       mfg.task_id mfg_id,
+       mfg.task_number mfg#,
+       pp.gl_period_name,
+       ppt.project_type,
+       ood.organization_id expenditure_org_id,
+       ood.organization_name exp_org,
+       ppa.project_id,
+       ppa.segment1 project_number,
+       pt.task_id,
+       pt.task_number,
+       pp.end_date expenditure_item_date,
+       pp.end_date + decode(to_char(pp.end_date, 'D'), 1, 0, 8 - (to_char(pp.end_date, 'D'))) expenditure_ending_date,
+       pet.expenditure_type,
+       round((-1 * pei.burden_cost), 2) actual_cost,
+       we.wip_entity_name,
+       (pei.burden_cost) orig_cost,
+       to_char(pp.end_date, 'YYYYMMDD') expenditure_ref,
+       'PA_EXPENDITURE_ITEMS_ALL' source_table,
+       pei.expenditure_item_id source_line_id,
+       NULL line_type
+  FROM wip_transactions             wt,
+       pa_expenditure_items_all     pei,
+       org_organization_definitions ood,
+       hr_operating_units           hou,
+       pa_projects                  ppa,
+       pa_project_types_all         ppt,
+       pa_tasks                     pt,
+       pa_tasks                     mfg,
+       pa_periods_all               pp,
+       apps.mtl_item_categories_v   msc,
+       pa_expenditure_types         pet,
+       wip_discrete_jobs            wdj,
+       wip_entities                 we
+ WHERE wt.transaction_id = pei.orig_transaction_reference
+   AND pei.transaction_source = 'Work In Process'
+   AND wt.project_id = pei.project_id
+   AND wt.task_id = pei.task_id
+   AND pei.burden_cost <> 0
+   AND wt.organization_id = ood.organization_id
+   AND ood.operating_unit = hou.organization_id
+   AND ood.organization_name = 'SHE_FAC_ORG'
+   AND wt.project_id = ppa.project_id
+   AND ppa.project_type = ppt.project_type
+   AND ppt.attribute7 = 'OVERSEA'
+   AND wt.task_id = pt.task_id
+   AND pt.top_task_id = mfg.task_id
+   AND hou.organization_id = pp.org_id
+   AND wt.wip_entity_id = wdj.wip_entity_id
+   AND wt.organization_id = wdj.organization_id
+   AND msc.inventory_item_id = wdj.primary_item_id
+   AND msc.organization_id = wdj.organization_id
+   AND msc.category_set_name = 'GSCM Item Category Set'
+   AND msc.category_concat_segs = pet.attribute15
+   AND pet.end_date_active IS NULL -- add by gusenlin 20130723  for 11 parts
+   AND wt.wip_entity_id = we.wip_entity_id
+   AND wt.transaction_date <= pp.end_date + 0.99999
+      --v3.00 modify by irene.wang on 2017/05/15 begin
+      /*AND (SELECT MIN(mmt.transaction_date)
+       FROM mtl_material_transactions mmt
+      WHERE mmt.organization_id = ood.organization_id
+        AND mmt.project_id = pt.project_id
+        AND mmt.task_id = pt.task_id
+        AND mmt.transaction_source_id = we.wip_entity_id
+        AND mmt.transaction_type_id = 44 --WIP Completion
+        AND mmt.final_completion_flag = 'Y')*/
+   AND EXISTS (SELECT 1
+          FROM mtl_material_transactions mmt
+         WHERE mmt.transaction_source_id = we.wip_entity_id
+           AND mmt.transaction_type_id = 44 --WIP Completion
+           AND mmt.final_completion_flag = 'Y')
+   AND (SELECT MIN(mmt.transaction_date)
+          FROM mtl_material_transactions  mmt,
+               wip_discrete_jobs          wdj,
+               apps.mtl_item_categories_v msc
+         WHERE mmt.transaction_type_id = 44 --WIP Completion
+           AND msc.inventory_item_id = mmt.inventory_item_id
+           AND msc.organization_id = mmt.organization_id
+           AND msc.category_set_name = 'GSCM Item Category Set'
+           AND msc.category_concat_segs = pet.attribute15
+           AND mmt.transaction_source_id = wdj.wip_entity_id
+           AND mmt.organization_id = ood.organization_id
+           AND wdj.project_id = ppa.project_id
+           AND wdj.task_id = pt.task_id
+           AND mmt.final_completion_flag = 'Y')
+      --end
+       BETWEEN pp.start_date AND pp.end_date + 0.99999
+   AND pp.gl_period_name = '18-Apr' /*g_period_name*/ --modify by jingjinghe 20180119
+      --AND ppa.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_EXPENDITURE_ITEMS_ALL'
+                       AND xcfd.source_line_id = pei.expenditure_item_id))
+UNION ALL
+--Oversea Open data
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'OVERSEA-OPEN' sub_type,
+       ho1.organization_id org_id,
+       ho1.name operation_ou,
+       mfg.task_id mfg_id,
+       mfg.task_number mfg#,
+       ppa.gl_period_name gl_period,
+       ppt.project_type,
+       ho.organization_id expenditure_org_id,
+       ho.name expenditure_org,
+       p.project_id,
+       p.segment1 proj_num,
+       t.task_id,
+       t.task_number,
+       last_day(ppa.end_date) expenditure_item_date,
+       last_day(ppa.end_date) +
+       decode(to_char(last_day(ppa.end_date), 'D'), 1, 0, 8 - (to_char(last_day(ppa.end_date), 'D'))) expenditure_ending_date,
+       pet.expenditure_type expenditure_type,
+       round((-1) * (ei.burden_cost), 2) expenditure_amt, -- IF THERE IS WARNING SUBMIT COST COLLECTING AND CREAT ACCOUNTING
+       ei.expenditure_type orig_expenditure_type,
+       ei.burden_cost orig_expenditure_amt,
+       to_char(ppa.end_date, 'YYYYMMDD') expenditure_ref,
+       'PA_EXPENDITURE_ITEMS_ALL' source_table,
+       ei.expenditure_item_id source_line_id,
+       NULL line_type
+  FROM pa_projects              p,
+       pa_tasks                 t,
+       pa_expenditure_items_all ei,
+       pa_expenditures_all      x,
+       --PA_TRANSACTION_SOURCES    TR,
+       hr_all_organization_units ho,
+       hr_organization_units     ho1,
+       pa_periods_all            ppa,
+       pa_expenditure_types      pet,
+       pa_project_types_all      ppt,
+       pa_tasks                  mfg,
+       pa_expenditure_types      pet2
+ WHERE 1 = 1
+      /* AND HO1.NAME = 'SHE_OU'*/
+   AND p.project_id = t.project_id
+   AND p.project_id = ei.project_id
+   AND p.project_type = ppt.project_type
+   AND ppt.attribute7 = 'OVERSEA'
+   AND t.task_id = ei.task_id
+   AND t.top_task_id = mfg.task_id
+   AND ei.burden_cost <> 0
+   AND ei.expenditure_id = x.expenditure_id
+   AND nvl(ei.override_to_organization_id, x.incurred_by_organization_id) = ho.organization_id
+   AND p.org_id = ho1.organization_id
+   AND ho1.name = 'SHE_OU'
+   AND p.org_id = ppa.org_id
+   AND ei.attribute9 = pet.attribute15
+   AND pet.end_date_active IS NULL -- add by gusenlin 20130723  for 11 parts
+   AND ei.expenditure_type = pet2.expenditure_type
+   AND pet2.expenditure_category <> 'FG Completion'
+   AND ei.expenditure_item_date <= ppa.end_date
+   AND (((SELECT MIN(transaction_date)
+            FROM mtl_material_transactions  mmt,
+                 wip_discrete_jobs          wdj,
+                 apps.mtl_item_categories_v msc
+           WHERE mmt.transaction_type_id = 44 --WIP Completion
+             AND msc.inventory_item_id = mmt.inventory_item_id
+             AND msc.organization_id = mmt.organization_id
+             AND msc.category_set_name = 'GSCM Item Category Set'
+             AND msc.category_concat_segs = pet.attribute15
+             AND mmt.transaction_source_id = wdj.wip_entity_id
+             AND mmt.organization_id = nvl(ei.override_to_organization_id, x.incurred_by_organization_id)
+             AND mmt.final_completion_flag = 'Y'
+             AND wdj.project_id = p.project_id
+             AND wdj.task_id = t.task_id) BETWEEN ppa.start_date AND ppa.end_date + 0.99999)
+
+       OR (xxpa_get_min_period(ho1.organization_id, p.project_id, mfg.task_id, ei.attribute9) = ppa.end_date AND
+       ei.attribute9 = 'OTS' AND x.expenditure_group NOT IN ('SO 1PJ58487') AND EXISTS
+        (SELECT 1
+               FROM oe_order_lines_all        ool2,
+                    ra_customer_trx_lines_all rctl,
+                    ra_customer_trx_all       rct,
+                    pa_tasks                  pt_ol
+              WHERE rctl.line_type = 'LINE'
+                AND rctl.org_id = ool2.org_id
+                AND rctl.customer_trx_id = rct.customer_trx_id
+                AND rctl.interface_line_attribute6 = to_char(ool2.line_id)
+                AND ool2.project_id = p.project_id
+                AND ool2.task_id = pt_ol.task_id
+                AND ool2.org_id = ho1.organization_id
+                AND pt_ol.top_task_id = mfg.task_id
+                AND pt_ol.project_id = p.project_id
+                AND nvl(pet.attribute15, '@#$') = nvl(ool2.attribute5, '@#$')
+                AND rct.trx_date <= ppa.end_date + 0.99999))
+       -- add by gusenlin 2013-08-30 end
+       )
+   AND ei.attribute8 IS NULL
+   AND ppa.gl_period_name = '18-Apr' /*g_period_name*/ --1 modify by jingjinghe 20180119
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_EXPENDITURE_ITEMS_ALL'
+                       AND xcfd.source_line_id = ei.expenditure_item_id))
+
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_EXPENDITURE_ITEMS_ALL'
+                       AND xcfd.source_line_id = ei.expenditure_item_id))
+--end add
+
+UNION ALL
+--PR Information
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'PR' sub_type,
+       ho1.organization_id org_id,
+       ho1.name operation_unit,
+       t1.task_id mfg_id,
+       t1.task_number mfg#,
+       ppa.gl_period_name gl_period,
+       p.project_type proj_type,
+       ho.organization_id expenditure_org_id,
+       ho.name expenditure_org,
+       p.project_id,
+       p.segment1 proj_num,
+       t.task_id,
+       t.task_number task_num,
+       ppa.end_date expenditure_item_date,
+       ppa.end_date + decode(to_char(ppa.end_date, 'D'), 1, 0, 8 - (to_char(ppa.end_date, 'D'))) expenditure_ending_date,
+       pet.expenditure_type expenditure_type,
+       round((-1) * ei.burden_cost, 2) expenditure_amt,
+       ei.expenditure_type orig_expenditure_type,
+       ei.burden_cost orig_expenditure_amt,
+       to_char(ppa.end_date, 'YYYYMMDD') expenditure_ref,
+       'PA_EXPENDITURE_ITEMS_ALL' source_table,
+       ei.expenditure_item_id source_line_id,
+       NULL line_type
+  FROM pa_projects                  p,
+       pa_tasks                     t,
+       pa_expenditure_items_all     ei,
+       pa_expenditures_all          x,
+       pa_expenditure_types         pet,
+       pa_project_types_all         pt,
+       hr_all_organization_units    ho,
+       hr_organization_units        ho1,
+       pa_tasks                     t1,
+       pa_periods_all               ppa,
+       pa_transaction_sources       pts,
+       ap_invoice_distributions_all aid,
+       po_distributions_all         pda,
+       po_req_distributions_all     prd,
+       po_requisition_lines_all     prl
+ WHERE 1 = 1
+   AND ho1.name = 'SHE_OU'
+   AND pt.org_id = ho1.organization_id
+   AND t.project_id = p.project_id
+   AND p.project_id = t1.project_id
+   AND t.top_task_id = t1.task_id
+   AND ei.project_id = p.project_id
+   AND ei.task_id = t.task_id
+   AND p.project_type = pt.project_type
+   AND nvl(pt.attribute7, '-1') = 'OVERSEA'
+   AND p.org_id = ho1.organization_id
+   AND ei.expenditure_id = x.expenditure_id
+   AND ei.transaction_source = pts.transaction_source
+   AND pts.system_linkage_function = 'VI' --Supplier Invoices
+   AND ei.burden_cost <> 0
+   AND ei.document_distribution_id = aid.invoice_distribution_id
+   AND aid.po_distribution_id = pda.po_distribution_id
+   AND pda.req_distribution_id = prd.distribution_id
+   AND prd.requisition_line_id = prl.requisition_line_id
+   AND pda.destination_type_code = 'EXPENSE'
+   AND prl.attribute1 = pet.attribute15
+   AND pet.end_date_active IS NULL -- add by gusenlin 20130723
+   AND ei.expenditure_item_date <= ppa.end_date
+   AND ppa.org_id = ho1.organization_id
+   AND nvl(ei.override_to_organization_id, x.incurred_by_organization_id) = ho.organization_id
+   AND (SELECT MIN(transaction_date)
+          FROM mtl_material_transactions  mmt,
+               wip_discrete_jobs          wdj,
+               apps.mtl_item_categories_v msc
+         WHERE mmt.transaction_type_id = 44 --WIP Completion
+           AND msc.inventory_item_id = mmt.inventory_item_id
+           AND msc.organization_id = mmt.organization_id
+           AND msc.category_set_name = 'GSCM Item Category Set'
+           AND msc.category_concat_segs = pet.attribute15
+           AND mmt.transaction_source_id = wdj.wip_entity_id
+           AND mmt.organization_id = nvl(ei.override_to_organization_id, x.incurred_by_organization_id)
+           AND mmt.final_completion_flag = 'Y'
+           AND wdj.project_id = p.project_id
+           AND wdj.task_id = t.task_id) BETWEEN ppa.start_date AND ppa.end_date + 0.99999
+   AND ei.attribute8 IS NULL
+   AND ppa.gl_period_name = '18-Apr' /*g_period_name*/ --1 modify by jingjinghe 20180119
+      --AND p.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_EXPENDITURE_ITEMS_ALL'
+                       AND xcfd.source_line_id = ei.expenditure_item_id))
+UNION ALL
+--po information
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'PO' sub_type,
+       ho1.organization_id org_id,
+       ho1.name operation_unit,
+       t1.task_id mfg_id,
+       t1.task_number mfg#,
+       ppa.gl_period_name gl_period,
+       p.project_type proj_type,
+       ho.organization_id expenditure_org_id,
+       ho.name expenditure_org,
+       p.project_id,
+       p.segment1 proj_num,
+       t.task_id,
+       t.task_number task_num,
+       ppa.end_date expenditure_item_date,
+       ppa.end_date + decode(to_char(ppa.end_date, 'D'), 1, 0, 8 - (to_char(ppa.end_date, 'D'))) expenditure_ending_date,
+       pet.expenditure_type expenditure_type,
+       round((-1) * ei.burden_cost, 2) expenditure_amt,
+       ei.expenditure_type orig_expenditure_type,
+       ei.burden_cost orig_expenditure_amt,
+       to_char(ppa.end_date, 'YYYYMMDD') expenditure_ref,
+       'PA_EXPENDITURE_ITEMS_ALL' source_table,
+       ei.expenditure_item_id source_line_id,
+       NULL line_type
+  FROM pa_projects                  p,
+       pa_tasks                     t,
+       pa_expenditure_items_all     ei,
+       pa_expenditures_all          x,
+       pa_expenditure_types         pet,
+       pa_project_types_all         pt,
+       hr_all_organization_units    ho,
+       hr_organization_units        ho1,
+       pa_tasks                     t1,
+       pa_periods_all               ppa,
+       pa_transaction_sources       pts,
+       ap_invoice_distributions_all aid,
+       po_distributions_all         pda
+ WHERE 1 = 1
+   AND ho1.name = 'SHE_OU'
+   AND pt.org_id = ho1.organization_id
+   AND t.project_id = p.project_id
+   AND p.project_id = t1.project_id
+   AND t.top_task_id = t1.task_id
+   AND ei.project_id = p.project_id
+   AND ei.task_id = t.task_id
+   AND p.project_type = pt.project_type
+   AND nvl(pt.attribute7, '-1') = 'OVERSEA'
+   AND p.org_id = ho1.organization_id
+   AND ei.expenditure_id = x.expenditure_id
+   AND ei.transaction_source = pts.transaction_source
+   AND pts.system_linkage_function = 'VI' --Supplier Invoices
+   AND ei.burden_cost <> 0
+   AND ei.document_distribution_id = aid.invoice_distribution_id
+   AND aid.po_distribution_id = pda.po_distribution_id
+   AND pda.destination_type_code = 'EXPENSE'
+   AND pda.req_distribution_id IS NULL
+   AND pda.attribute15 = pet.attribute15
+   AND pet.end_date_active IS NULL -- add by gusenlin 20130723  for 11 parts
+   AND ei.expenditure_item_date <= ppa.end_date
+   AND ppa.org_id = ho1.organization_id
+   AND nvl(ei.override_to_organization_id, x.incurred_by_organization_id) = ho.organization_id
+   AND (SELECT MIN(transaction_date)
+          FROM mtl_material_transactions  mmt,
+               wip_discrete_jobs          wdj,
+               apps.mtl_item_categories_v msc
+         WHERE mmt.transaction_type_id = 44 --WIP Completion
+           AND msc.inventory_item_id = mmt.inventory_item_id
+           AND msc.organization_id = mmt.organization_id
+           AND msc.category_set_name = 'GSCM Item Category Set'
+           AND msc.category_concat_segs = pet.attribute15
+           AND mmt.transaction_source_id = wdj.wip_entity_id
+           AND mmt.organization_id = nvl(ei.override_to_organization_id, x.incurred_by_organization_id)
+           AND mmt.final_completion_flag = 'Y'
+           AND wdj.project_id = p.project_id
+           AND wdj.task_id = t.task_id) BETWEEN ppa.start_date AND ppa.end_date + 0.99999
+   AND ei.attribute8 IS NULL
+   AND ppa.gl_period_name = '18-Apr' /*g_period_name*/ --1 modify by jingjinghe 20180119
+      --AND p.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_EXPENDITURE_ITEMS_ALL'
+                       AND xcfd.source_line_id = ei.expenditure_item_id))
+UNION ALL
+--Manual AP information
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'MANUAL_AP' sub_type,
+       ho1.organization_id org_id,
+       ho1.name operation_unit,
+       t1.task_id mfg_id,
+       t1.task_number mfg#,
+       ppa.gl_period_name gl_period,
+       p.project_type proj_type,
+       ho.organization_id expenditure_org_id,
+       ho.name expenditure_org,
+       p.project_id,
+       p.segment1 proj_num,
+       t.task_id,
+       t.task_number task_num,
+       ppa.end_date expenditure_item_date,
+       ppa.end_date + decode(to_char(ppa.end_date, 'D'), 1, 0, 8 - (to_char(ppa.end_date, 'D'))) expenditure_ending_date,
+       pet.expenditure_type expenditure_type,
+       round((-1) * ei.burden_cost, 2) expenditure_amt,
+       ei.expenditure_type orig_expenditure_type,
+       ei.burden_cost orig_expenditure_amt,
+       to_char(ppa.end_date, 'YYYYMMDD') expenditure_ref,
+       'PA_EXPENDITURE_ITEMS_ALL' source_table,
+       ei.expenditure_item_id source_line_id,
+       NULL line_type
+  FROM pa_projects                  p,
+       pa_tasks                     t,
+       pa_expenditure_items_all     ei,
+       pa_expenditures_all          x,
+       pa_expenditure_types         pet,
+       pa_project_types_all         pt,
+       hr_all_organization_units    ho,
+       hr_organization_units        ho1,
+       pa_tasks                     t1,
+       pa_periods_all               ppa,
+       pa_transaction_sources       pts,
+       ap_invoice_distributions_all aid,
+       ap_invoice_lines_all         ail
+ WHERE 1 = 1
+   AND ho1.name = 'SHE_OU'
+   AND pt.org_id = ho1.organization_id
+   AND t.project_id = p.project_id
+   AND p.project_id = t1.project_id
+   AND t.top_task_id = t1.task_id
+   AND ei.project_id = p.project_id
+   AND ei.task_id = t.task_id
+   AND p.project_type = pt.project_type
+   AND nvl(pt.attribute7, '-1') = 'OVERSEA'
+   AND p.org_id = ho1.organization_id
+   AND ei.expenditure_id = x.expenditure_id
+   AND ei.transaction_source = pts.transaction_source
+   AND pts.system_linkage_function = 'VI' --Supplier Invoices
+   AND ei.burden_cost <> 0
+   AND ei.document_distribution_id = aid.invoice_distribution_id
+   AND aid.po_distribution_id IS NULL --Manual
+   AND aid.invoice_id = ail.invoice_id
+   AND aid.invoice_line_number = ail.line_number
+   AND ail.attribute15 = pet.attribute15
+   AND pet.end_date_active IS NULL -- add by gusenlin 20130723  for 11 parts
+   AND ei.expenditure_item_date <= ppa.end_date
+   AND ppa.org_id = ho1.organization_id
+   AND nvl(ei.override_to_organization_id, x.incurred_by_organization_id) = ho.organization_id
+   AND (SELECT MIN(transaction_date)
+          FROM mtl_material_transactions  mmt,
+               wip_discrete_jobs          wdj,
+               apps.mtl_item_categories_v msc
+         WHERE mmt.transaction_type_id = 44 --WIP Completion
+           AND msc.inventory_item_id = mmt.inventory_item_id
+           AND msc.organization_id = mmt.organization_id
+           AND msc.category_set_name = 'GSCM Item Category Set'
+           AND msc.category_concat_segs = pet.attribute15
+           AND mmt.transaction_source_id = wdj.wip_entity_id
+           AND mmt.organization_id = nvl(ei.override_to_organization_id, x.incurred_by_organization_id)
+           AND mmt.final_completion_flag = 'Y'
+           AND wdj.project_id = p.project_id
+           AND wdj.task_id = t.task_id) BETWEEN ppa.start_date AND ppa.end_date + 0.99999
+   AND ei.attribute8 IS NULL
+   AND ppa.gl_period_name = '18-Apr' /*g_period_name*/ --1 modify by jingjinghe 20180119
+      --AND p.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_EXPENDITURE_ITEMS_ALL'
+                       AND xcfd.source_line_id = ei.expenditure_item_id))
+UNION ALL
+--accual PO with PR
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'PO-ACCUAL' sub_type,
+       ho.organization_id,
+       ho.name operation_unit,
+       t1.task_id mfg_id,
+       t1.task_number mfg#,
+       ppa.gl_period_name gl_period,
+       p.project_type proj_type,
+       ho1.organization_id expenditure_org_id,
+       ho1.name expenditure_org,
+       p.project_id,
+       p.segment1 proj_num,
+       t.task_id,
+       t.task_number task_num,
+       ppa.end_date expenditure_item_date,
+       ppa.end_date + decode(to_char(ppa.end_date, 'D'), 1, 0, 8 - (to_char(ppa.end_date, 'D'))) expenditure_ending_date,
+       pet.expenditure_type expenditure_type,
+       round((-1) * ct.tot_cmt_burdened_cost, 2) expenditure_amt,
+       ct.expenditure_type orig_expenditure_type,
+       ct.tot_cmt_burdened_cost orig_expenditure_amt,
+       'ACCRUAL:' || ct.cmt_number || '.' || ct.cmt_line_number || '.' || ct.cmt_distribution_id expenditure_ref,
+       'PA_COMMITMENT_TXNS' source_table,
+       --modified by colin.chen at 2013-03-28 begin
+       --ct.cmt_line_id source_line_id
+       ct.cmt_distribution_id source_line_id,
+       ct.line_type
+--end modified
+  FROM pa_resource_accum_details rad,
+       pa_txn_accum_details      tad,
+       pa_commitment_txns        ct,
+       pa_tasks                  t,
+       pa_tasks                  t1,
+       hr_organization_units     ho,
+       hr_organization_units     ho1,
+       pa_projects               p,
+       pa_periods_all            ppa,
+       po_distributions_all      pda,
+       po_req_distributions_all  prd,
+       po_requisition_lines_all  prl,
+       pa_project_types_all      ppt,
+       pa_expenditure_types      pet
+ WHERE 1 = 1
+   AND ho.name = 'SHE_OU'
+   AND rad.txn_accum_id = tad.txn_accum_id
+   AND tad.line_type = 'M'
+   AND tad.cmt_line_id = ct.cmt_line_id
+   AND ct.line_type = 'P' --Purchasing Order
+   AND ct.cmt_distribution_id = pda.po_distribution_id
+   AND pda.destination_type_code = 'EXPENSE'
+   AND pda.req_distribution_id = prd.distribution_id
+   AND prd.requisition_line_id = prl.requisition_line_id
+   AND nvl(prl.attribute1, pda.attribute15) = pet.attribute15 -- add by gusenlin 20130723  repaire bugs
+   AND pet.end_date_active IS NULL -- add by gusenlin 20130723  for 11 parts
+   AND ct.task_id = t.task_id
+   AND ct.organization_id = ho1.organization_id
+   AND ct.tot_cmt_burdened_cost <> 0
+   AND t.project_id = t1.project_id
+   AND t.top_task_id = t1.task_id
+   AND p.project_id = t.project_id
+   AND p.org_id = ho.organization_id
+   AND ppa.org_id = p.org_id
+   AND p.org_id = ppt.org_id
+   AND p.project_type = ppt.project_type
+   AND nvl(ppt.attribute7, '-1') = 'OVERSEA'
+      --AND trunc(ct.expenditure_item_date) <= ppa.end_date   -- add by gusenlin 20130723  for 11 parts
+   AND (SELECT MIN(transaction_date)
+          FROM mtl_material_transactions  mmt,
+               wip_discrete_jobs          wdj,
+               apps.mtl_item_categories_v msc
+         WHERE mmt.transaction_type_id = 44 --WIP Completion
+           AND msc.inventory_item_id = mmt.inventory_item_id
+           AND msc.organization_id = mmt.organization_id
+           AND msc.category_set_name = 'GSCM Item Category Set'
+           AND msc.category_concat_segs = pet.attribute15
+           AND mmt.transaction_source_id = wdj.wip_entity_id
+           AND mmt.organization_id = ct.organization_id
+           AND mmt.final_completion_flag = 'Y'
+           AND wdj.project_id = p.project_id
+           AND wdj.task_id = t.task_id) BETWEEN ppa.start_date AND ppa.end_date + 0.99999
+   AND ppa.gl_period_name = '18-Apr' /*g_period_name*/ --1 modify by jingjinghe 20180119
+      --AND p.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_COMMITMENT_TXNS'
+                          --modified by colin.chen at 2013-03-28 begin
+                       AND xcfd.source_line_id = ct.cmt_distribution_id
+                       AND xcfd.attribute1 = ct.line_type
+                    --end modified
+                    ))
+UNION ALL
+--accual PO without PR
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'PO-ACCUAL-NO-PR' sub_type,
+       ho.organization_id org_id,
+       ho.name operation_unit,
+       t1.task_id mfg_id,
+       t1.task_number mfg#,
+       ppa.gl_period_name gl_period,
+       p.project_type proj_type,
+       ho1.organization_id expenditure_org_id,
+       ho1.name expenditure_org,
+       p.project_id,
+       p.segment1 proj_num,
+       t.task_id,
+       t.task_number task_num,
+       ppa.end_date expenditure_item_date,
+       ppa.end_date + decode(to_char(ppa.end_date, 'D'), 1, 0, 8 - (to_char(ppa.end_date, 'D'))) expenditure_ending_date,
+       pet.expenditure_type expenditure_type,
+       round((-1) * ct.tot_cmt_burdened_cost, 2) expenditure_amt,
+       ct.expenditure_type orig_expenditure_type,
+       ct.tot_cmt_burdened_cost orig_expenditure_amt,
+       'ACCRUAL:' || ct.cmt_number || '.' || ct.cmt_line_number || '.' || ct.cmt_distribution_id expenditure_ref,
+       'PA_COMMITMENT_TXNS' source_table,
+       --modified by colin.chen at 2013-03-28 begin
+       --ct.cmt_line_id source_line_id
+       ct.cmt_distribution_id source_line_id,
+       ct.line_type
+--end modified
+  FROM pa_resource_accum_details rad,
+       pa_txn_accum_details      tad,
+       pa_commitment_txns        ct,
+       pa_tasks                  t,
+       pa_tasks                  t1,
+       hr_organization_units     ho,
+       hr_organization_units     ho1,
+       pa_projects               p,
+       pa_periods_all            ppa,
+       po_distributions_all      pda,
+       pa_project_types_all      ppt,
+       pa_expenditure_types      pet
+ WHERE 1 = 1
+   AND ho.name = 'SHE_OU'
+   AND rad.txn_accum_id = tad.txn_accum_id
+   AND tad.line_type = 'M'
+   AND tad.cmt_line_id = ct.cmt_line_id
+   AND ct.line_type = 'P' --Purchasing Order
+   AND ct.cmt_distribution_id = pda.po_distribution_id
+   AND pda.destination_type_code = 'EXPENSE'
+   AND pda.req_distribution_id IS NULL
+   AND pda.attribute15 = pet.attribute15
+   AND pet.end_date_active IS NULL -- add by gusenlin 20130723  for 11 parts
+   AND ct.task_id = t.task_id
+   AND ct.organization_id = ho1.organization_id
+   AND ct.tot_cmt_burdened_cost <> 0
+   AND t.project_id = t1.project_id
+   AND t.top_task_id = t1.task_id
+   AND p.project_id = t.project_id
+   AND p.org_id = ho.organization_id
+   AND ppa.org_id = p.org_id
+   AND p.org_id = ppt.org_id
+   AND p.project_type = ppt.project_type
+   AND nvl(ppt.attribute7, '-1') = 'OVERSEA'
+      --AND trunc(ct.expenditure_item_date) <= ppa.end_date   -- add by gusenlin 20130723  for 11 parts
+   AND (SELECT MIN(transaction_date)
+          FROM mtl_material_transactions  mmt,
+               wip_discrete_jobs          wdj,
+               apps.mtl_item_categories_v msc
+         WHERE mmt.transaction_type_id = 44 --WIP Completion
+           AND msc.inventory_item_id = mmt.inventory_item_id
+           AND msc.organization_id = mmt.organization_id
+           AND msc.category_set_name = 'GSCM Item Category Set'
+           AND msc.category_concat_segs = pet.attribute15
+           AND mmt.transaction_source_id = wdj.wip_entity_id
+           AND mmt.organization_id = ct.organization_id
+           AND mmt.final_completion_flag = 'Y'
+           AND wdj.project_id = p.project_id
+           AND wdj.task_id = t.task_id) BETWEEN ppa.start_date AND ppa.end_date + 0.99999
+   AND ppa.gl_period_name = '18-Apr' /*g_period_name*/ --1 modify by jingjinghe 20180119
+      --AND p.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_COMMITMENT_TXNS'
+                          --modified by colin.chen at 2013-03-28 begin
+                       AND xcfd.source_line_id = ct.cmt_distribution_id
+                       AND xcfd.attribute1 = ct.line_type
+                    --end modified
+                    ))
+UNION ALL
+--Accual PR
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'PR-ACCUAL' sub_type,
+       ho.organization_id org_id,
+       ho.name operation_unit,
+       t1.task_id mfg_id,
+       t1.task_number mfg#,
+       ppa.gl_period_name gl_period,
+       p.project_type proj_type,
+       ho1.organization_id expenditure_org_id,
+       ho1.name expenditure_org,
+       p.project_id,
+       p.segment1 proj_num,
+       t.task_id,
+       t.task_number task_num,
+       ppa.end_date expenditure_item_date,
+       ppa.end_date + decode(to_char(ppa.end_date, 'D'), 1, 0, 8 - (to_char(ppa.end_date, 'D'))) expenditure_ending_date,
+       pet.expenditure_type expenditure_type,
+       round((-1) * ct.tot_cmt_burdened_cost, 2) expenditure_amt,
+       ct.expenditure_type orig_expenditure_type,
+       ct.tot_cmt_burdened_cost orig_expenditure_amt,
+       'ACCRUAL:' || ct.cmt_number || '.' || ct.cmt_line_number || '.' || ct.cmt_distribution_id expenditure_ref,
+       'PA_COMMITMENT_TXNS' source_table,
+       --modified by colin.chen at 2013-03-28 begin
+       --ct.cmt_line_id source_line_id
+       ct.cmt_distribution_id source_line_id,
+       ct.line_type
+--end modified
+  FROM pa_resource_accum_details rad,
+       pa_txn_accum_details      tad,
+       pa_commitment_txns        ct,
+       pa_tasks                  t,
+       pa_tasks                  t1,
+       hr_organization_units     ho,
+       hr_organization_units     ho1,
+       pa_projects               p,
+       pa_periods_all            ppa,
+       po_req_distributions_all  prd,
+       po_requisition_lines_all  prl,
+       pa_project_types_all      ppt,
+       pa_expenditure_types      pet
+ WHERE 1 = 1
+   AND ho.name = 'SHE_OU'
+   AND rad.txn_accum_id = tad.txn_accum_id
+   AND tad.line_type = 'M'
+   AND tad.cmt_line_id = ct.cmt_line_id
+   AND ct.line_type = 'R' --Purchasing Requisition
+   AND ct.cmt_distribution_id = prd.distribution_id
+   AND prd.requisition_line_id = prl.requisition_line_id
+   AND prl.destination_type_code = 'EXPENSE'
+   AND prl.attribute1 = pet.attribute15 -- add by gusenlin 20130723  for 11 parts
+   AND pet.end_date_active IS NULL -- add by gusenlin 20130723  for 11 parts
+   AND ct.task_id = t.task_id
+   AND ct.organization_id = ho1.organization_id
+   AND ct.tot_cmt_burdened_cost <> 0
+   AND t.project_id = t1.project_id
+   AND t.top_task_id = t1.task_id
+   AND p.project_id = t.project_id
+   AND p.org_id = ho.organization_id
+   AND ppa.org_id = p.org_id
+   AND p.org_id = ppt.org_id
+   AND p.project_type = ppt.project_type
+   AND nvl(ppt.attribute7, '-1') = 'OVERSEA'
+      --AND trunc(ct.expenditure_item_date) <= ppa.end_date   -- add by gusenlin 20130723  for 11 parts
+   AND (SELECT MIN(transaction_date)
+          FROM mtl_material_transactions  mmt,
+               wip_discrete_jobs          wdj,
+               apps.mtl_item_categories_v msc
+         WHERE mmt.transaction_type_id = 44 --WIP Completion
+           AND msc.inventory_item_id = mmt.inventory_item_id
+           AND msc.organization_id = mmt.organization_id
+           AND msc.category_set_name = 'GSCM Item Category Set'
+           AND msc.category_concat_segs = pet.attribute15
+           AND mmt.transaction_source_id = wdj.wip_entity_id
+           AND mmt.organization_id = ct.organization_id
+           AND mmt.final_completion_flag = 'Y'
+           AND wdj.project_id = p.project_id
+           AND wdj.task_id = t.task_id) BETWEEN ppa.start_date AND ppa.end_date + 0.99999
+   AND ppa.gl_period_name = '18-Apr' /*g_period_name*/ --1 modify by jingjinghe 20180119
+      --AND p.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'PA_COMMITMENT_TXNS'
+                          --modified by colin.chen at 2013-03-28 begin
+                       AND xcfd.source_line_id = ct.cmt_distribution_id
+                       AND xcfd.attribute1 = ct.line_type
+                    --end modified
+                    ))
+UNION ALL
+--Sales order pick release
+SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
+       'SO-PICK' sub_type,
+       hou.organization_id org_id,
+       hou.name operation_ou,
+       mfg.task_id mfg_id,
+       mfg.task_number mfg#,
+       pp.gl_period_name,
+       ppt.project_type,
+       ood.organization_id expenditure_org_id,
+       ood.organization_name exp_org,
+       ppa.project_id,
+       ppa.segment1 project_number,
+       pt.task_id,
+       pt.task_number,
+       pp.end_date expenditure_item_date,
+       pp.end_date + decode(to_char(pp.end_date, 'D'), 1, 0, 8 - (to_char(pp.end_date, 'D'))) expenditure_ending_date,
+       pet.expenditure_type,
+       round((mmt.primary_quantity * mmt.actual_cost), 2) actual_cost,
+       to_char(ooh.order_number),
+       (mmt.primary_quantity * mmt.actual_cost) orig_cost,
+       to_char(pp.end_date, 'YYYYMMDD') expenditure_ref,
+       'MTL_MATERIAL_TRANSACTIONS' source_table,
+       mmt.transaction_id source_line_id,
+       NULL line_type
+  FROM apps.mtl_material_transactions mmt,
+       apps.mtl_transaction_types     mtt,
+       org_organization_definitions   ood,
+       hr_operating_units             hou,
+       oe_order_lines_all             ool,
+       oe_order_headers_all           ooh,
+       apps.pa_projects               ppa,
+       pa_project_types_all           ppt,
+       apps.pa_tasks                  pt,
+       pa_tasks                       mfg,
+       pa_expenditure_types           pet,
+       pa_periods_all                 pp,
+       mtl_item_locations             mil
+ WHERE 1 = 1
+   AND mmt.transaction_type_id = mtt.transaction_type_id
+   AND mmt.organization_id = ood.organization_id
+   AND ood.operating_unit = hou.organization_id
+   AND ood.organization_name = 'SHE_FAC_ORG'
+   AND mtt.transaction_type_name IN ('Sales Order Pick')
+   AND mmt.primary_quantity * mmt.actual_cost <> 0
+   AND mmt.trx_source_line_id = ool.line_id
+   AND ool.header_id = ooh.header_id
+   AND ool.project_id = ppa.project_id
+   AND ppa.project_type = ppt.project_type
+   AND ppt.attribute7 = 'OVERSEA'
+   AND ool.task_id = pt.task_id
+   AND pt.top_task_id = mfg.task_id
+   AND ool.attribute5 = pet.attribute15
+   AND pet.end_date_active IS NULL -- add by gusenlin 20130723  for 11 parts
+   AND ppa.org_id = pp.org_id
+   AND mmt.locator_id = mil.inventory_location_id(+)
+   AND mil.segment19 IS NULL --no project info
+   AND decode(mmt.pm_cost_collected, NULL, decode(mmt.pm_cost_collector_group_id, NULL, 4, 1), 'Y', 1, 'N', 2, 'E', 3) = '1' --Transfered to PA
+   AND mmt.primary_quantity < 0
+   AND mmt.transaction_date <= pp.end_date + 0.99999
+      --modified by colin.chen at 2013-03-28 begin
+      /*AND pp.end_date =
+      xxpa_get_min_period(hou.organization_id,
+                          ppa.project_id,
+                          mfg.task_id,
+                          ool.attribute5)*/
+      
+   AND EXISTS (SELECT 1
+          FROM oe_order_lines_all        ool2,
+               ra_customer_trx_lines_all rctl,
+               ra_customer_trx_all       rct,
+               pa_tasks                  pt_ol
+         WHERE rctl.line_type = 'LINE'
+           AND rctl.org_id = ool2.org_id
+           AND rctl.customer_trx_id = rct.customer_trx_id
+           AND rctl.interface_line_attribute6 = to_char(ool2.line_id)
+           AND ool2.project_id = ppa.project_id
+           AND ool2.task_id = pt_ol.task_id
+           AND ool2.org_id = hou.organization_id
+           AND pt_ol.top_task_id = mfg.task_id
+           AND pt_ol.project_id = ppa.project_id
+           AND nvl(ool2.attribute5, '@#$') = nvl(ool.attribute5, '@#$')
+           AND rct.trx_date <= pp.end_date + 0.99999)
+      --end modified
+   AND pp.gl_period_name = '18-Apr' /*g_period_name*/ --modify by jingjinghe 20180119
+      --AND ppa.project_id IN (1504003, 1507013)
+   AND (NOT EXISTS (SELECT 1
+                      FROM xxpa_cost_flow_dtls_all xcfd
+                     WHERE xcfd.cost_type ='FAC_FG'/*p_cost_type*/ 
+                       AND xcfd.source_table = 'MTL_MATERIAL_TRANSACTIONS'
+                       AND xcfd.source_line_id = mmt.transaction_id));

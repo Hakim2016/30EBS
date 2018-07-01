@@ -1,0 +1,262 @@
+1. Lookups
+-- ------------- 
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/aflvmlu.lct XX_CUSTOM_LKP.ldt FND_LOOKUP_TYPE APPLICATION_SHORT_NAME="XXCUST" LOOKUP_TYPE="XX_LOOKUP_TYPE"
+FNDLOAD apps/apps O Y UPLOAD $FND_TOP/patch/115/import/aflvmlu.lct XX_CUSTOM_LKP.ldt UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/aflvmlu.lct LOOKUPS_XXPJM_PROJ_MFG_ST_MT_STATUS.ldt FND_LOOKUP_TYPE APPLICATION_SHORT_NAME="XXPJM" LOOKUP_TYPE="XXPJM_PROJ_MFG_ST_MT_STATUS"
+FNDLOAD apps/apps O Y UPLOAD $FND_TOP/patch/115/import/aflvmlu.lct LOOKUPS_XXPJM_PROJ_MFG_ST_MT_STATUS.ldt UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/aflvmlu.lct LOOKUPS_XXPJM_ST_ALLOW_UPLOAD_DPT.ldt FND_LOOKUP_TYPE APPLICATION_SHORT_NAME="XXPJM" LOOKUP_TYPE="XXPJM_ST_ALLOW_UPLOAD_DPT"
+FNDLOAD apps/apps O Y UPLOAD $FND_TOP/patch/115/import/aflvmlu.lct LOOKUPS_XXPJM_ST_ALLOW_UPLOAD_DPT.ldt UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+
+2. Concurrent Program
+-- ----------------------------- 
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/afcpprog.lct XX_CUSTOM_CP.ldt PROGRAM APPLICATION_SHORT_NAME="XXCUST" CONCURRENT_PROGRAM_NAME="XX_CONCURRENT_PROGRAM"
+FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afcpprog.lct XX_CUSTOM_CP.ldt - WARNING=YES UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/afcpprog.lct PROGRAM_XXPJMSTMT.ldt PROGRAM APPLICATION_SHORT_NAME="XXPJM" CONCURRENT_PROGRAM_NAME="XXPJMSTMT"
+FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afcpprog.lct PROGRAM_XXPJMSTMT.ldt - WARNING=YES UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/afcpprog.lct PROGRAM_XXPJMSTUPLD.ldt PROGRAM APPLICATION_SHORT_NAME="XXPJM" CONCURRENT_PROGRAM_NAME="XXPJMSTUPLD"
+FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afcpprog.lct PROGRAM_XXPJMSTUPLD.ldt - WARNING=YES UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+
+3. Profile
+-- ---------
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/afscprof.lct XX_CUSTOM_PRF.ldt PROFILE PROFILE_NAME="XX_PROFILE_NAME" APPLICATION_SHORT_NAME="XXCUST"
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afscprof.lct XX_CUSTOM_PRF.ldt - WARNING=YES UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/afscprof.lct PROFILE_XXPJM_MFG_ST_QF_DEPARTMENT_LIMIT.ldt PROFILE PROFILE_NAME="XXPJM_MFG_ST_QF_DEPARTMENT_LIMIT" APPLICATION_SHORT_NAME="XXPJM"
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afscprof.lct PROFILE_XXPJM_MFG_ST_QF_DEPARTMENT_LIMIT.ldt - WARNING=YES UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+
+4. Request Set and Link 
+-- ------------------------------ 
+FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afcprset.lct REQSET_CUSTOM_RS.ldt REQ_SET REQUEST_SET_NAME='REQUEST_SET_NAME'
+FNDLOAD apps/apps O Y UPLOAD $FND_TOP/patch/115/import/afcprset.lct  REQSET_CUSTOM_RS.ldt UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+
+## For this you will be firstly required to download the request set definition.
+## Next you will be required to download the Sets Linkage definition
+FNDLOAD apps/$CLIENT_APPS_PWD 0 Y DOWNLOAD $FND_TOP/patch/115/import/afcprset.lct REQSET_XXMRPMDSSET.ldt REQ_SET REQUEST_SET_NAME="XXMRPMDSSET"
+FNDLOAD apps/$CLIENT_APPS_PWD 0 Y DOWNLOAD $FND_TOP/patch/115/import/afcprset.lct REQSET_LINK_XXMRPMDSSET.ldt REQ_SET_LINKS REQUEST_SET_NAME="XXMRPMDSSET"
+
+FNDLOAD apps/$CLIENT_APPS_PWD 0 Y UPLOAD $FND_TOP/patch/115/import/afcprset.lct REQSET_XXMRPMDSSET.ldt
+FNDLOAD apps/$CLIENT_APPS_PWD 0 Y UPLOAD $FND_TOP/patch/115/import/afcprset.lct REQSET_LINK_XXMRPMDSSET.ldt
+
+
+-- get request set name
+SELECT frs.request_set_name,
+       frs.user_request_set_name
+  FROM fnd_request_sets_vl frs
+ WHERE frs.user_request_set_name LIKE 'XX%';
+
+
+5. FND Message 
+-- --------------------- 
+FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afmdmsg.lct XX_CUSTOM_MESG.ldt FND_NEW_MESSAGES APPLICATION_SHORT_NAME="XXCUST" MESSAGE_NAME="MESSAGE_NAME%"
+FNDLOAD apps/apps O Y UPLOAD $FND_TOP/patch/115/import/afmdmsg.lct XX_CUSTOM_MESG.ldt UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+
+FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afmdmsg.lct MESSAGE_XXPJM_008E_001.ldt FND_NEW_MESSAGES APPLICATION_SHORT_NAME="XXPJM" MESSAGE_NAME="XXPJM_008E_001"
+FNDLOAD apps/apps O Y UPLOAD $FND_TOP/patch/115/import/afmdmsg.lct MESSAGE_XXPJM_008E_001.ldt UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afmdmsg.lct MESSAGE_XXPJM_008E_004.ldt FND_NEW_MESSAGES APPLICATION_SHORT_NAME="XXPJM" MESSAGE_NAME="XXPJM_008E_004"
+FNDLOAD apps/apps O Y UPLOAD $FND_TOP/patch/115/import/afmdmsg.lct MESSAGE_XXPJM_008E_004.ldt UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+-- download all the messages within an application
+FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afmdmsg.lct MESSAGE_XXPJM_008E_004.ldt FND_NEW_MESSAGES APPLICATION_SHORT_NAME="XXPJM"
+
+-- enable messages
+FNDMDGEN APPS/<PWD> 0 Y <LANG> <APP_SHORT_NAME> DB_TO_RUNTIME
+FNDMDGEN APPS/APPS 0 Y US XXPJM DB_TO_RUNTIME;
+
+6. D2K FORMS
+-- ------------------ 
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afsload.lct XX_CUSTOM_FRM.ldt FORM FORM_NAME="FORM_NAME" 
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afsload.lct XX_CUSTOM_FRM.ldt - WARNING=YES UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afsload.lct FORM_XXPJMF008.ldt FORM FORM_NAME="XXPJMF008"
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afsload.lct FORM_XXPJMF008.ldt - WARNING=YES UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+
+7. Form Function
+-- ---------------------
+FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afsload.lct XX_CUSTOM_FUNC.ldt FUNCTION FUNCTION_NAME="FORM_FUNCTION_NAME"
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afsload.lct XX_CUSTOM_FUNC.ldt - WARNING=YES UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afsload.lct FUNCTION_XXPJMF008.ldt FUNCTION FUNCTION_NAME="XXPJMF008"
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afsload.lct FUNCTION_XXPJMF008.ldt - WARNING=YES UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+
+8. Alerts
+-- --------- 
+FNDLOAD apps/apps 0 Y DOWNLOAD $ALR_TOP/patch/115/import/alr.lct XX_CUSTOM_ALR.ldt ALR_ALERTS APPLICATION_SHORT_NAME=XXCUST ALERT_NAME="XX - Alert Name"
+FNDLOAD apps/apps 0 Y UPLOAD $ALR_TOP/patch/115/import/alr.lct XX_CUSTOM_ALR.ldt CUSTOM_MODE=FORCE
+
+FNDLOAD apps/apps 0 Y DOWNLOAD $ALR_TOP/patch/115/import/alr.lct ALERT_CUSTOM_ALR.ldt ALR_ALERTS APPLICATION_SHORT_NAME=XXCUST ALERT_NAME="XX - Alert Name"
+FNDLOAD apps/apps 0 Y UPLOAD $ALR_TOP/patch/115/import/alr.lct ALERT_CUSTOM_ALR.ldt CUSTOM_MODE=FORCE
+
+
+9. Value Set 
+-- -------------- 
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afffload.lct XX_CUSTOM_VS.ldt VALUE_SET FLEX_VALUE_SET_NAME="XX Value Set Name"
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afffload.lct XX_CUSTOM_VS.ldt - WARNING=YES UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afffload.lct VALUESET_XXPJM_ST_UPLOAD_FILE.ldt VALUE_SET FLEX_VALUE_SET_NAME="XXPJM_ST_UPLOAD_FILE"
+$FND_TOP/bin/FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afffload.lct VALUESET_XXPJM_ST_UPLOAD_FILE.ldt - WARNING=YES UPLOAD_MODE=REPLACE CUSTOM_MODE=FORCE
+
+
+10. Value Sets with values
+-- ---------------------------- 
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/afffload.lct VSET_XXAR_DOCUMENT_TITLE.ldt VALUE_SET_VALUE FLEX_VALUE_SET_NAME="XXAR_DOCUMENT_TITLE"
+FNDLOAD apps/apps O Y UPLOAD $FND_TOP/patch/115/import/afffload.lct VSET_XXAR_DOCUMENT_TITLE.ldt
+
+
+		SELECT fvs.flex_value_set_name,
+			   fvv.flex_value,
+			   fvv.flex_value_meaning,
+			   fvv.description
+		  FROM fnd_flex_value_sets fvs,
+			   fnd_flex_values_vl  fvv
+		 WHERE 1 = 1
+		   AND fvs.flex_value_set_id = fvv.flex_value_set_id
+		   AND fvs.flex_value_set_name LIKE 'XX%';
+
+
+11. Data Definition and Associated Template 
+--- ----------------------------------------------------------
+FNDLOAD apps/$CLIENT_APPS_PWD O Y DOWNLOAD  $XDO_TOP/patch/115/import/xdotmpl.lct XX_CUSTOM_DD.ldt XDO_DS_DEFINITIONS APPLICATION_SHORT_NAME='XXCUST' DATA_SOURCE_CODE='XX_SOURCE_CODE' TMPL_APP_SHORT_NAME='XXCUST' TEMPLATE_CODE='XX_SOURCE_CODE'
+FNDLOAD apps/$CLIENT_APPS_PWD O Y UPLOAD $XDO_TOP/patch/115/import/xdotmpl.lct XX_CUSTOM_DD.ldt
+
+-- download a specified template
+FNDLOAD apps/apps O Y DOWNLOAD  $XDO_TOP/patch/115/import/xdotmpl.lct XDO_DS_DEFINITIONS_XXPOOPA.ldt XDO_DS_DEFINITIONS APPLICATION_SHORT_NAME='XXPO' DATA_SOURCE_CODE='XXPOOPA' TMPL_APP_SHORT_NAME='XXPO' TEMPLATE_CODE='XXPOOPA'
+FNDLOAD apps/apps O Y UPLOAD $XDO_TOP/patch/115/import/xdotmpl.lct XDO_DS_DEFINITIONS_XXPOOPA.ldt
+
+-- it can download all the template
+FNDLOAD apps/apps O Y DOWNLOAD  $XDO_TOP/patch/115/import/xdotmpl.lct XDO_DS_DEFINITIONS_XXOMTIPRT.ldt XDO_DS_DEFINITIONS APPLICATION_SHORT_NAME='XXOM' DATA_SOURCE_CODE='XXOMTIPRT'
+FNDLOAD apps/apps O Y UPLOAD $XDO_TOP/patch/115/import/xdotmpl.lct XDO_DS_DEFINITIONS_XXOMTIPRT.ldt
+
+
+12. DATA_TEMPLATE (Data Source .xml file) 
+--- ---------------------------------------------------------- 
+java oracle.apps.xdo.oa.util.XDOLoader DOWNLOAD -DB_USERNAME apps -DB_PASSWORD apps -JDBC_CONNECTION '(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=XX_HOST_NAME)(PORT=XX_PORT_NUMBER))(CONNECT_DATA=(SERVICE_NAME=XX_SERVICE_NAME)))' -LOB_TYPE DATA_TEMPLATE -LOB_CODE XX_TEMPLATE -APPS_SHORT_NAME XXCUST -LANGUAGE en -lct_FILE $XDO_TOP/patch/115/import/xdotmpl.lct -LOG_FILE $LOG_FILE_NAME
+java oracle.apps.xdo.oa.util.XDOLoader UPLOAD -DB_USERNAME apps -DB_PASSWORD apps -JDBC_CONNECTION '(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=XX_HOST_NAME)(PORT=XX_PORT_NUMBER))(CONNECT_DATA=(SERVICE_NAME=XX_SERVICE_NAME)))' -LOB_TYPE DATA_TEMPLATE -LOB_CODE XX_TEMPLATE -XDO_FILE_TYPE XML -FILE_NAME $DATA_FILE_PATH/$DATA_FILE_NAME.xml -APPS_SHORT_NAME XXCUST -NLS_LANG en -TERRITORY US -LOG_FILE $LOG_FILE_NAME
+
+
+13. RTF TEMPLATE (Report Layout .rtf file) 
+--- ------------------------------------------------------- 
+java oracle.apps.xdo.oa.util.XDOLoader DOWNLOAD -DB_USERNAME apps -DB_PASSWORD apps -JDBC_CONNECTION '(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=XX_HOST_NAME)(PORT=XX_PORT_NUMBER))(CONNECT_DATA=(SERVICE_NAME=XX_SERVICE_NAME)))' -LOB_TYPE TEMPLATE -LOB_CODE XX_TEMPLATE -APPS_SHORT_NAME XXCUST -LANGUAGE en -TERRITORY US -lct_FILE $XDO_TOP/patch/115/import/xdotmpl.lct -LOG_FILE $LOG_FILE_NAME
+java oracle.apps.xdo.oa.util.XDOLoader UPLOAD -DB_USERNAME apps -DB_PASSWORD apps -JDBC_CONNECTION '(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=XX_HOST_NAME)(PORT=XX_PORT_NUMBER))(CONNECT_DATA=(SERVICE_NAME=SERVICE_NAME)))' -LOB_TYPE TEMPLATE -LOB_CODE XX_TEMPLATE -XDO_FILE_TYPE RTF -FILE_NAME $RTF_FILE_PATH/$RTF_FILE_NAME.rtf -APPS_SHORT_NAME XXCUST -NLS_LANG en -TERRITORY US -LOG_FILE $LOG_FILE_NAME
+
+java oracle.apps.xdo.oa.util.XDOLoader DOWNLOAD -DB_USERNAME apps -DB_PASSWORD apps -JDBC_CONNECTION '(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=158.213.229.54)(PORT=1531))(CONNECT_DATA=(SERVICE_NAME=DEV)))' -LOB_TYPE TEMPLATE -LOB_CODE XXOMPIPRT -APPS_SHORT_NAME XXOM -LANGUAGE en -TERRITORY US -lct_FILE $XDO_TOP/patch/115/import/xdotmpl.lct -LOG_FILE $LOG_FILE_NAME
+
+
+14. Request groups
+--- ---------------
+FNDLOAD apps/$CLIENT_APPS_PWD O Y DOWNLOAD $FND_TOP/patch/115/import/afcpreqg.lct XX_MY_REPORT_GROUP_NAME.ldt REQUEST_GROUP REQUEST_GROUP_NAME="XX_MY_REPORT_GROUP_NAME" APPLICATION_SHORT_NAME="XXGMS"
+FNDLOAD apps/$CLIENT_APPS_PWD O Y UPLOAD $FND_TOP/patch/115/import/afcpreqg.lct
+
+FNDLOAD apps/$CLIENT_APPS_PWD O Y DOWNLOAD $FND_TOP/patch/115/import/afcpreqg.lct REQUEST_GROUP_XXSHE_GSCM_SUPER_USER.ldt REQUEST_GROUP REQUEST_GROUP_NAME="XXSHE_GSCM_SUPER_USER" APPLICATION_SHORT_NAME="XXFND"
+FNDLOAD apps/$CLIENT_APPS_PWD O Y UPLOAD $FND_TOP/patch/115/import/afcpreqg.lct REQUEST_GROUP_XXSHE_GSCM_SUPER_USER.ldt
+
+
+
+15. Oracle Descriptive Flexfields
+--- ------------------------------
+$FND_TOP/bin/FNDLOAD apps/$CLIENT_APPS_PWD 0 Y DOWNLOAD $FND_TOP/patch/115/import/afffload.lct XX_PO_REQ_HEADERS_DFF.ldt DESC_FLEX APPLICATION_SHORT_NAME=PO DESCRIPTIVE_FLEXFIELD_NAME='PO_REQUISITION_HEADERS'
+$FND_TOP/bin/FNDLOAD apps/$CLIENT_APPS_PWD 0 Y UPLOAD $FND_TOP/patch/115/import/afffload.lct XX_PO_REQ_HEADERS_DFF.ldt
+
+FNDLOAD apps/$CLIENT_APPS_PWD 0 Y DOWNLOAD $FND_TOP/patch/115/import/afffload.lct DFF_SHE_TAX_INVOICE_HEADER.ldt DESC_FLEX APPLICATION_SHORT_NAME=XXOM DESCRIPTIVE_FLEXFIELD_NAME='XXOMTIH'
+$FND_TOP/bin/FNDLOAD apps/$CLIENT_APPS_PWD 0 Y UPLOAD $FND_TOP/patch/115/import/afffload.lct DFF_SHE_TAX_INVOICE_HEADER.ldt
+
+
+-- get Descriptive Flexfield name
+# SELECT fdf.application_id,
+#        fa.application_short_name,
+#        fdf.descriptive_flexfield_name,
+#        fdf.application_table_name,
+#        fdf.title,
+#        fdf.concatenated_segs_view_name
+#   FROM fnd_descriptive_flexs_vl fdf,
+#        fnd_application_vl       fa
+#  WHERE fdf.application_table_name LIKE '%' || upper('XX') || '%'
+#    AND fdf.application_id = fa.application_id
+#  ORDER BY fdf.application_table_name;
+
+16. Menus
+--- ------
+$FND_TOP/bin/FNDLOAD apps/$CLIENT_APPS_PWD O Y DOWNLOAD $FND_TOP/patch/115/import/afsload.lct ICX_POR_SSP_HOME.ldt MENU MENU_NAME="ICX_POR_SSP_HOME"
+$FND_TOP/bin/FNDLOAD apps/$CLIENT_APPS_PWD O Y UPLOAD $FND_TOP/patch/115/import/afsload.lct ICX_POR_SSP_HOME.ldt
+
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/afsload.lct MENU_XXPJM_MENU.ldt MENU MENU_NAME="XXPJM_MENU"
+FNDLOAD apps/apps O Y UPLOAD $FND_TOP/patch/115/import/afsload.lct MENU_XXPJM_MENU.ldt
+
+17. definitions from FND_USER 
+--- ------------------------------
+FNDLOAD apps/$CLIENT_APPS_PWD 0 Y DOWNLOAD $FND_TOP/patch/115/import/afscursp.lct ./XX_FND_USER_PASSI.ldt FND_USER USER_NAME='ANILPASSI'
+FNDLOAD apps/$CLIENT_APPS_PWD 0 Y UPLOAD $FND_TOP/patch/115/import/afscursp.lct ./XX_FND_USER_PASSI.ldt 
+
+FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afscursp.lct USER_HAND_PJL.ldt FND_USER USER_NAME='HAND_PJL'
+FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afscursp.lct USER_HAND_PJL.ldt 
+
+		Notes for using FNDLOAD against FND_USER:
+		1. After uploading using FNDLOAD, user will be promoted to change their password again during their next signon attempt.
+		2. All the responsibilities will be extracted by FNDLOAD alongwith User Definition in FND_USER 
+		3. In the Target Environment , make sure that you have done FNDLOAD for new responsibilities prior to running FNDLOAD on users.
+
+18. Responsibility 
+--- ------------------------------
+FNDLOAD apps/$CLIENT_APPS_PWD O Y DOWNLOAD $FND_TOP/patch/115/import/afscursp.lct XX_PERSON_RESPY.ldt FND_RESPONSIBILITY RESP_KEY="XX_PERSON_RESPY"
+FNDLOAD apps/$CLIENT_APPS_PWD O Y UPLOAD $FND_TOP/patch/115/import/afscursp.lct XX_PERSON_RESPY.ldt
+
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/afscursp.lct RESPONSIBILITY_XXSHE_GSCM_SUPER_USER.ldt FND_RESPONSIBILITY RESP_KEY="XXSHE_GSCM_SUPER_USER"
+FNDLOAD apps/apps O Y UPLOAD $FND_TOP/patch/115/import/afscursp.lct RESPONSIBILITY_XXSHE_GSCM_SUPER_USER.ldt
+
+
+19. Forms Personalizations
+--- ------------------------------
+## Note that the function name above is the function short name as seen in the Function Definition Screen
+FNDLOAD apps/$CLIENT_APPS_PWD 0 Y DOWNLOAD $FND_TOP/patch/115/import/affrmcus.lct PERSONALIZATION_AP_APXINWKB.ldt FND_FORM_CUSTOM_RULES function_name="AP_APXINWKB"
+FNDLOAD apps/$CLIENT_APPS_PWD 0 Y UPLOAD $FND_TOP/patch/115/import/affrmcus.lct PERSONALIZATION_AP_APXINWKB.ldt
+
+##SELECT t.function_name,
+##       t.form_name,
+##       t.enabled,
+##       t.description
+##  FROM fnd_form_custom_rules t
+## WHERE 1 = 1
+##   AND t.description LIKE 'XX%'
+## ORDER BY t.function_name;
+
+20. Printer Styles
+--- ------------------------------
+FNDLOAD apps/apps@apps O Y DOWNLOAD $FND_TOP/patch/115/import/afcppstl.lct file_name.ldt STYLE PRINTER_STYLE_NAME="printer style name"
+
+
+FNDLOAD apps/apps O Y DOWNLOAD $FND_TOP/patch/115/import/afcppstl.lct PRINTER_STYLE_PDF_Publisher.ldt STYLE PRINTER_STYLE_NAME="PDF Publisher"
+FNDLOAD apps/apps O Y UPLOAD $FND_TOP/patch/115/import/afcppstl.lct PRINTER_STYLE_PDF_Publisher.ldt
+
+
+21. Key Flexfield Structures
+--- ------------------------------
+FNDLOAD apps/<apps_password> 0 Y DOWNLOAD $FND_TOP/patch/115/import/afffload.lct file_name.ldt KEY_FLEX P_LEVEL=:COL_ALL:FQL_ALL:SQL_ALL:STR_ONE:WFP_ALL:SHA_ALL:CVR_ALL:SEG_ALL? APPLICATION_SHORT_NAME=”prod” ID_FLEX_CODE=”key flex code” P_STRUCTURE_CODE=”structure name”
+FNDLOAD apps/<apps_password> 0 Y UPLOAD $FND_TOP/patch/115/import/afffload.lct file_name.ldt
+
+FNDLOAD apps/apps 0 Y DOWNLOAD $FND_TOP/patch/115/import/afffload.lct KEY_FLEX_XXGSCM_INV_ITEM_CATEGORIES.ldt KEY_FLEX P_LEVEL=:COL_ALL:FQL_ALL:SQL_ALL:STR_ONE:WFP_ALL:SHA_ALL:CVR_ALL:SEG_ALL? APPLICATION_SHORT_NAME="INV" ID_FLEX_CODE="MCAT" P_STRUCTURE_CODE="XXGSCM_INV_ITEM_CATEGORIES"
+FNDLOAD apps/apps 0 Y UPLOAD $FND_TOP/patch/115/import/afffload.lct KEY_FLEX_XXGSCM_INV_ITEM_CATEGORIES.ldt
+		SELECT fa.application_short_name,
+			   fif.id_flex_code,
+			   fif.id_flex_num,
+			   fif.id_flex_structure_code,
+			   fif.id_flex_structure_name,
+			   fif.description
+		  FROM fnd_id_flex_structures_vl fif,
+			   fnd_application_vl        fa
+		 WHERE 1 = 1
+		   AND fif.application_id = fa.application_id
+		   AND fif.id_flex_structure_code LIKE 'XX%';
+
+

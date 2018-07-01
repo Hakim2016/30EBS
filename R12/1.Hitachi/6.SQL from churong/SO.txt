@@ -1,0 +1,30 @@
+select ooh.org_id,
+       ooh.order_number,
+       ott.NAME,
+       hp.party_name               customer_name,
+       hca.cust_account_id         customer_num,
+       ooh.transactional_curr_code currency,
+       ool.line_number,
+       msi.segment1,
+       ool.tax_code,
+       ool.tax_rate,
+       ooh.ordered_date
+  from apps.oe_order_headers_all   ooh,
+       apps.oe_order_lines         ool,
+       apps.oe_transaction_types_tl   ott,
+       apps.hz_cust_site_uses_all  hcsu,
+       apps.hz_cust_acct_sites_all hcas,
+       apps.hz_cust_accounts       hca,
+       apps.hz_parties             hp,
+       apps.mtl_system_items_b     msi
+ where ooh.header_id = ool.header_id
+   and ooh.order_type_id = ott.TRANSACTION_TYPE_ID
+   and ooh.ship_to_org_id = hcsu.site_use_id
+   and hcsu.cust_acct_site_id = hcas.cust_acct_site_id
+   and hcas.cust_account_id = hca.cust_account_id
+   and hca.party_id = hp.party_id
+   and ool.inventory_item_id = msi.inventory_item_id
+   and ooh.org_id = 84
+   and ott.language = 'US'
+   and msi.organization_id in ('85','86')
+   and ooh.order_number = '212110003'

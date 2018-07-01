@@ -1,0 +1,18 @@
+
+/*
+XXGLAD3
+XXGL:Fixed Assets Outbound to HFG
+XXGL_ASSETS_TO_HFG_INT
+*/
+xxgl_assets_to_hfg_pkg;--.hfg_main
+
+
+SELECT intf.interface_file_name,
+       intf.ledger_name,
+       intf.creation_date,
+       intf.main_asset_number,
+       intf.text,
+       intf.*
+  FROM xxgl_assets_to_hfg_int intf
+ WHERE 1 = 1
+   AND intf.creation_date > SYSDATE - 3;

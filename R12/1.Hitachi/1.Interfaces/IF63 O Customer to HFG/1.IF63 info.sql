@@ -1,0 +1,7 @@
+/*
+O
+IF63
+XXARB004
+XXAR:Customer Outbound to HFG
+XXAR_CUST_TO_HFG_INT
+*/

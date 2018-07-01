@@ -1,0 +1,12 @@
+SELECT SYSDATE
+  FROM dual;
+--'QA' type is different without source_line_id
+--transaction data helps filter the data
+SELECT *
+  FROM apps.xxpa_labor_hours_all t
+ WHERE 1 = 1
+   AND t.org_id = 82 --HEA
+   AND t.labor_rate = 57.5
+   AND t.expenditure_type IN ('QA Overhead')
+   AND t.transaction_date IN (to_date('2018-04-03', 'yyyy-mm-dd'), to_date('2018-04-04', 'yyyy-mm-dd'))
+   ORDER BY t.mfg_no;

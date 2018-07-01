@@ -1,0 +1,64 @@
+
+/*
+IF67
+XXGLB005
+XXGLAD3
+XXGL:Fixed Assets Outbound to HFG
+XXGL_ASSETS_TO_HFG_INT
+*/
+--xxgl_assets_to_hfg_pkg;--.hfg_main
+
+SELECT intf.request_id,
+       intf.interface_file_name,
+       intf.ledger_name,
+       intf.creation_date,
+       intf.main_asset_number,
+       intf.text,
+       intf.*
+  FROM xxgl_assets_to_hfg_int intf
+ WHERE 1 = 1
+   --AND intf.creation_date > SYSDATE - 3
+   AND INTF.MAIN_ASSET_NUMBER = '101601200038'
+   ;
+
+select rt.transaction_id,
+       rt.transaction_type,
+       rt.creation_date,
+       xte.entity_code,
+       xte.entity_id,
+       xah.event_id,
+       xe.process_status_code,
+      xah.completed_date
+  from rcv_transactions             rt,
+       po_lines_all                 pl,
+       po_requisition_lines_all     prl,
+       po_distributions_all         pod,
+       po_req_distributions_all     pord,
+       po_headers_all               pha,
+       xla.xla_transaction_entities xte,
+       xla_ae_headers               xah,
+       xla_events                   xe
+ where 1 = 1
+   AND rt.po_line_id = pl.po_line_id(+)
+   AND pl.po_line_id = pod.po_line_id(+)
+   AND pod.req_distribution_id = pord.distribution_id(+)
+   AND pord.requisition_line_id = prl.requisition_line_id(+)
+   AND pha.po_header_id = pl.po_header_id
+   AND rt.transaction_id = xte.source_id_int_1(+)
+   AND xte.entity_id = xah.entity_id
+  AND xah.event_id = xe.event_id
+   AND xte.application_id = xah.application_id
+   AND xte.application_id = 707
+  AND xte.ledger_id = '2021'
+   AND pha.segment1 = '10048319'
+;
+
+SELECT * FROM fnd_application fa
+WHERE 1=1
+AND fa.application_id IN (702,707);
+
+SELECT * FROM 
+xla.xla_transaction_entities xte
+WHERE 1=1
+AND xte.application_id = 707
+AND xte.source_id_int_1 = 54834283;

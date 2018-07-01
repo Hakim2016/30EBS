@@ -1,0 +1,89 @@
+--org_id      Resp_id     Resp_app_id        Organization_id
+--HBS 101     51249       660                HB1  121
+--HEA 82      50676       660                SG1  83
+--HET 141     51272       20005              HE1  161
+--SHE 84      50778       20005              TH1  85  TH2 86
+
+/*BEGIN
+  fnd_global.apps_initialize(user_id      => 4270,
+                             resp_id      => 51249,
+                             resp_appl_id => 660);
+  mo_global.init('M');
+  --FND_PROFILE.PUT('MFG_ORGANIZATION_ID', 86);
+  
+END;*/
+
+/*CURSOR cur_pa IS*/
+      SELECT PA.SEGMENT1 SO_NUMBER,
+             ei.expenditure_type cost_element,
+             party.Duns_Number_c CUSTOMER_code,
+             PARTY.PARTY_NAME CUSTOMER_name,
+             ei.EXPENDITURE_ITEM_DATE record_date,
+             DECODE(ET.ATTRIBUTE14, 'Taken', 2, 'Offset', 3, 'Transfer',4,2) PRICE_identification_code,
+             DECODE(EI.system_linkage_function,
+                    'ST',
+                    DECODE(pa_security.view_labor_costs(EI.project_id),
+                           'Y',
+                           EI.PROJECT_BURDENED_COST,
+                           NULL),
+                    'OT',
+                    DECODE(pa_security.view_labor_costs(EI.project_id),
+                           'Y',
+                           EI.PROJECT_BURDENED_COST,
+                           NULL),
+                    EI.PROJECT_BURDENED_COST) PRICE,
+             ei.Denom_Currency_Code Currency_Code,
+             substr(pc.EXPENDITURE_COMMENT,
+                    1,
+                    INSTR(pc.EXPENDITURE_COMMENT, '-', 1) - 1) PO_NUMBER,
+             PT2.TASK_NUMBER HBS_SG_MFG_NUMBER,
+             '' REMARK,
+             ei.expenditure_item_id source_id,
+             ei.project_id,
+             ei.task_id,
+             ei.org_id,
+             HOU.set_of_books_id LEDGER_ID,
+             OH.HEADER_ID SO_HEADER_ID
+        FROM PA_EXPENDITURE_ITEMS_ALL EI,
+             pa_expenditure_types     et,
+             PA_EXPENDITURES_ALL      x,
+             PA_PROJECTS              PA,
+             PA_TASKS                 PT,
+             PA_TASKS                 PT2,
+             OE_ORDER_HEADERS_ALL     OH,
+             hz_cust_accounts         CUST_ACCT,
+             hz_parties               party,
+             pa_expenditure_comments  pc,
+             HR_OPERATING_UNITS       HOU
+
+       WHERE 1 = 1
+         and ei.expenditure_type = et.expenditure_type
+         AND EI.EXPENDITURE_ID = X.EXPENDITURE_ID
+         AND EI.project_id = PA.PROJECT_ID
+         AND EI.TASK_ID = PT.TASK_ID
+         AND PT.TOP_TASK_ID = PT2.TASK_ID
+         AND pa.ORG_ID = OH.ORG_ID
+         and pa.segment1 = to_char(OH.ORDER_NUMBER)
+         AND Oh.sold_to_org_id = cust_acct.cust_account_id(+)
+         AND CUST_ACCT.PARTY_ID = PARTY.PARTY_ID(+)
+         and ei.EXPENDITURE_ITEM_ID = pc.EXPENDITURE_ITEM_ID(+)
+         AND EI.ORG_ID = HOU.organization_id
+         and X.EXPENDITURE_STATUS_CODE = 'APPROVED'
+         and ei.PROJECT_BURDENED_COST is not null
+         and (ei.transaction_source is null or
+             ei.transaction_source = 'Other Cost2' or
+             ei.transaction_source = 'HBS_Oracle')
+/*         and et.attribute14 in ('Transfer','Offset','Taken')
+         AND NOT EXISTS
+       (SELECT 'Y'
+                FROM XXAP_JOURNAL_TO_R3_DATA_INT J
+               WHERE J.SOURCE_CODE = 'PA'
+                 AND J.SOURCE_ID = ei.expenditure_item_id)*/
+
+         /*AND ei.Last_Update_Date >=
+             NVL(P_START_DATE, EI.Last_Update_Date)*/
+         AND ei.expenditure_item_id = 15429305
+         AND HOU.set_of_books_id = NVL(/*g_ledger_id*/2041, HOU.set_of_books_id)
+         order by ei.expenditure_item_id  
+         
+         ;

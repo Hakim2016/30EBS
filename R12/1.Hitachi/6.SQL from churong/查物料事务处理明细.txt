@@ -1,0 +1,39 @@
+SELECT MMT.Transaction_Id,
+       MSI.SEGMENT1 ITEM,
+       --gcc.concatenated_segments,
+       gcc.segment3,
+       gcc.segment4,
+       MMT.TRANSACTION_QUANTITY,       
+       mta.base_transaction_value transaction_value,
+       MMT.PRIOR_COST,
+       MMT.NEW_COST,
+       MMT.ACTUAL_COST,
+       MTA.unit_cost,
+       MMT.TRANSACTION_DATE TRANSACTION_DATE,
+       MMT.CREATION_DATE,
+       MTT.TRANSACTION_TYPE_NAME TRANSACTION_TYPE,
+       mtst.transaction_source_type_name transaction_source_type,
+       mmt.transaction_source_name,
+       mmt.subinventory_code Subinventory
+       --(MMT.PRIMARY_QUANTITY * (-1)) transaction_QUANTITY,      
+  FROM MTL_MATERIAL_TRANSACTIONS MMT,
+       MTL_SYSTEM_ITEMS_B        MSI,
+       MTL_TRANSACTION_TYPES     MTT,
+       MTL_TXN_SOURCE_TYPES      MTST,
+       CST_INV_DISTRIBUTION_V    MTA,
+       --mtl_transaction_accounts mtac
+       gl_code_combinations_kfv gcc
+ WHERE 1 = 1
+ AND mta.reference_account = gcc.code_combination_id
+   AND MTA.TRANSACTION_ID = MMT.TRANSACTION_ID
+   AND MTST.TRANSACTION_SOURCE_TYPE_ID = MMT.TRANSACTION_SOURCE_TYPE_ID
+   AND MMT.TRANSACTION_TYPE_ID = MTT.TRANSACTION_TYPE_ID
+   AND MSI.ORGANIZATION_ID = 86
+   AND MMT.ORGANIZATION_ID = 86
+   AND MMT.INVENTORY_ITEM_ID = MSI.INVENTORY_ITEM_ID
+   AND GCC.SEGMENT3 IN ('1145400000', '1145500000')
+   AND GCC.SEGMENT4 IN ('421103010', '421103020', '421103035')
+   AND mmt.transaction_date >= to_date('2017-09-01', 'yyyy-mm-dd')
+   AND mmt.transaction_date < to_date('2017-09-30', 'yyyy-mm-dd') + 0.99999
+   AND mmt.creation_date >= to_date('2017-10-01', 'yyyy-mm-dd')
+   --AND mmt.creation_date < to_date('2017-10-31', 'yyyy-mm-dd') + 0.99999

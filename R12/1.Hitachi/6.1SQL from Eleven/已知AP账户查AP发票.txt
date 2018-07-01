@@ -1,0 +1,5 @@
+SELECT xl2.invoice_num
+FROM APPS.AP_INVOICE_DISTRIBUTIONS_ALL xl1, 
+    APPS.AP_INVOICES_ALL xl2
+WHERE DIST_CODE_COMBINATION_ID = '65078'
+and xl1.invoice_id = xl2.invoice_id

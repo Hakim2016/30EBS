@@ -1,0 +1,6 @@
+select t.completion_date, t.scheduled_finish_date, p.segment1, t.* from PA_TASKS t, PA_Projects_all p
+where t.completion_date <= to_date('2016-01-01','yyyy-mm-dd')
+and (task_number like '%EQ' or task_number like '%ER' or task_number like '%FM')--is not NULL
+and t.project_id = p.project_id
+and t.carrying_out_organization_id = '84'
+and p.project_status_code = 'APPROVED'

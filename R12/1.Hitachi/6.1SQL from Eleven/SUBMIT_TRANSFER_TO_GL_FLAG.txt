@@ -1,0 +1,4 @@
+select SUBMIT_TRANSFER_TO_GL_FLAG 
+ from XLA_SUBLEDGER_OPTIONS_V 
+ where application_id = 222 
+ and ledger_id = 2021

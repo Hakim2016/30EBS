@@ -1,0 +1,8 @@
+select hca.account_number,ott.name
+  from oe_order_headers_all ooh,
+  oe_transaction_types_tl ott,
+  hz_cust_accounts hca
+  where ooh.sold_to_org_id = hca.cust_account_id
+  and ooh.order_type_id = ott.transaction_type_id
+  and ott.language ='US'
+  and hca.account_number ='GS50004994'

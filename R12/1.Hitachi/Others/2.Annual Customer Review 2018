@@ -1,0 +1,57 @@
+/*BEGIN
+  fnd_global.apps_initialize(user_id => 2722, resp_id => 50676, resp_appl_id => 660);
+    mo_global.init('PO');
+
+END;*/
+
+SELECT terr.territory_short_name region,
+       cust.account_number,
+       party.party_name customer_name,
+       cust.attribute5 customer_code,
+       gcck.segment3 acct_code,
+       cust.creation_date,
+       site_uses.site_use_code bussiness_purpose,
+       decode(lc.address1, NULL, NULL, lc.address1 || ',') || decode(lc.address2, NULL, NULL, lc.address2 || ',') ||
+       decode(lc.address3, NULL, NULL, lc.address3 || ',') || decode(lc.address4, NULL, NULL, lc.address4 || ',') ||
+       decode(lc.city, NULL, NULL, lc.city || ' ') || decode(lc.postal_code, NULL, NULL, lc.postal_code || ',') ||
+       decode(lc.country, NULL, NULL, lc.country) site_address,
+       ---------
+       (SELECT SUM(xxar_utils.convert_amount(xxh.currency_code,
+                                             xxpa_utils.get_currency_code,
+                                             xxh.invoice_date,
+                                             ooh.conversion_type_code,
+                                             xxar_hea_tax_invoice_pvt.get_header_invoiced_amount(xxh.header_id)))
+          FROM xxar_tax_invoice_headers_all xxh,
+               oe_order_headers_all         ooh
+         WHERE xxh.customer_id = cust.cust_account_id
+           AND xxh.oe_header_id = ooh.header_id
+           AND xxh.invoice_date BETWEEN to_date('2017/04/01', 'YYYY/MM/DD') AND to_date('2018/03/31', 'YYYY/MM/DD')) sales_amount,
+           ---------
+           
+           
+           --------------
+       cust.attribute6 payment_method,
+       cust.attribute1 payment_terms
+       
+  FROM hz_cust_accounts         cust,
+       hz_parties               party,
+       hz_cust_acct_sites_all   acct_site,
+       hz_party_sites           party_site,
+       hz_locations             lc,
+       fnd_territories_vl       terr,
+       hz_cust_site_uses_all    site_uses,
+       gl_code_combinations_kfv gcck
+ WHERE cust.cust_account_id = acct_site.cust_account_id
+   AND acct_site.org_id = 82
+   AND cust.party_id = party.party_id
+   AND acct_site.party_site_id = party_site.party_site_id
+   AND party_site.location_id = lc.location_id
+   AND terr.territory_code = lc.country
+      --AND cust.account_number = 'FB00000222'
+   AND acct_site.cust_acct_site_id = site_uses.cust_acct_site_id(+)
+   AND site_uses.gl_id_rec = gcck.code_combination_id(+)
+   AND 'A' = site_uses.status(+)
+   AND acct_site.status = 'A'
+   AND cust.status = 'A'
+--AND site_uses.PRIMARY_FLAG = 'Y'
+ ORDER BY cust.account_number;

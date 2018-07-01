@@ -1,0 +1,3 @@
+begin
+  mo_global.init('M');
+end;

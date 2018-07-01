@@ -1,0 +1,94 @@
+--HET
+/*BEGIN
+  fnd_global.APPS_INITIALIZE(resp_appl_id =>20005 ,resp_id =>51272 ,user_id =>4088 );
+  mo_global.init('M');
+END;*/
+
+SELECT mfg.task_number       mfg_no,
+       a.EXPENDITURE_ITEM_ID trans_id,
+       a.PROJECT_NUMBER,
+       a.TASK_NUMBER,
+       a.EXPENDITURE_TYPE,
+       -- a.INVENTORY_ITEM,
+       -- a.WIP_RESOURCE,
+       a.EXPENDITURE_ITEM_DATE,
+       a.TRANSACTION_SOURCE,
+       a.ORIG_TRANSACTION_REFERENCE,
+       a.ORIG_USER_EXP_TXN_REFERENCE,
+       nvl(a.EMPLOYEE_NAME, pv.VENDOR_NAME) EMPLOYEE_supplier_NAME,
+       a.QUANTITY,
+       a.UNIT_OF_MEASURE_M,
+       a.PROJECT_CURRENCY_CODE,
+       a.BURDENED_COST,
+       a.PROJECT_BURDENED_COST,
+       a.ACCRUED_REVENUE,
+       a.BILL_AMOUNT,
+       a.EXPENDITURE_COMMENT,
+       a.EXPENDITURE_ORGANIZATION_NAME,
+       a.NON_LABOR_RESOURCE
+  FROM PA_EXPEND_ITEMS_ADJUST2_V a,
+       pa_tasks                  mfg,
+       pa_tasks                  pt,
+       po_vendors                pv
+ WHERE /*(a.PROJECT_ID = 1270575)
+   AND (a.TASK_ID = 4268933)*/
+ a.org_id = 141
+/* and a.expenditure_item_date BETWEEN
+       to_date('2018-02-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') AND
+       to_date('2018-02-28 23:59:59', 'YYYY-MM-DD HH24:MI:SS')*/
+ AND a.vendor_id = pv.VENDOR_ID(+)
+ AND mfg.task_number IN ('TAD0127-TH',
+                     'TAD0128-TH',
+                     'TAF1006-TH',
+                     'TFA0462-TH',
+                     'TFA0463-TH',
+                     'TAD0220-TH',
+                     'TAD0221-TH',
+                     'TAD0229-TH',
+                     'TAD0230-TH',
+                     'TAD0231-TH',
+                     'TAC0811-TH',
+                     'TAJ0007-TH',
+                     'TFA0729-TH',
+                     'TFA0730-TH',
+                     'TFA0731-TH',
+                     'TFA0732-TH',
+                     'TFA0734-TH',
+                     'TAC0814-TH',
+                     'TAC0933-TH',
+                     'TAC0984-TH',
+                     'TAC0985-TH',
+                     'TAC0986-TH',
+                     'TAC0987-TH',
+                     'TAJ0101-TH',
+                     'TFA0934-TH',
+                     'TFA0935-TH',
+                     'TAC0870-TH',
+                     'TAC0871-TH',
+                     'TAD0165-TH',
+                     'TAD0166-TH',
+                     'TAD0167-TH',
+                     'TAD0168-TH',
+                     'TAE1158-TH',
+                     'TAE1159-TH',
+                     'TAJ0073-TH',
+                     'TAJ0090-TH',
+                     'TAE0325-TH',
+                     'TAE0326-TH',
+                     'TAC0562-TH',
+                     'TAJ0006-TH',
+                     'TAC1088-TH',
+                     'TAD0197-TH',
+                     'TAD0198-TH',
+                     'TAE1125-KH',
+                     'TAK0126-TH')
+ AND a.task_id = pt.task_id
+ AND pt.top_task_id = mfg.task_id
+ ORDER BY a.EXPENDITURE_ITEM_ID,
+          a.expenditure_item_date,
+          a.task_id,
+          a.expenditure_id,
+          NVL(a.source_expenditure_item_id,
+              NVL(a.adjusted_expenditure_item_id,
+                  NVL(a.transferred_from_exp_item_id, a.expenditure_item_id))),
+          a.expenditure_item_id

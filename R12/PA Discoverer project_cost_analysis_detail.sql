@@ -1,0 +1,37 @@
+SELECT t.amt,
+       t.currency_amt,
+       t.expenditure_batch,
+       t.expenditure_item_id,
+       t.expen_cate,
+       t.expen_type,
+       (t.gl_date),
+       t.group_parts,
+       t.job_number,
+       t.mfg,
+       t.org,
+       t.orginal_trans_ref,
+       t.original_user_expnd_transf_ref,
+       t.po_line,
+       t.po_number,
+       t.project_currency_code,
+       t.project_type,
+       t.proj_no,
+       t.quantity,
+       t.task,
+       t.transaction_source,
+       t.transaction_type,
+       t.type,
+       t."comment",
+       t.dff,
+       t.mfg_source,
+       t.mfg_spec,
+       t.project_status,
+       t.item_number,
+       t.job_type,
+       t.so_invoice,
+       t.project_long_name
+  FROM apps.xxpa_project_cost_analysis_v t
+ WHERE t.type = 'WIP'
+   AND t.gl_date <= to_date('2014-09-30', 'YYYY-MM-DD') + 0.99999
+   AND t.gl_date >= to_date('2014-09-01', 'YYYY-MM-DD')
+   AND t.org = 'SHE_FAC_ORG';

@@ -1,0 +1,16 @@
+SELECT fpov.level_id,
+                fpov.level_value,
+                fpov.level_value2,
+                fresp.responsibility_name level_value_desc,
+                fpov.application_id,
+                fpov.profile_option_id,
+                fpov.profile_option_value,
+                fpov.last_update_date
+          FROM fnd_profile_option_values fpov, fnd_responsibility_vl fresp
+          ,FND_PROFILE_OPTIONS_VL pro
+         WHERE 1 = 1
+         AND pro.PROFILE_OPTION_ID = fpov.profile_option_id
+         AND pro.PROFILE_OPTION_NAME LIKE '%XXINV%DEFAULT%STOCK%ACCOUNT%'
+         --AND fpov.profile_option_id = 12210
+           AND fpov.level_id = 10003
+           AND fpov.level_value = fresp.responsibility_id

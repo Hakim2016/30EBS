@@ -1,0 +1,2 @@
+detail reference 
+	How To Reset a Purchase Order or Requisition From In Process or Pre-Approved To Incomplete/Requires Reapproval For Isolated Cases (Doc ID 390023.1)
