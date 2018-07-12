@@ -1,0 +1,28 @@
+--create table from fnd_request
+fnd_conc_req_summary_v
+
+CREATE TABLE hkm_conc_req_summary AS
+SELECT * FROM 
+fnd_conc_req_summary_v
+WHERE 1=2;
+
+--add monitor boject
+INSERT INTO hkm_conc_req_summary
+SELECT *
+FROM fnd_conc_req_summary_v v
+WHERE 1=1
+AND v.REQUEST_ID = 15481231
+;
+
+--check the monitor table
+SELECT * FROM hkm_conc_req_summary;
+--use column "PRINTER" to identify if monitor is needed
+--"N" no need for monitor
+
+--send the email
+DECLARE
+x_1 VARCHAR2(200);
+x_2 VARCHAR2(200);
+BEGIN
+  hkm_request_monitor.main(x_1, x_2);
+END;

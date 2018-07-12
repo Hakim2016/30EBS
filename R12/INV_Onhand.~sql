@@ -1,0 +1,43 @@
+SELECT hou.NAME organization_name,
+       moq.organization_id,
+       moq.subinventory_code,
+       SUM(moq.transaction_quantity) onhand_quantity
+FROM   inv.mtl_onhand_quantities_detail moq,
+       hr.hr_all_organization_units     hou
+WHERE  moq.organization_id = hou.organization_id
+AND    moq.inventory_item_id = 192680
+--AND    moq.organization_id = 443
+GROUP  BY hou.NAME,
+          moq.organization_id,
+          moq.subinventory_code
+ORDER  BY hou.NAME;
+
+SELECT *
+FROM   inv.mtl_system_items_b msi
+WHERE  1 = 1
+AND    msi.organization_id = 83
+AND    msi.segment1 = '120E126W';
+
+SELECT *
+FROM   inv.mtl_secondary_inventories sub
+WHERE  sub.secondary_inventory_name LIKE '301%'
+AND    sub.organization_id = 522;
+
+SELECT nvl(SUM(transaction_quantity), 0)
+FROM   mtl_onhand_quantities moq
+WHERE  organization_id = 21
+AND    inventory_item_id = 22133
+AND    moq.subinventory_code = '301'
+GROUP  BY moq.organization_id,
+          moq.subinventory_code,
+          moq.inventory_item_id;
+
+SELECT msi.organization_id,
+       msi.inventory_item_id,
+       msi.description
+FROM   inv.mtl_system_items  msi,
+       hr_organization_units o
+WHERE  msi.organization_id = o.organization_id
+AND    o.attribute2 = 2
+AND    o.NAME NOT LIKE '%´úÏú²Ö'
+AND    msi.segment1 = '05020000000021';

@@ -7,8 +7,8 @@
 /*
 BEGIN
   fnd_global.apps_initialize(user_id      => 4270,
-                             resp_id      => 50676,
-                             resp_appl_id => 660);
+                             resp_id      => 50778,
+                             resp_appl_id => 20005);
   mo_global.init('M');
   
 END;
@@ -18,7 +18,8 @@ SELECT *
   FROM oe_order_headers_all ooh
  WHERE 1 = 1
    --AND ooh.org_id = 101
-   AND ooh.order_number IN ('53020044'); --('53020400', '53020422');
+   AND ooh.order_number IN ('23000461')--('53020044'); --('53020400', '53020422');
+   ;
 --so line dff1 dff4
 SELECT ooh.order_number,
        ooh.booked_flag,
@@ -40,11 +41,14 @@ SELECT ooh.order_number,
        oe_order_lines_all     ool,
        oe_transaction_types_v ott
  WHERE 1 = 1
-   AND ooh.org_id = 82 --101
-   AND ott.transaction_type_id = ooh.order_type_id
+   AND ooh.org_id = 84 --101
+   AND ott.transaction_type_id = ooh.order_type_id(+)
    AND ott.org_id = ooh.org_id
-   AND ooh.header_id = ool.header_id
-   AND ooh.order_number = '11000144'--'12003425'
+   AND ooh.header_id = ool.header_id(+)
+   AND ooh.order_number = 
+   --'202474'
+   --'23000414'
+   '23000461'--'11000144'--'12003425'
       --'10101647'--'10101629'--'11001299'--'11000884' --'53020261' --'53020362' --'53020261'--'53020165'--'53020155'--'53020400'
 --AND ool.ordered_item IN ('ST02938-IN')
 --('LB3901-PL210A')--('JED0210-VN','JED0211-VN','JED0212-VN','JED0219-VN','JED0220-VN','JED0225-VN');

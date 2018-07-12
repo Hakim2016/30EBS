@@ -7,7 +7,7 @@ SELECT xic.interface_code,
   FROM apps.xxfnd_interface_config_v xic
  WHERE 1 = 1
       --AND xic.remote_system_code = 'R3'
-   AND xic.interface_code = 'IF11'
+   AND xic.interface_code = 'IF78'
 --AND xic.remote_system_code = 'HFG'
 /*  AND xic.interface_code IN 
 
@@ -20,6 +20,8 @@ SELECT xic.interface_code,
 --AND xic.USER_CONCURRENT_PROGRAM_NAME LIKE '%ixed%sset%'
 --AND xic.enabled_flag = 'N'
  ORDER BY 1;
+
+
 
 /*
 IF11

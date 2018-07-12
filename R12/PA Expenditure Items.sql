@@ -6,7 +6,7 @@
 
 /*BEGIN
   fnd_global.apps_initialize(user_id      => 4270,
-                             resp_id      => 51249,
+                             resp_id      => 50676,
                              resp_appl_id => 660);
   mo_global.init('M');
   
@@ -254,8 +254,8 @@ SELECT v.expenditure_item_id pei_id,
  WHERE 1=1
  --(project_id = 1194)
  --AND v.expenditure_item_id IN (15429305,15429306)
- AND project_number = '53020044'--'10101505'
- AND v.expenditure_item_date BETWEEN to_date('2018-03-31','yyyy-mm-dd') AND to_date('2018-03-31','yyyy-mm-dd') + 0.99999
+ AND project_number = '118010001'--'53020044'--'10101505'
+ AND v.expenditure_item_date BETWEEN to_date('2018-03-01','yyyy-mm-dd') AND to_date('2018-03-31','yyyy-mm-dd') + 0.99999
  ORDER BY expenditure_item_id,
           expenditure_item_date DESC,
           task_id,

@@ -17,13 +17,16 @@ SELECT aph.creation_date,
        pa_tasks        pt
  WHERE 1 = 1
    AND aph.task_id = pt.task_id(+)
-   AND aph.org_id = 101--82 --84--SHE--82 --HEA
+   AND aph.org_id = 82--101--82 --84--SHE--82 --HEA
    AND aph.project_id = ppa.project_id(+) --left join
-   AND aph.invoice_num = 'TOEQ001597'--'210-702-004' --'SG00043803*8' --'107/5350';--454220
+   AND aph.invoice_num IN--= 'TOEQ001597'--'210-702-004' --'SG00043803*8' --'107/5350';--454220
+   ('I01266558','23004309*1','23004309*2','23004309*3','CXI00035405','CXI00035417','CXI00035488','ZH025-MAY2018','123493431','01819252','HS00101391','HS00101380','HS00101355','SV01204101','SV01204396')
 --AND aph.invoice_num LIKE 'HKM%'
 --AND aph.creation_date >= to_date('2018-06-01', 'yyyy-mm-dd')
 --AND aph.invoice_type_lookup_code = 'PREPAYMENT'
- ORDER BY aph.creation_date DESC;
+ ORDER BY aph.invoice_id DESC
+ 
+ ;
 
 SELECT apl.description,
        apl.amount,
@@ -130,10 +133,10 @@ SELECT apd.invoice_distribution_id,
    AND aph.invoice_id = apl.invoice_id
    AND aph.invoice_id = apd.invoice_id
    AND apl.line_number = apd.invoice_line_number
-   AND aph.invoice_num = '210-702-004' --'18010016'--'SG00043803*7'
-   AND aph.org_id = 82 --HEA
-AND apl.line_number = 11
-AND apd.amount <> 0
+   AND aph.invoice_num = '10051165'--'210-702-004' --'18010016'--'SG00043803*7'
+   --AND aph.org_id = 82 --HEA
+--AND apl.line_number = 11
+--AND apd.amount <> 0
 ;
 /* UPDATE ap_invoices_all aph
  SET aph.invoice_num = 'HKM18031302'--HKIM18021302
@@ -151,3 +154,6 @@ SELECT *
   FROM fnd_application fa
  WHERE 1 = 1
    AND fa.application_id = 200;
+   
+   
+   SELECT * FROM ap_interface_controls;

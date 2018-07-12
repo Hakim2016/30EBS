@@ -1,6 +1,6 @@
 --模拟请求输出
 SELECT fnd_webfile.get_url(4, --输出类型
-                           16003938, --请求ID
+                           15460236, --请求ID
                            'APPLSYSPUB/PUB',
                            'FCWW',
                            10)
@@ -29,7 +29,8 @@ SELECT fnd_webfile.get_url(4, --输出类型
 SELECT t.logfile_name,
        t.outfile_name,
        t.output_file_type --change Output_file_type to 'PS'
+       ,t.*
   FROM fnd_concurrent_requests t
- WHERE t.request_id = 16148068--8882937
+ WHERE t.request_id = 15487352--16148068--8882937
    --FOR UPDATE --8882937--27115382 --请求ID 8875565
 ;

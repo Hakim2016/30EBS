@@ -34,7 +34,7 @@ SELECT intf.actual_month    act_mon,
           AND ooh.order_type_id = ott.transaction_type_id
           AND ott.org_id = intf.org_id
           AND ooh.header_id = intf.source_header_id
-       ) l_attr5,
+       ) ott_attr5,
        
        
        (
@@ -47,6 +47,7 @@ SELECT intf.actual_month    act_mon,
           AND ooh.header_id = intf.source_header_id
        ) order_type,
        ppa.project_type,
+       ppt.attribute7 ppt_attr7,
        intf.mfg_num,
        intf.sale_amount,
        intf.material,
@@ -54,23 +55,27 @@ SELECT intf.actual_month    act_mon,
        intf.subcon,
        intf.packing_freight,
        intf.*
-  FROM xxpa_cost_gcpm_int intf,
+  FROM 
+  --XXPA_COST_GCPM_INT_180622 intf,
+  xxpa_cost_gcpm_int intf,
        pa_tasks           pt,
        pa_tasks           top,
-       pa_projects_all    ppa
+       pa_projects_all    ppa,
+       pa_project_types_all ppt
  WHERE 1 = 1
+ AND ppa.project_type = ppt.project_type
    AND ppa.project_id = pt.project_id
    AND pt.top_task_id = top.task_id
    AND pt.task_id = intf.task_id
    AND intf.org_id = 84--84--SHE --82--HEA
    AND intf.eq_er_category = 'EQ'--'PARTS'--'EQ'
       AND intf.mfg_num IN 
-      --('TFA0931-TH')
+      ('TFA0931-TH')
       --('DQ0063-1')
       --('TAC0014-TH')
       --('TFA0565-TH')--('JBL0023-IN')--('TAJ0122-TH')--('JBL0023-IN')--('SBC0266-SG')      
       --('SBG0220-HK')
-      ('SAG0432-SG')
+      --('SAG0432-SG')
       --('SBC0266-SG','SBC0256-SG','SAE0191-SG'/*'TAE0970-TH', 'TAE0969-TH', 'TAE0968-TH'*/)
       --('TFA0931-TH')
       --AND pt.task_number LIKE '%.D.11'
@@ -80,14 +85,16 @@ SELECT intf.actual_month    act_mon,
       --AND ppa.segment1 = '11000144'--'213100127'
    --AND intf.additional_flag = '1'--'N'
    --AND intf.creation_date > to_date('2018-05-01', 'yyyy-mm-dd')
-   AND intf.group_id = (SELECT MAX(t2.group_id)
+/*   AND intf.group_id = (SELECT MAX(t2.group_id)
                           FROM xxpa_cost_gcpm_int t2
                          WHERE 1 = 1
                            AND t2.mfg_num = intf.mfg_num
                            AND t2.actual_month = intf.actual_month
-                           AND t2.task_id = intf.task_id)
+                           AND t2.task_id = intf.task_id)*/
  ORDER BY intf.actual_month DESC,
           intf.mfg_num DESC;
+          
+          --SELECT * FROM XXPA_COST_GCPM_INT_180622;
           
 SELECT * FROM fnd_user fu
 WHERE 1=1

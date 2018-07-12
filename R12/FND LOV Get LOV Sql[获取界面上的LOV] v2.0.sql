@@ -34,7 +34,7 @@ SELECT s.prev_sql_addr,
  WHERE 1 = 1
       -- AND s.sid = 409 
    AND s.prev_sql_addr = swn.address
-   AND upper(s.module) LIKE upper('%XXARPTAX%') -- Form Name
+   AND upper(s.module) LIKE upper('%XXINVDNF%') -- Form Name
  ORDER BY s.module,
           s.client_identifier,
           swn.piece;

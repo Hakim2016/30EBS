@@ -1,6 +1,6 @@
 --How to use
 
---excute with the sequence
+--excute with the order below
 
 --0.xxfnd_conc_utl;--log program
 --1.XXFND_debug;

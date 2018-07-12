@@ -12,10 +12,10 @@ SELECT fcp.user_concurrent_program_name program,
        fnd_executables_form_v     fef
  WHERE 1 = 1
    AND fcp.executable_id = fef.executable_id
-      AND fcp.concurrent_program_name = 'INCTCM'--'XXPAB003'
+      AND fcp.concurrent_program_name = 'XXPAITCR'--'XXPJMB009'--'INCTCM'--'XXPAB003'
    --AND fcp.user_concurrent_program_name = 'XXOM:SO Balance Report'
    ;
-
+ 
 --Request with parameters
 SELECT 
 fcu.COLUMN_SEQ_NUM,

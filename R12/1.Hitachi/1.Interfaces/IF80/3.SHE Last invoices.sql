@@ -15,8 +15,8 @@ SELECT decode(ppt.attribute7, 'OVERSEA', 'OVERSEA', 'DOMESTIC') isoversea,
        4119176 --TFA0565-TH.EQ
    AND ool.project_id = ppa.project_id
    AND ppa.project_type = ppt.project_type
---AND DIH.TRANSACTION_DATE BETWEEN to_date('2017/2/1', 'yyyy/mm/dd') AND to_date('2017/2/28 23:59:59', 'yyyy/mm/dd hh24:mi:ss')
---AND DIH.TRANSACTION_DATE BETWEEN to_date('2017/2/1', 'yyyy/mm/dd') AND to_date('2017/2/28 23:59:59', 'yyyy/mm/dd hh24:mi:ss')
+--AND DIH.TRANSACTION_DATE BETWEEN to_date('2016/12/1', 'yyyy/mm/dd') AND to_date('2016/12/31 23:59:59', 'yyyy/mm/dd hh24:mi:ss')
+AND DIH.TRANSACTION_DATE BETWEEN to_date('2017/2/1', 'yyyy/mm/dd') AND to_date('2017/2/28 23:59:59', 'yyyy/mm/dd hh24:mi:ss')
  ORDER BY nvl(dih.last_invoice_flag, 'N') DESC;
 
 (SELECT --DECODE(PPT.ATTRIBUTE7, 'OVERSEA', 'OVERSEA', 'DOMESTIC') ISOVERSEA,
@@ -53,6 +53,8 @@ SELECT decode(ppt.attribute7, 'OVERSEA', 'OVERSEA', 'DOMESTIC') isoversea,
        nvl(dih.last_invoice_flag, 'N') last_invoice_flag,
        dih.transaction_date,
        ool.task_id,
+       ool.org_id,
+       ool.ordered_item,
        dih.document_number, t.xx
   FROM xxom_do_invoice_lines_all   dil,
        oe_order_lines_all          ool, --task_id   project_id
