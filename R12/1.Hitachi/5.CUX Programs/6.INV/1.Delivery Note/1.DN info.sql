@@ -1,6 +1,7 @@
 --DN
 /*
 XXINVDNF
+After pressing button "Confirm", submit a request "XXPAITCR"
 Personalizations
 1.Validate DN Completion Date(Function)
   "MFG Number Not Completion, Cannot issue DN."
@@ -11,16 +12,78 @@ Personalizations
 2.XXINVC002:Subinventory Authority(Form)
   Refer to the SQL below:
 */
-SELECT dnh.production_number,
-       dnh.delivery_note_num,
+
+/*
+XXPAITCR
+XXPA:Incomplete Transaction Check Report
+XXPA_INCOMPLETE_TRX_CHECK_PKG.main
+*/
+XXPA_INCOMPLETE_TRX_CHECK_PKG;--.main
+
+
+SELECT dnl.delivery_note_id dnh_id,
+dnl.dn_line_id dnl_id,
+--dnl.ho_item_id,
+(SELECT msi.segment1 FROM mtl_system_items_b msi
+WHERE 1=1
+AND msi.inventory_item_id = dnl.ho_item_id
+AND msi.organization_id = 85) ho_item,
+--dnl.fac_item_id,
+(SELECT msi.segment1 FROM mtl_system_items_b msi
+WHERE 1=1
+AND msi.inventory_item_id = dnl.fac_item_id
+AND msi.organization_id = 86) ho_item,
+       dnh.production_number pdo_num,
+       dnh.delivery_note_num dn_num,
        dnh.do_number,
-       
+       dnh.order_number,
+       dnh.order_type,
+       ppa.segment1 prj_num,
+       ppa.long_name,
+       ppa.project_type,
        dnh.*
+
+  FROM xxinv_dely_note_headers_v dnh,
+       xxinv_dely_note_lines_all dnl,
+       pa_projects_all ppa
+ WHERE 1 = 1
+   AND dnh.delivery_note_id = dnl.delivery_note_id
+   AND dnh.project_id = ppa.project_id(+)
+   AND dnh.delivery_note_num = 1401240--1011986
+      /*AND dnh.order_type = --'SHE FAC_MTE Parts'
+      'SHE_Job Order_Spare Parts'*/
+      --AND dnh.production_number = '97000505'--'97000390'
+   --AND dnh.creation_date > to_date('20180701', 'yyyymmdd')
+   --AND dnh.created_by = 4270
+   ;
+   
+--mapping of sn type & so type
+SELECT DISTINCT dnh.order_type,
+                dnh.business_type
+--dnh.*
 
   FROM xxinv_dely_note_headers_v dnh
  WHERE 1 = 1
-   AND dnh.production_number = '97000390'
-   AND dnh.creation_date > to_date('20180701', 'yyyymmdd');
+ ORDER BY dnh.business_type;
+
+SELECT project_id,
+       segment1,
+       long_name,
+       project_type,
+       org_id
+  FROM pa_projects
+ ORDER BY segment1;
+ 
+SELECT DISTINCT
+       project_type
+  FROM pa_projects;
+      
+SELECT COUNT(*)
+  --INTO l_count
+  FROM xxinv_dely_note_lines l
+ WHERE l.delivery_note_id = 4264--:dn_headers.delivery_note_id
+   AND ((p_stock_flag = 'OUT' AND l.subinventory_code IS NULL) OR
+       (p_stock_flag = 'IN' AND l.to_subinventory_code IS NULL));
 
 /*XXINVC002:Subinventory Authority*/
 SELECT secondary_inventory_name,

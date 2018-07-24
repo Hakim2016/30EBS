@@ -38,8 +38,4 @@ SELECT hp_per.party_number,
 --AND rol.cust_account_id = 1242557
 --AND hp_rel.party_number = 'HL00000184';
 --AND rol.cust_acct_site_id IS NOT NULL
-
-  SELECT *
-          FROM hz_parties hp
-         WHERE 1 = 1
-           AND hp.party_number = 'HL00000184';
+;

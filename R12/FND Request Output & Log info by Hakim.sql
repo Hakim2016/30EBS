@@ -31,6 +31,8 @@ SELECT t.logfile_name,
        t.output_file_type --change Output_file_type to 'PS'
        ,t.*
   FROM fnd_concurrent_requests t
- WHERE t.request_id = 15487352--16148068--8882937
+ WHERE 1=1
+ --AND t.outfile_name LIKE '%3151798%'
+ AND t.request_id = 15487352--16148068--8882937
    --FOR UPDATE --8882937--27115382 --«Î«ÛID 8875565
 ;

@@ -17,8 +17,11 @@ SELECT hca.last_update_date,
        hz_parties       hp
  WHERE hp.party_id = hca.party_id
       --AND hca.cust_account_id = 84040
-   AND hca.account_number --= 'HL00000184'
-       IN ('HL00000184', 'HL00000168', 'HL00000158', 'HL00000146', 'HL00000140', 'HL00000038');
+   /*AND hca.account_number --= 'HL00000184'
+       IN ('HL00000184', 'HL00000168', 'HL00000158', 'HL00000146', 'HL00000140', 'HL00000038')
+       */
+       AND hp.party_name = 'HITACHI BUILDING SYSTEMS CO. LTD'
+;
 
 SELECT hp_per.party_number,
        hp_per.party_name,

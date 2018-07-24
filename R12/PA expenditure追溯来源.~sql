@@ -7,16 +7,30 @@ SELECT DISTINCT mmt.transaction_id,
        apps.pa_projects_all           ppa,
        apps.mtl_transaction_types     mtt --,
 --apps.wip_entities we
- WHERE pei.orig_transaction_reference = mmt.transaction_id
+ WHERE pei.orig_transaction_reference = to_char(mmt.transaction_id)
       --and   pei.transaction_source = 'Inventory'
       --and   mmt.transaction_type_id =35
    AND mmt.transaction_type_id = mtt.transaction_type_id
       --and   mmt.transaction_source_id = we.wip_entity_id
    AND ppa.project_id = pei.project_id
-      --and   mmt.transaction_id = 28669285
-   AND ppa.segment1 = '216070054'
+   AND mmt.transaction_id = 52992559 --28669285
+;
+--AND ppa.segment1 = '216070054'
 --and   we.wip_entity_name = '10467019'
-UNION ALL
+
+SELECT *
+  FROM pa_expenditure_items_all pei
+ WHERE 1 = 1
+   AND pei.orig_transaction_reference = '52992559';
+
+SELECT mmt.orig_transaction_reference,
+       mmt.*
+
+  FROM mtl_material_transactions mmt
+ WHERE 1 = 1
+   AND mmt.transaction_id = 52992559;
+
+--UNION ALL
 SELECT mmt.transaction_id,
        mtt.transaction_type_name,
        pha.segment1
@@ -34,7 +48,6 @@ SELECT mmt.transaction_id,
    AND pei.expenditure_item_id = 1880868
 --and   ppa.segment1 = '21000514'  
 ;
-
 
 -- expenditure from AP invoice derive PO receive information
 SELECT pha.segment1             po_number,
@@ -66,6 +79,6 @@ SELECT pha.segment1             po_number,
    AND ppa.project_id = pt.project_id
    AND pda.po_line_id = pla.po_line_id
    AND pla.po_header_id = pha.po_header_id
-   AND pei.expenditure_item_id = 46442 
+   AND pei.expenditure_item_id = 46442
 
 ;

@@ -16,7 +16,7 @@ INSERT INTO hkm_conc_req_summary
   SELECT *
     FROM fnd_conc_req_summary_v v
    WHERE 1 = 1
-     AND v.request_id = 15487352
+     AND v.request_id = 15489358--15487352
      --IN (15481910)
   --15481905
   --15481897

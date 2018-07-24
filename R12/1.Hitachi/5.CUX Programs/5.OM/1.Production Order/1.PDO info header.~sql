@@ -28,18 +28,20 @@ SELECT pdoh.order_type,
        pdoh.,*/
        pdoh.*
   FROM xxom_prod_headers_v pdoh,
-  pa_projects_all ppa
+       pa_projects_all     ppa
  WHERE 1 = 1
- AND ppa.project_id(+) = pdoh.project_id
-   --AND pdoh.production_number = '98000835'
-   AND pdoh.so_type = 'SHE_Installation Sales'--'SHE_Domestic_EQ_SHE Project'
-   --AND pdoh.project_id IS NOT NULL
-   --AND pdoh.order_type <> 'NEW'
-   AND pdoh.creation_date > to_date('20170101','yyyymmdd')
-   ;
-   
-   SELECT v.so_type, COUNT(*) FROM xxom_prod_headers_v v
-   WHERE 1=1
-   GROUP BY v.so_type
-   ORDER BY count(*) DESC,v.so_type
+   AND ppa.project_id(+) = pdoh.project_id
+   AND pdoh.production_number = '97000505' --'98000835'
+   AND pdoh.so_type = 'SHE_Installation Sales' --'SHE_Domestic_EQ_SHE Project'
+--AND pdoh.project_id IS NOT NULL
+--AND pdoh.order_type <> 'NEW'
+--AND pdoh.creation_date > to_date('20170101','yyyymmdd')
 ;
+
+SELECT v.so_type,
+       COUNT(*)
+  FROM xxom_prod_headers_v v
+ WHERE 1 = 1
+ GROUP BY v.so_type
+ ORDER BY COUNT(*) DESC,
+          v.so_type;

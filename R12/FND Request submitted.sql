@@ -60,11 +60,17 @@ SELECT v.request_id rqst_id,
       --AND v.program_short_name = 'XXPAUPDATESTATUS'
       --AND v.program LIKE 'Create Accounting%'
       AND v.user_concurrent_program_name LIKE
+      --'Item categories report'
+      --'%Supplier Costs Interface Audit'
+      --'%Cost Collection Manager'
+      --'%XXPJM:Labor Hours Budget Interface%'
+      --'Create Accounting%'
+      --'Create Accounting - Cost Management'
       --'XXOM:Tax Invoice Print'
       --'XXPA:Accrual Offset Auto Generate Program'
       --'Period Close Reconciliation Report'
       --'Receiving Value Report (XML)'
-      --'XXPA:Project COGS Monthly Report(SHE)_NEW'
+      'XXPA:Project COGS Monthly Report(SHE)_NEW'
       --'XXPA:Project Revenue and Cost of Sales Recognition Request'
       --'%XXPJM:Labor Hours Budget Interface%'--IF47
       --'%Cost Incurred Report%'
@@ -79,6 +85,7 @@ SELECT v.request_id rqst_id,
       --'XXOM:SO Balance Report(Sales)'
       --'Create Accounting%'
       --'Cost Manager'
+      --'Actual Cost Worker'
       --'%Project Cost Analysis%'
       --'XXGL:Fixed Assets Outbound to HFG'
       --'Projects Cost Collection Manager'
@@ -102,9 +109,9 @@ SELECT v.request_id rqst_id,
       
       --AND v.request_date > TRUNC(SYSDATE)
    --AND v.request_date <> v.requested_start_date
---AND trunc(v.request_date) >= to_date('2018-05-09','yyyy-mm-dd')
-AND v.argument_text LIKE '%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
---AND v.requestor = 'HAND_LCR'--'70264934'--'HAND_HKM'
+--AND trunc(v.request_date) = to_date('2018-07-13','yyyy-mm-dd')
+--AND v.argument_text LIKE '%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
+--AND v.requestor = 'HAND_HKM'--'HAND_LCR'--'70264934'--'HAND_HKM'
 --AND v.status_code = 'E'
 --AND v.phase_code IN ('R', 'P')
  ORDER BY v.request_id DESC;

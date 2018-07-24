@@ -8,20 +8,41 @@ SELECT DISTINCT mmt.transaction_id,
        apps.mtl_transaction_types     mtt --,
 --apps.wip_entities we
  WHERE pei.orig_transaction_reference = to_char(mmt.transaction_id)
-      --and   pei.transaction_source = 'Inventory'
+   AND pei.transaction_source = 'Inventory'
       --and   mmt.transaction_type_id =35
    AND mmt.transaction_type_id = mtt.transaction_type_id
       --and   mmt.transaction_source_id = we.wip_entity_id
    AND ppa.project_id = pei.project_id
-   AND mmt.transaction_id = 52992559 --28669285
+   AND mmt.transaction_id = 54869415 --52992559 --28669285
 ;
 --AND ppa.segment1 = '216070054'
 --and   we.wip_entity_name = '10467019'
 
+--source :inventory
+SELECT /*DISTINCT */mmt.transaction_id,
+                mtt.transaction_type_name,
+                pei.expenditure_item_id,
+                pei.transaction_source,
+                we.wip_entity_name
+  FROM apps.pa_expenditure_items_all  pei,
+       apps.mtl_material_transactions mmt,
+       apps.pa_projects_all           ppa,
+       apps.mtl_transaction_types     mtt,
+       apps.wip_entities              we
+ WHERE pei.orig_transaction_reference = to_char(mmt.transaction_id)
+   AND pei.transaction_source = 'Inventory'
+      --and   mmt.transaction_type_id =35
+   AND mmt.transaction_type_id = mtt.transaction_type_id
+   and   mmt.transaction_source_id = we.wip_entity_id
+   AND ppa.project_id = pei.project_id
+   AND mmt.transaction_id = 54869415 --52992559 --28669285
+;
+
 SELECT *
   FROM pa_expenditure_items_all pei
  WHERE 1 = 1
-   AND pei.orig_transaction_reference = '52992559';
+   AND pei.orig_transaction_reference --= '52992559'
+       IN ('54154413');
 
 SELECT mmt.orig_transaction_reference,
        mmt.*

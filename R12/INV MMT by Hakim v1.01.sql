@@ -14,7 +14,7 @@ SELECT mmt.organization_id,
    AND mmt.inventory_item_id = msi.inventory_item_id
    AND mmt.organization_id = msi.organization_id
       --AND mmt.transaction_id = 54868663--60911685--8915869
-   AND mmt.last_update_date >= trunc(SYSDATE) - 60 --SYSDATE - 2
+   AND mmt.last_update_date >= trunc(SYSDATE) - 30 --SYSDATE - 2
    --AND mmt.created_by = 4270
       --AND mmt.organization_id = 83
       --AND msi.segment1 = '1000EX-EN'
@@ -65,12 +65,13 @@ decode(mmt.organization_id, 86, 'FAC', 85, 'HO', mmt.organization_id) org,
        mmt.*
   FROM mtl_material_transactions mmt
  WHERE 1 = 1
-   AND mmt.last_update_date > trunc(SYSDATE) - 120
+   AND mmt.last_update_date > trunc(SYSDATE) - 10
    AND mmt.source_code --= 'DN In'
    IN('DN In', 'DN Out', '')
    --AND mmt.project_id IS NOT NULL
    --AND mmt.created_by = 4270
    --AND mmt.transaction_id = 52998974
+   AND mmt.transaction_reference = '1804261'
    ORDER BY mmt.transaction_id
 ;
 
@@ -83,7 +84,7 @@ SELECT *
 ;
 
 --2.transaction_action_id refer to lookup 'MTL_TRANSACTION_ACTION'
-SELECT *      
+SELECT *
   FROM mfg_lookups v
  WHERE v.lookup_type = 'MTL_TRANSACTION_ACTION'
  ORDER BY v.lookup_code;

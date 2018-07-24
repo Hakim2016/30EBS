@@ -172,10 +172,10 @@ BEGIN
   /*stat := fnd_profile.save(x_name => 'INV_RPC_TIMEOUT',--'ORG_ID', 
                             x_value => '300',--286, 
                             x_level_name => 'SITE');*/
-  stat := fnd_profile.save(x_name => 'XXINV_DELIVERY_NOTE_AUTHORITY',--'ORG_ID', 
+  stat := fnd_profile.save(x_name => 'XXINV_DELIVERY_NOTE_AUTHORITY', 
                                      --'XXINV: Delivery Note Authority'
-                            --x_value => 'STOCK_IN',--'300',--286, 
-                            x_value => 'STOCK_OUT',
+                            x_value => 'STOCK_IN',--'300',--286, 
+                            --x_value => 'STOCK_OUT',
                             x_level_name => 'RESP',
                             x_level_value => 50778/*x_resp_id*/ );
 
