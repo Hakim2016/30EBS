@@ -1,0 +1,10 @@
+--1.CUX 三栏式日记账打印 info
+/*
+CUXHNETGLACN
+CUX:HNET三栏式明细/日记帐打印_本币
+program_name:HNET_CUX_MANAGER
+short_name:CUXHNETGLACN
+execute_name:CUXGLACN
+DETAIL, 5002, RMB, 10, T, 112199.T, 2017, 1, 12
+APP_MATE
+*/
