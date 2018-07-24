@@ -51,6 +51,7 @@ SELECT DISTINCT substr(ffvv.compiled_value_attributes, 5, 1)
 --AND ROWNUM = 1
 --ORDER BY ffvv.flex_value_meaning
 ;
+
 --Account/Subaccount
 SELECT ffvv.*,
        ffvv.flex_value,

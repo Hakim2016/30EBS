@@ -12,12 +12,18 @@ SELECT fcp.user_concurrent_program_name program,
        fnd_executables_form_v     fef
  WHERE 1 = 1
    AND fcp.executable_id = fef.executable_id
+<<<<<<< HEAD
    --AND fcp.concurrent_program_name = 'CUXHNETGLACN'--'INCTCM'--'XXPAB003'
    AND fcp.user_concurrent_program_name 
    LIKE 'CUX%Drill%Down%'
    --= 'XXOM:SO Balance Report'
+=======
+      AND fcp.concurrent_program_name --= 'XXPAITCR'--'XXPJMB009'--'INCTCM'--'XXPAB003'
+      IN('CMCCCM','CMCPCM')
+   --AND fcp.user_concurrent_program_name = 'XXOM:SO Balance Report'
+>>>>>>> 35f7bc995404e315e52e73e2f5ab2f591d883390
    ;
-
+ 
 --Request with parameters
 SELECT 
 fcu.COLUMN_SEQ_NUM,

@@ -52,6 +52,7 @@ SELECT flv.meaning level_meaning,
                 fnd_responsibility_vl     fresp
          WHERE 1 = 1
            AND fpov.level_id = 10003
+           AND fresp.responsibility_name LIKE '%SHE%GSCM%%'
            AND fpov.level_value = fresp.responsibility_id
         UNION ALL
         -- User Level
@@ -141,7 +142,7 @@ SELECT flv.meaning level_meaning,
    AND profile_value.application_id = fpo.application_id
       --AND profile_value.level_value = 50676
       -- AND profile_value.level_id = 10001--10003
-   AND fpo.user_profile_option_name LIKE 'INV%RPC' --'MO%'
+   AND fpo.user_profile_option_name LIKE  'XXINV%Delivery Note%A%'--'INV%RPC' --'MO%'
 ;
 /*
 10001   Site Level
@@ -158,20 +159,29 @@ SELECT fpo.profile_option_name,
        fpo.user_profile_option_name,
        fpo.*
   FROM fnd_profile_options_vl fpo
- WHERE fpo.user_profile_option_name LIKE 'INV%RPC%';
+ WHERE fpo.user_profile_option_name LIKE 
+ 'XXINV%Delivery Note%A%'
+ --'INV%RPC%'
+ ;
 
 DECLARE
   stat BOOLEAN;
 BEGIN
   dbms_output.disable;
   dbms_output.enable(100000);
-  stat := fnd_profile.save(x_name => 'INV_RPC_TIMEOUT',--'ORG_ID', 
+  /*stat := fnd_profile.save(x_name => 'INV_RPC_TIMEOUT',--'ORG_ID', 
                             x_value => '300',--286, 
-                            x_level_name => 'SITE');
+                            x_level_name => 'SITE');*/
+  stat := fnd_profile.save(x_name => 'XXINV_DELIVERY_NOTE_AUTHORITY', 
+                                     --'XXINV: Delivery Note Authority'
+                            x_value => 'STOCK_IN',--'300',--286, 
+                            --x_value => 'STOCK_OUT',
+                            x_level_name => 'RESP',
+                            x_level_value => 50778/*x_resp_id*/ );
 
   /*   IF ( not fnd_profile.save( x_name => 'APPS_SERVLET_AGENT',
                        x_value => '',
-                       x_level_name => 'USER',--SITE, USER
+                       x_level_name => 'USER',--'SITE','APPL','RESP','USER'
                        x_level_value => x_user_id ) ) THEN
        raise_application_error(-20005, ' Failed to remove servlet profile option value for user with id:'
                ||x_user_id , true);

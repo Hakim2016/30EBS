@@ -7,9 +7,9 @@ SELECT *
 SELECT DISTINCT als.name
   FROM all_source als
  WHERE 1 = 1
-   --AND upper(als.text) LIKE '%%' --'%Schedule%start%date%greater%than%end%date%';
+   AND upper(als.text) LIKE UPPER('%get_locator%') --'%Schedule%start%date%greater%than%end%date%';
    AND als.type = 'PACKAGE BODY'
-   AND als.name LIKE 'XX%MAIL%'
+   --AND als.name LIKE 'XX%MAIL%'
 ;
 
 SELECT * FROM all_objects ao
@@ -41,3 +41,11 @@ SELECT * FROM fnd_new_messages fnm
 WHERE 1=1
 AND fnm.message_text LIKE '%EBS the available%'--'%Delivery Qty%'
 ;
+
+SELECT object_name,
+       object_type,
+       owner,
+       status,
+       obj.*
+  FROM dba_objects obj
+ WHERE status = 'INVALID';

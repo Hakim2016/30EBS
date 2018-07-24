@@ -22,3 +22,5 @@ SELECT SUM(nvl(xal.accounted_dr, 0)) accounted_dr,
 --AND mta.transaction_date > to_date('2013-03-10', 'YYYY-MM-DD')
 --AND mmt.transaction_id = 6886985
 --AND rownum < 10
+;
+

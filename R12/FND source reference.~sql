@@ -9,6 +9,12 @@ AND ds.name LIKE 'XX%_%_UTIL%'
 AND ds.TYPE = 'PACKAGE BODY'
 ORDER BY ds.owner, ds.name;
 
+SELECT DISTINCT ds.owner, ds.name FROM all_source ds
+WHERE 1=1
+AND ds.name LIKE 'XX%_%_UTIL%'
+AND ds.TYPE = 'PACKAGE BODY'
+ORDER BY ds.owner, ds.name;
+
 XXAR_UTILS
 XXFND_COMMON_UTIL
 XXFND_FTP_UTIL

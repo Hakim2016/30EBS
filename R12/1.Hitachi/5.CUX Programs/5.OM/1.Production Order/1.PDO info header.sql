@@ -1,0 +1,53 @@
+--Addon OM>>Production Order
+/*
+
+*/
+/*
+all the so type
+      NULL  1096
+SHE_Domestic_EQ_SHE Project 922
+SHE_Job Order_Spare Parts 649
+SHE_Domestic_Service Order  148
+SHE_Domestic_EQ_MIX Project 133
+SHE_Job Order_Labor 109
+SHE_Installation Sales  22
+SHE_Job Order_Decorate  8
+SHE_Domestic_EQ_HEA Project 4
+HO_Oversea_EQ_SHE Project 3
+HO_Oversea_EQ_MIX Project 2
+*/
+SELECT pdoh.order_type,
+       pdoh.production_number,
+       pdoh.so_number,
+       pdoh.so_type,
+       pdoh.project_name,
+       ppa.project_type,
+       pdoh.pr_number,
+       pdoh.status,
+       pdoh.quotation,
+       /*pdoh.,
+       pdoh.,
+       pdoh.,
+       pdoh.,*/
+       pdoh.*
+  FROM xxom_prod_headers_v pdoh,
+       pa_projects_all     ppa
+ WHERE 1 = 1
+   AND ppa.project_id(+) = pdoh.project_id
+   --AND pdoh.production_number = '97000505' --'98000835'
+   AND pdoh.so_type = 
+   'SHE_Job Order_Spare Parts'
+   --'SHE_Domestic_EQ_SHE Project'
+   --'SHE_Installation Sales' 
+--AND pdoh.project_id IS NOT NULL
+--AND pdoh.order_type <> 'NEW'
+AND pdoh.creation_date > to_date('20180101','yyyymmdd')
+;
+
+SELECT v.order_type,--v.so_type,
+       COUNT(*)
+  FROM xxom_prod_headers_v v
+ WHERE 1 = 1
+ GROUP BY v.order_type
+ ORDER BY COUNT(*) DESC,
+          v.order_type;

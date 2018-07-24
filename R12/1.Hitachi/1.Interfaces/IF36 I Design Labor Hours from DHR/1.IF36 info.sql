@@ -44,41 +44,6 @@ SELECT *
    AND lha.creation_date > to_date('2018-01-01', 'yyyy-mm-dd')
    AND lha.department IN ('Research ' || '&' || ' Development'/*, 'Product Design'*/)
 ;
-
---XXPA_EXPENDITURE_COST_STRUCTURE(Table Value Set)
-SELECT pet.expenditure_category,
-       pet.unit_of_measure,
-       pet.attribute3,
-       pet.attribute4,
-       pet.attribute11,
-       pet.attribute12,
-       pet.attribute13,
-       pet.*
-  FROM pa_expenditure_types pet
- WHERE 1 = 1
-   AND pet.attribute_category = 'HEA_OU'
-AND pet.attribute14 = 'Actual'
-;
-
---XXPA_EXPENDITURE_ACTIVITY_TYPE(Independent Value Set)
-
-
---XXPA_EXP_TYPES_TITLE(Table VS)
-SELECT xl.meaning,
-       xl.*
-  FROM xxpa_lookups xl
- WHERE xl.lookup_type = 'XXPA_REPORT_TITLE_SEQ'
-   AND xl.enabled_flag = 'Y'
-   AND trunc(SYSDATE) BETWEEN nvl(xl.start_date_active, trunc(SYSDATE)) AND nvl(xl.end_date_active, trunc(SYSDATE))
- ORDER BY xl.meaning;
-
-
---XXPA_EXP_BUDGET_TYPES(Table VS)
-SELECT *
-  FROM pa_expenditure_types pei
- WHERE 1 = 1
-   AND (pei.attribute1 IS NOT NULL OR pei.expenditure_type = 'MOS Transfer In ER')
- ORDER BY pei.expenditure_type;
  
 --Resources
        --Resource Information

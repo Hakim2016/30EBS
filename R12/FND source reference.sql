@@ -3,11 +3,15 @@ FROM dba_source
 WHERE name = 'AP_GDF_DETECT_PKG'
 AND text like '%$Id%';
 
-SELECT DISTINCT ds.owner, ds.name FROM dba_source ds
-WHERE 1=1
-AND ds.name LIKE 'XX%_%_UTIL%'
-AND ds.TYPE = 'PACKAGE BODY'
-ORDER BY ds.owner, ds.name;
+SELECT DISTINCT ds.owner,
+                ds.name
+  FROM dba_source ds
+ WHERE 1 = 1
+      --AND ds.name LIKE 'XX%'--'XX%_%_UTIL%'
+   AND ds.type = 'PACKAGE BODY'
+   AND upper(ds.text) LIKE upper('%There are some lines without subinventory%') --'%$Id%'
+ ORDER BY ds.owner,
+          ds.name;
 
 SELECT DISTINCT ds.owner, ds.name FROM all_source ds
 WHERE 1=1

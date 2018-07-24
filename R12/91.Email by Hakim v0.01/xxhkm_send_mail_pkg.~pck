@@ -10,7 +10,7 @@ CREATE OR REPLACE PACKAGE xxhkm_send_mail_pkg IS
   Description:
        Sent Email 
   History:
-      1.00  2018/03/14 baobao.hu   Creation
+      1.00  2018/03/14 Hakim   Creation
   ==================================================*/
   g_encoding    VARCHAR2(40) := fnd_profile.value('ICX_CLIENT_IANA_ENCODING');
   g_tab         VARCHAR2(1) := chr(9);
@@ -28,7 +28,9 @@ CREATE OR REPLACE PACKAGE xxhkm_send_mail_pkg IS
   g_space      VARCHAR2(10) := '&nbsp;';
   PROCEDURE main(errbuf     OUT VARCHAR2,
                  retcode    OUT VARCHAR2,
-                 p_group_id IN NUMBER);
+                 p_group_id IN NUMBER DEFAULT 0,
+                 p_content IN VARCHAR2,
+                 p_subject IN VARCHAR2);
 
 END xxhkm_send_mail_pkg;
 /
@@ -44,7 +46,8 @@ CREATE OR REPLACE PACKAGE BODY xxhkm_send_mail_pkg IS
   Description:
        Sent Email 
   History:
-      1.00  2018/03/14 steven   Creation
+      1.00  2018/03/14 Hakim   Creation
+      2.00  20180705   Hakim   Monitor the Requests
   ==================================================*/
   c_yes_flag CONSTANT VARCHAR2(1) := 'Y';
   c_no_flag  CONSTANT VARCHAR2(1) := 'N';
@@ -58,6 +61,8 @@ CREATE OR REPLACE PACKAGE BODY xxhkm_send_mail_pkg IS
   --g_group_id_to   NUMBER;
   g_exist_data NUMBER := 0;
   g_group_id   NUMBER;
+  g_content VARCHAR2(32767);
+  g_subject VARCHAR2(200);
 
   PROCEDURE raise_exception(p_return_status VARCHAR2) IS
   BEGIN
@@ -392,8 +397,10 @@ CREATE OR REPLACE PACKAGE BODY xxhkm_send_mail_pkg IS
         log('receipter :');
         log(l_receipt_list(i).recipient || l_receipt_list(i).email_address);
       END LOOP;
-      l_email_content := '<p align=left><font size ="4">' || 'Test email from hitachi. No reply! Thanks!' ||
-                         '</font></p>';
+      /*l_email_content := '<p align=left><font size ="4">' || 'Test email from hitachi. No reply! Thanks!' ||
+                         '</font></p>';*/
+      l_email_content := g_content;
+
       /*      send_email_attachment(p_email_subject => 'Pull Item Can Not Have Enough Quantity To Issue',
       p_email_body    => l_email_content,
       p_file_path     => l_file_path,
@@ -401,7 +408,7 @@ CREATE OR REPLACE PACKAGE BODY xxhkm_send_mail_pkg IS
       p_smtp_host     => l_smtp_host,
       p_from_email    => l_from_email,
       p_rcpt_list     => l_receipt_list);*/
-      send_email(p_email_subject => 'Hakim Test 20180609',
+      send_email(p_email_subject => g_subject,--'Hakim Test 20180609',
                  p_email_body    => l_email_content,
                  /*p_file_path     => l_file_path,
                                              p_file_name     => l_file_name,*/
@@ -437,7 +444,9 @@ CREATE OR REPLACE PACKAGE BODY xxhkm_send_mail_pkg IS
   ==================================================*/
   PROCEDURE main(errbuf     OUT VARCHAR2,
                  retcode    OUT VARCHAR2,
-                 p_group_id IN NUMBER) IS
+                 p_group_id IN NUMBER DEFAULT 0,
+                 p_content IN VARCHAR2,
+                 p_subject IN VARCHAR2) IS
     l_return_status VARCHAR2(30);
     l_msg_data      VARCHAR2(2000);
     l_api_name      VARCHAR2(40) := 'main';
@@ -446,6 +455,8 @@ CREATE OR REPLACE PACKAGE BODY xxhkm_send_mail_pkg IS
     xxfnd_conc_utl.log_header;
   
     g_group_id := p_group_id;
+    g_content := p_content;
+    g_subject := p_subject;
     --g_group_id_to   := p_group_id_to;
     process_request(x_return_status => l_return_status, x_msg_data => l_msg_data);
     xxfnd_conc_utl.log_footer;

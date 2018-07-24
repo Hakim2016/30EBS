@@ -20,7 +20,7 @@ SELECT v.expenditure_item_id pei_id,
        NULL Employee_Supplier,
        v.quantity,
        v.unit_of_measure_m uom,
-       v.burdened_cost proj_func_burdened_cost,--
+       v.burdened_cost proj_func_burdened_cost,--±¾Î»±Ò½ð¶î
        v.project_burdened_cost,--
        v.accrued_revenue,
        v.bill_amount,

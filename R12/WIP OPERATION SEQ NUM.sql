@@ -7,7 +7,8 @@ select we.wip_entity_name,
        wip_discrete_jobs          wdj,
        mtl_system_items_b         msib,
        mtl_system_items_b         msib1
- where not exists (select 1
+ where 1=1
+ AND not exists (select 1
           from wip_operations wo
          where wro.wip_entity_id = wo.wip_entity_id
            and wro.operation_seq_num = wo.operation_seq_num
@@ -20,5 +21,7 @@ select we.wip_entity_name,
    and wdj.organization_id = msib.organization_id
    and wro.inventory_item_id = msib1.inventory_item_id
    and wro.organization_id = msib1.organization_id
+   --AND wdj.primary_item_id = 1621957
    and wro.operation_seq_num > 0
-   and wro.operation_seq_num <> 1;
+   and wro.operation_seq_num <> 1
+   ;

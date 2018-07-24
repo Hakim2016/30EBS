@@ -1,4 +1,4 @@
---scripts v1.02
+--scripts v1.03
 --check so
 SELECT ool.attribute4,
        ool.*
@@ -48,7 +48,8 @@ SELECT *
 
 --update so line DFF4
 UPDATE oe_order_lines_all ool
-   SET ool.attribute4 = '2018-06-02', ool.last_update_date = SYSDATE --add by hakim 20180508
+   SET ool.attribute4 = '2018-06-02', 
+       ool.last_update_date = SYSDATE --add by hakim 20180508
  WHERE 1 = 1
    AND ool.ordered_item IN ('TEB0072-TH', 'TEB0073-TH')
    AND EXISTS (SELECT 1
@@ -64,3 +65,7 @@ UPDATE xxinv_mfg_full_packing_sts t
    WHERE t.mfg_number IN ('TEB0072-TH', 'TEB0073-TH')
      AND t.org_id = 101;
 ;
+/*
+Submit request for this update
+<XXPA:Project Status Update(BA)>
+*/
