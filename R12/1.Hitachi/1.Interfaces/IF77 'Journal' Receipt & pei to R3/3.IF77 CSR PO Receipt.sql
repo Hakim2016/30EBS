@@ -1,73 +1,71 @@
 /*cursor cur_po_receipt is*/
-    ---po receipt
-      select pa.segment1 SO_number,
-             PD.EXPENDITURE_TYPE cost_element,
-             party.Duns_Number_c CUSTOMER_code,
-             PARTY.PARTY_NAME CUSTOMER_name,
-             RT.TRANSACTION_DATE record_date,
-             1 PRICE_identification_code,
-             decode(RT.TRANSACTION_TYPE,
-                    'RETURN TO RECEIVING',
-                    -1 * ROUND(RT.QUANTITY * RT.PO_UNIT_PRICE, 2),
-                    ROUND(RT.QUANTITY * RT.PO_UNIT_PRICE, 2)) PRICE,
-             RT.CURRENCY_CODE,
-             PH.SEGMENT1 PO_NUMBER,
-             HP.Duns_Number_c supplier_code,
-             PAV.VENDOR_NAME SUPPLIER_name,
-             PT2.TASK_NUMBER HBS_SG_MFG_NUMBER,
-             '' REMARK,
-             RT.TRANSACTION_ID SOURCE_ID,
-             nvl(RT.PROJECT_ID,(select v.project_id
-                    from rcv_transactions v
-                   where v.transaction_id = rt.parent_transaction_id)) project_id,
-             nvl(rt.task_id,
-                 (select v.task_id
-                    from rcv_transactions v
-                   where v.transaction_id = rt.parent_transaction_id)) task_id,
-             PH.PO_HEADER_ID,
-             OH.HEADER_ID SO_HEADER_ID,
-             ODD.OPERATING_UNIT ORG_ID,
-             ODD.SET_OF_BOOKS_ID LEDGER_ID
+---po receipt
+SELECT pa.segment1 so_number,
+       pd.expenditure_type cost_element,
+       party.duns_number_c customer_code,
+       party.party_name customer_name,
+       rt.transaction_date record_date,
+       1 price_identification_code,
+       decode(rt.transaction_type,
+              'RETURN TO RECEIVING',
+              -1 * round(rt.quantity * rt.po_unit_price, 2),
+              round(rt.quantity * rt.po_unit_price, 2)) price,
+       rt.currency_code,
+       ph.segment1 po_number,
+       hp.duns_number_c supplier_code,
+       pav.vendor_name supplier_name,
+       pt2.task_number hbs_sg_mfg_number,
+       '' remark,
+       rt.transaction_id source_id,
+       nvl(rt.project_id,
+           (SELECT v.project_id
+              FROM rcv_transactions v
+             WHERE v.transaction_id = rt.parent_transaction_id)) project_id,
+       nvl(rt.task_id,
+           (SELECT v.task_id
+              FROM rcv_transactions v
+             WHERE v.transaction_id = rt.parent_transaction_id)) task_id,
+       ph.po_header_id,
+       oh.header_id so_header_id,
+       odd.operating_unit org_id,
+       odd.set_of_books_id ledger_id
 
-        from rcv_transactions             rt,
-             PO_HEADERS_ALL               PH,
-             PO_DISTRIBUTIONS             PD,
-             AP_SUPPLIERS                 PAV,
-             HZ_PARTIES                   HP,
-             pa_projects_all              pa,
-             PA_TASKS                     PT,
-             PA_TASKS                     PT2,
-             OE_ORDER_HEADERS_ALL         OH,
-             hz_cust_accounts             CUST_ACCT,
-             hz_parties                   party,
-             ORG_ORGANIZATION_DEFINITIONS ODD
-       where RT.PO_HEADER_ID = PH.PO_HEADER_ID
-         and rt.po_distribution_id = pd.po_distribution_id
-         and rt.VENDOR_ID = pav.vendor_id(+)
-         and PAV.PARTY_ID = HP.PARTY_ID(+)
-         and nvl(rt.project_id,
-                 (select v.project_id
-                    from rcv_transactions v
-                   where v.transaction_id = rt.parent_transaction_id)) =
-             pa.project_id
-         AND nvl(rt.task_id,
-                 (select v.task_id
-                    from rcv_transactions v
-                   where v.transaction_id = rt.parent_transaction_id)) =
-             PT.TASK_ID
-         AND PT.TOP_TASK_ID = PT2.TASK_ID
-         AND PA.ORG_ID = OH.ORG_ID(+)
-         AND PA.SEGMENT1 = OH.ORDER_NUMBER(+)
-         AND Oh.sold_to_org_id = cust_acct.cust_account_id(+)
-         AND CUST_ACCT.PARTY_ID = PARTY.PARTY_ID(+)
-         AND RT.ORGANIZATION_ID = ODD.ORGANIZATION_ID
-         AND RT.TRANSACTION_TYPE IN ('DELIVER', 'RETURN TO RECEIVING')
-         AND NOT EXISTS
-       (SELECT 'Y'
-                FROM XXAP_JOURNAL_TO_R3_DATA_INT J
-               WHERE J.SOURCE_CODE = 'PO RECIPT'
-                 AND J.SOURCE_ID = RT.TRANSACTION_ID)
-
-         AND RT.CREATION_DATE >= NVL(P_START_DATE, RT.CREATION_DATE)
-         AND ODD.set_of_books_id = NVL(g_ledger_id, ODD.set_of_books_id)
-         order by RT.TRANSACTION_ID;
+  FROM rcv_transactions             rt,
+       po_headers_all               ph,
+       po_distributions             pd,
+       ap_suppliers                 pav,
+       hz_parties                   hp,
+       pa_projects_all              pa,
+       pa_tasks                     pt,
+       pa_tasks                     pt2,
+       oe_order_headers_all         oh,
+       hz_cust_accounts             cust_acct,
+       hz_parties                   party,
+       org_organization_definitions odd
+ WHERE rt.po_header_id = ph.po_header_id
+   AND rt.po_distribution_id = pd.po_distribution_id
+   AND rt.vendor_id = pav.vendor_id(+)
+   AND pav.party_id = hp.party_id(+)
+   AND nvl(rt.project_id,
+           (SELECT v.project_id
+              FROM rcv_transactions v
+             WHERE v.transaction_id = rt.parent_transaction_id)) = pa.project_id
+   AND nvl(rt.task_id,
+           (SELECT v.task_id
+              FROM rcv_transactions v
+             WHERE v.transaction_id = rt.parent_transaction_id)) = pt.task_id
+   AND pt.top_task_id = pt2.task_id
+   AND pa.org_id = oh.org_id(+)
+   AND pa.segment1 = oh.order_number(+)
+   AND oh.sold_to_org_id = cust_acct.cust_account_id(+)
+   AND cust_acct.party_id = party.party_id(+)
+   AND rt.organization_id = odd.organization_id
+   AND rt.transaction_type IN ('DELIVER', 'RETURN TO RECEIVING')
+   AND NOT EXISTS (SELECT 'Y'
+          FROM xxap_journal_to_r3_data_int j
+         WHERE j.source_code = 'PO RECIPT'
+           AND j.source_id = rt.transaction_id)
+      
+   AND rt.creation_date >= nvl(p_start_date, rt.creation_date)
+   AND odd.set_of_books_id = nvl(g_ledger_id, odd.set_of_books_id)
+ ORDER BY rt.transaction_id;

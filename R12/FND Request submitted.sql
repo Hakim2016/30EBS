@@ -3,6 +3,7 @@ v1.0  add responsibility
 v1.01 add user info(user name & email)
 */
 SELECT v.request_id rqst_id,
+       v.argument_text,
        --v.request_date,
        --v.requested_start_date,
        v.actual_start_date act_strt_date,
@@ -60,6 +61,20 @@ SELECT v.request_id rqst_id,
       --AND v.program_short_name = 'XXPAUPDATESTATUS'
       --AND v.program LIKE 'Create Accounting%'
       AND v.user_concurrent_program_name LIKE
+      '%XXGL:Accounting Data Outbound HFG%'
+      --'%IF68%'
+      --'XXPA:Project Cost Data Outbound'
+      --'XXWIP: Pull Item Quantity Checking'
+      --'XXPA:Project Revenue and Cost of Sales Recognition Request'
+      --'XXPA:EQ%s JIP Automatical Transfer Program'
+      --'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)'
+      --'PRC: Distribute Usage and Miscellaneous Costs'
+      --'%XXGL:Exchange Rate Inbound to HFG%'
+      --'XXPA:Project EQ Cost of Sales Recognition Request(SHE)'
+      --'XXPA: Finish Goods Transfer'
+      --'XXPA:Project Cost Analysis (SHE/HET) NEW'
+      --'XXPA:Project Wip Cost Analysis Detail'
+      --'XXPA: Project FG Completion Data Collection'
       --'Item categories report'
       --'%Supplier Costs Interface Audit'
       --'%Cost Collection Manager'
@@ -70,7 +85,7 @@ SELECT v.request_id rqst_id,
       --'XXPA:Accrual Offset Auto Generate Program'
       --'Period Close Reconciliation Report'
       --'Receiving Value Report (XML)'
-      'XXPA:Project COGS Monthly Report(SHE)_NEW'
+      --'%COGS Monthly Report%'
       --'XXPA:Project Revenue and Cost of Sales Recognition Request'
       --'%XXPJM:Labor Hours Budget Interface%'--IF47
       --'%Cost Incurred Report%'
@@ -114,7 +129,9 @@ SELECT v.request_id rqst_id,
 --AND v.requestor = 'HAND_HKM'--'HAND_LCR'--'70264934'--'HAND_HKM'
 --AND v.status_code = 'E'
 --AND v.phase_code IN ('R', 'P')
- ORDER BY v.request_id DESC;
+AND v.request_id >= 16727489
+ ORDER BY v.request_id --DESC
+ ;
 
 --add user info v1.01
 SELECT fu.user_id,

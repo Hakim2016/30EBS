@@ -1,40 +1,55 @@
-SELECT mmt.organization_id,
+SELECT mmt.organization_id              orgs_id,
        msi.segment1,
-       mmt.primary_quantity qty,
-       inv_project.get_locator(mmt.locator_id, mmt.organization_id) LOCATOR,--
+       mtt.transaction_type_name        trx_type,
+       mts.transaction_source_type_name trx_src_type,
+       mmt.primary_quantity             qty,
+       --mmt.source_code,
+       mmt.transaction_source_id,
+       (SELECT xx.segment1
+          FROM mtl_sales_orders xx
+         WHERE 1 = 1
+           AND xx.sales_order_id = 3256851) so_info,
+       mmt.source_line_id,
+       inv_project.get_locator(mmt.locator_id, mmt.organization_id) locator, --
        mmt.costed_flag,
        mmt.pm_cost_collected prj_costed,
        mmt.source_code,
        mmt.project_id,
        mmt.task_id,
        mmt.*
-  FROM mtl_material_transactions mmt,
-       mtl_system_items_b        msi
+  FROM mtl_material_transactions  mmt,
+       mtl_system_items_b         msi,
+       apps.mtl_transaction_types mtt,
+       mtl_txn_source_types       mts
  WHERE 1 = 1
+   AND mts.transaction_source_type_id = mmt.transaction_source_type_id
+   AND mmt.transaction_type_id = mtt.transaction_type_id
+   AND mtt.transaction_type_name IN ('Sales Order Pick')
    AND mmt.inventory_item_id = msi.inventory_item_id
    AND mmt.organization_id = msi.organization_id
       --AND mmt.transaction_id = 54868663--60911685--8915869
-   AND mmt.last_update_date >= trunc(SYSDATE) - 60 --SYSDATE - 2
-   --AND mmt.created_by = 4270
-      --AND mmt.organization_id = 83
+      --AND mmt.last_update_date >= trunc(SYSDATE) - 365 --SYSDATE - 2
+   AND mmt.organization_id = 86
+   AND mmt.transaction_id >=
+      --33834547 --2017
+       49368602 --2018
+      --AND mmt.created_by = 4270
       --AND msi.segment1 = '1000EX-EN'
-   --AND rownum = 1
-   AND mmt.source_code --= 'DN In'
-   IN('DN In', 'DN Out')
-   ORDER BY mmt.transaction_id
-   ;
+   AND rownum = 1
+/*AND mmt.source_code --= 'DN In'
+IN ('DN In', 'DN Out')*/
+ ORDER BY mmt.transaction_id;
 
-SELECT 
-mmt.transaction_id trx_id,
-mmt.transaction_date trx_date,
-decode(mmt.organization_id, 86, 'FAC', 85, 'HO', mmt.organization_id) org,
+SELECT mmt.transaction_id trx_id,
+       mmt.transaction_date trx_date,
+       decode(mmt.organization_id, 86, 'FAC', 85, 'HO', mmt.organization_id) org,
        (SELECT msi.segment1
           FROM mtl_system_items_b msi
          WHERE 1 = 1
            AND msi.inventory_item_id = mmt.inventory_item_id
            AND msi.organization_id = mmt.organization_id) item,
        mmt.primary_quantity qty,
-       inv_project.get_locator(mmt.locator_id, mmt.organization_id) LOCATOR,
+       inv_project.get_locator(mmt.locator_id, mmt.organization_id) locator,
        --mmt.transaction_type_id,
        (SELECT mtt.transaction_type_name
           FROM mtl_transaction_types mtt
@@ -65,25 +80,26 @@ decode(mmt.organization_id, 86, 'FAC', 85, 'HO', mmt.organization_id) org,
        mmt.*
   FROM mtl_material_transactions mmt
  WHERE 1 = 1
-   AND mmt.last_update_date > trunc(SYSDATE) - 120
+   AND mmt.last_update_date > trunc(SYSDATE) - 10
    AND mmt.source_code --= 'DN In'
-   IN('DN In', 'DN Out', '')
-   --AND mmt.project_id IS NOT NULL
-   --AND mmt.created_by = 4270
-   --AND mmt.transaction_id = 52998974
-   ORDER BY mmt.transaction_id
-;
+       IN ('DN In', 'DN Out', '')
+      --AND mmt.project_id IS NOT NULL
+      --AND mmt.created_by = 4270
+      --AND mmt.transaction_id = 52998974
+   AND mmt.transaction_reference = '1804261'
+ ORDER BY mmt.transaction_id;
 
 --1.transaction_type_id refer to mtl_transaction_types
 SELECT *
   FROM mtl_transaction_types mtt
  WHERE 1 = 1
---AND mtt.transaction_type_id
+      --AND mtt.transaction_type_id
+   AND mtt.transaction_type_name LIKE 'Sales Order Pick' --'Sales%Order%Pick'--
  ORDER BY mtt.creation_date --mtt.transaction_type_id
 ;
 
 --2.transaction_action_id refer to lookup 'MTL_TRANSACTION_ACTION'
-SELECT *      
+SELECT *
   FROM mfg_lookups v
  WHERE v.lookup_type = 'MTL_TRANSACTION_ACTION'
  ORDER BY v.lookup_code;
@@ -123,8 +139,8 @@ SELECT xte.source_id_int_1,
    AND xte.application_id = 707
    AND xte.security_id_int_1 = 83
    AND xte.creation_date > SYSDATE - 2;
-   
-INV_PROJECT.GET_LOCATOR(MMT.LOCATOR_ID, MMT.ORGANIZATION_ID) LOCATOR
+
+inv_project.get_locator(mmt.locator_id, mmt.organization_id) locator
 
 --org_id      Resp_id     Resp_app_id        Organization_id
 --HBS 101     51249       660                HB1  121
@@ -134,8 +150,8 @@ INV_PROJECT.GET_LOCATOR(MMT.LOCATOR_ID, MMT.ORGANIZATION_ID) LOCATOR
 /*
 BEGIN
   fnd_global.apps_initialize(user_id      => 4270,
-                             resp_id      => 50676,
-                             resp_appl_id => 660);
+                             resp_id      => 50778,
+                             resp_appl_id => 20005);
   mo_global.init('M');
   FND_PROFILE.PUT('MFG_ORGANIZATION_ID', 86);
   

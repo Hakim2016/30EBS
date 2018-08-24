@@ -82,7 +82,7 @@ END;*/
 
          /*AND ei.Last_Update_Date >=
              NVL(P_START_DATE, EI.Last_Update_Date)*/
-         AND ei.expenditure_item_id = 15429305
+         AND ei.expenditure_item_id IN(15429305, )
          AND HOU.set_of_books_id = NVL(/*g_ledger_id*/2041, HOU.set_of_books_id)
          order by ei.expenditure_item_id  
          

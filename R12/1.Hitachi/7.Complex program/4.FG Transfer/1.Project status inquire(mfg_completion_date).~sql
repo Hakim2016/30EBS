@@ -43,7 +43,10 @@ SELECT row_id,
 
 --query the mfg_completion_date(ppe.attribute1)
 SELECT ppa.org_id,
+       ppe.proj_element_id,
        ppe.project_id,
+       ppa.segment1 proj_num,
+       ppa.project_type,
        ppa.completion_date,
        ppe.name,
        ppe.element_number,
@@ -52,9 +55,29 @@ SELECT ppa.org_id,
        pa_projects_all  ppa
  WHERE 1 = 1
    AND ppe.project_id = ppa.project_id
-   AND ppa.org_id = 84--SHE
-   AND ppe.element_number = 'JAJ0295-KH'--'JAC0071-IN'
-   ;
+   AND ppa.org_id = 84 --SHE
+   AND ppe.element_number IN ('TAA0027-TH'--'JAJ0295-KH' --'JAC0071-IN'
+                              
+                              );
+
+SELECT *
+  FROM pa_proj_elements ppe
+ WHERE 1 = 1
+   AND ppe.element_number = 'JAJ0295-KH'
+   AND EXISTS (SELECT 'X'
+          FROM pa_projects_all ppa
+         WHERE 1 = 1
+           AND ppa.project_id = ppe.project_id
+           AND ppa.org_id = 84);
 
 --update the mfg_completion_date
-
+--format:'yyyy/mm/dd'
+UPDATE pa_proj_elements ppe
+   SET ppe.attribute1 = '2018/03/20'
+ WHERE 1 = 1
+   AND ppe.element_number = 'JAJ0295-KH'
+   AND EXISTS (SELECT 'X'
+          FROM pa_projects_all ppa
+         WHERE 1 = 1
+           AND ppa.project_id = ppe.project_id
+           AND ppa.org_id = 84);

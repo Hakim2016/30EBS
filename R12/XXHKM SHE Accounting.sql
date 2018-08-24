@@ -1,3 +1,7 @@
+/*
+example 9 as template
+*/
+/*
 --Conbine to one
 SELECT t.seq,
        t.entity_code,
@@ -33,12 +37,12 @@ SELECT t.seq,
                 xah.product_rule_code,
                 xal.accounting_class_code,
                 xal.ae_line_num,
-                xte.entity_code /*,
-                                                                                                                                                                       
-                                                                                                                                                                       
-                                                                                                                                                                       xah.*,
-                                                                                                                                                                       xal.*,
-                                                                                                                                                                       xte.**/
+                xte.entity_code \*,
+                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                               xah.*,
+                                                                                                                                                                                                                                                                               xal.*,
+                                                                                                                                                                                                                                                                               xte.**\
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
                 xla_ae_headers               xah,
@@ -72,12 +76,12 @@ SELECT t.seq,
                 xah.product_rule_code,
                 xal.accounting_class_code,
                 xal.ae_line_num,
-                xte.entity_code /*,
-                                                                                                                                                                       
-                                                                                                                                                                       
-                                                                                                                                                                       xah.*,
-                                                                                                                                                                       xal.*,
-                                                                                                                                                                       xte.**/
+                xte.entity_code \*,
+                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                               xah.*,
+                                                                                                                                                                                                                                                                               xal.*,
+                                                                                                                                                                                                                                                                               xte.**\
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
                 xla_ae_headers               xah,
@@ -110,12 +114,12 @@ SELECT t.seq,
                 xah.product_rule_code,
                 xal.accounting_class_code,
                 xal.ae_line_num,
-                xte.entity_code /*,
-                                                                                                                                                                       
-                                                                                                                                                                       
-                                                                                                                                                                       xah.*,
-                                                                                                                                                                       xal.*,
-                                                                                                                                                                       xte.**/
+                xte.entity_code \*,
+                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                               xah.*,
+                                                                                                                                                                                                                                                                               xal.*,
+                                                                                                                                                                                                                                                                               xte.**\
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
                 xla_ae_headers               xah,
@@ -150,12 +154,12 @@ SELECT t.seq,
                 xah.product_rule_code,
                 xal.accounting_class_code,
                 xal.ae_line_num,
-                xte.entity_code /*,
-                                                                                                                                                               
-                                                                                                                                                               
-                                                                                                                                                               xah.*,
-                                                                                                                                                               xal.*,
-                                                                                                                                                               xte.**/
+                xte.entity_code \*,
+                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                       xah.*,
+                                                                                                                                                                                                                                                                       xal.*,
+                                                                                                                                                                                                                                                                       xte.**\
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
                 xla_ae_headers               xah,
@@ -190,12 +194,12 @@ SELECT t.seq,
                 xah.product_rule_code,
                 xal.accounting_class_code,
                 xal.ae_line_num,
-                xte.entity_code /*,
-                                                                                                                                                               
-                                                                                                                                                               
-                                                                                                                                                               xah.*,
-                                                                                                                                                               xal.*,
-                                                                                                                                                               xte.**/
+                xte.entity_code \*,
+                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                       xah.*,
+                                                                                                                                                                                                                                                                       xal.*,
+                                                                                                                                                                                                                                                                       xte.**\
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
                 xla_ae_headers               xah,
@@ -229,12 +233,12 @@ SELECT t.seq,
                 xah.product_rule_code,
                 xal.accounting_class_code,
                 xal.ae_line_num,
-                xte.entity_code /*,
-                                                                                                                                                               
-                                                                                                                                                               
-                                                                                                                                                               xah.*,
-                                                                                                                                                               xal.*,
-                                                                                                                                                               xte.**/
+                xte.entity_code \*,
+                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                       xah.*,
+                                                                                                                                                                                                                                                                       xal.*,
+                                                                                                                                                                                                                                                                       xte.**\
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
                 xla_ae_headers               xah,
@@ -269,12 +273,12 @@ SELECT t.seq,
                 xah.product_rule_code,
                 xal.accounting_class_code,
                 xal.ae_line_num,
-                xte.entity_code /*,
-                                                                                                                                                               
-                                                                                                                                                               
-                                                                                                                                                               xah.*,
-                                                                                                                                                               xal.*,
-                                                                                                                                                               xte.**/
+                xte.entity_code \*,
+                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                       xah.*,
+                                                                                                                                                                                                                                                                       xal.*,
+                                                                                                                                                                                                                                                                       xte.**\
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
                 xla_ae_headers               xah,
@@ -290,7 +294,7 @@ SELECT t.seq,
            AND xte.source_id_int_1 = 15313137 --Expenditure from expense ap
         UNION ALL
         
-        --8.wip transation
+        --8.wip transation(issue resource)
         SELECT '8' seq,
                 xe.event_id,
                 xe.event_status_code,
@@ -308,12 +312,12 @@ SELECT t.seq,
                 xah.product_rule_code,
                 xal.accounting_class_code,
                 xal.ae_line_num,
-                xte.entity_code /*,
-                                                                                                                                                               
-                                                                                                                                                               
-                                                                                                                                                               xah.*,
-                                                                                                                                                               xal.*,
-                                                                                                                                                               xte.**/
+                xte.entity_code \*,
+                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                       xah.*,
+                                                                                                                                                                                                                                                                       xal.*,
+                                                                                                                                                                                                                                                                       xte.**\
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
                 xla_ae_headers               xah,
@@ -333,129 +337,106 @@ SELECT t.seq,
           t.flag DESC,
           t.ae_line_num;
 
-/*SELECT t.seq,
-       t.entity_code,
-       t.source_id_int_1 src_id,
-       --t.ledger_id,
+--event class//event type
+SELECT *
+  FROM xla_event_classes_tl xect,
+       xla_event_types_tl   xet
+ WHERE 1 = 1
+   AND xet.language = userenv('LANG')
+   AND xect.application_id = 707 --xe.application_id
+   AND xect.entity_code = xet.entity_code
+   AND xect.event_class_code = xet.event_class_code
+   AND xect.language = userenv('LANG')
+   AND xet.event_type_code = 'WIP_COMP_ISSUE';
+
+--accounting class
+SELECT *
+  FROM xla_lookups xlk
+ WHERE 1 = 1
+      --AND xlk.lookup_code = 'WIP_VALUATION'--xal.accounting_class_code
+   AND xlk.lookup_type = 'XLA_ACCOUNTING_CLASS';
+
+--9.WIP issue(issue material)
+SELECT '9' seq,
+       xah.je_category_name je_cate, --Subledger Journal Entry
+       xe.event_id,
+       xect.name event_class,
+       xet.name event_type,
+       xe.event_type_code event_type,
+       \*
+       WIP_COMP_ISSUE:WIP Component Issue
+       CG_TXFR:Cost Group Transfer
+       *\
+       --xe.event_status_code,
+       --xe.process_status_code,
+       --xah.event_type_code   event_type,
+       xah.product_rule_code acct_rule,
+       xte.source_id_int_1,
+       xah.ledger_id,
        --xah.description,
        --xal.description,
-       t.accounting_entry_status_code,
-       t.gl_transfer_status_code,
-       t.gl_transfer_date,
-       t.flag,
-       t.concatenated_segments,
-       t.dr                           dr,
-       t.cr                           cr,
-       t.event_type_code,
-       t.je_category_name,
-       t.product_rule_code,
-       t.accounting_class_code,
-       t.ae_line_num,
-       t.*
-  FROM (SELECT 'WIP_MMT' seq,
-               xte.source_id_int_1,
-               xah.ledger_id,
-               --xah.description,
-               --xal.description,
-               decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
-               gcc.concatenated_segments,
-               xal.accounted_dr dr,
-               xal.accounted_cr cr,
-               xah.event_type_code,
-               xah.accounting_entry_status_code,
-               xah.gl_transfer_status_code,
-               xah.gl_transfer_date,
-               xah.je_category_name,
-               xah.product_rule_code,
-               xal.accounting_class_code,
-               xal.ae_line_num,
-               xte.entity_code,
-               \*
-               --xte.entity_code,
-               mmt.transaction_date,
-               --xah.accounting_entry_type_code,
-               xah.event_type_code,
-               xah.je_category_name,
-               xah.description,
-               xah.accounting_date,
-               xe.event_status_code,
-               xe.event_date,
-               (SELECT fu.user_name
-                  FROM fnd_user fu
-                 WHERE 1 = 1
-                   AND fu.user_id = xte.created_by) user_name,
-               xte.created_by,
-               xdl.application_id,
-               xdl.ae_header_id,
-               xdl.ae_line_num,
-               xdl.source_distribution_type,
-               xdl.source_distribution_id_num_1,
-               xte.entity_code,
-               mmt.project_id,
-               mmt.source_project_id,
-               ppa.segment1 project_number,
-               mmt.task_id,
-               mmt.source_task_id,
-               pt.task_number,
-               xah.**\
-               
-               mmt.project_id,
-               mmt.source_project_id,
-               ppa.segment1          project_number,
-               mmt.task_id,
-               mmt.source_task_id,
-               pt.task_number
-          FROM xla.xla_distribution_links   xdl,
-               xla.xla_ae_headers           xah,
-               xla.xla_ae_lines             xal,
-               xla.xla_transaction_entities xte,
-               mtl_transaction_accounts     mta,
-               mtl_material_transactions    mmt,
-               pa_projects_all              ppa,
-               pa_tasks                     pt,
-               xla_events                   xe,
-               gl_code_combinations_kfv     gcc
-         WHERE 1 = 1
-           AND gcc.code_combination_id = xal.code_combination_id
-           AND xah.ae_header_id = xal.ae_header_id
-           AND xe.event_id = xah.event_id
-           AND xe.application_id = xte.application_id
-           AND xe.entity_id = xte.entity_id
-              --AND xdl.ae_header_id = 5687680
-              -- AND xdl.ae_line_num = 1
-           AND xdl.application_id = 707
-           AND xdl.source_distribution_type = 'MTL_TRANSACTION_ACCOUNTS'
-           AND xdl.application_id = xah.application_id
-           AND xdl.ae_header_id = xah.ae_header_id
-           AND xah.application_id = xte.application_id
-              --AND xah.ledger_id = xte.ledger_id
-           AND xah.entity_id = xte.entity_id
-           AND xdl.source_distribution_id_num_1 --= 54869415 --9378860 mmt trx id
-               IN (54869415, 54869414, 54869413, 54869412, 54869411, 54869410, 54869409, 54869408, 54869407)
-           AND xdl.source_distribution_id_num_1 = mta.inv_sub_ledger_id
-           AND xte.source_id_int_1 = mta.transaction_id
-           AND mta.transaction_id = mmt.transaction_id
-           AND nvl(mmt.project_id, mmt.source_project_id) = ppa.project_id(+)
-           AND nvl(mmt.task_id, mmt.source_task_id) = pt.task_id(+)) t
- ORDER BY t.seq,
-          t.source_id_int_1,
-          t.flag DESC,
-          t.ae_line_num;*/
+       xal.accounting_class_code acct_class,
+       decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
+       gcc.concatenated_segments,
+       xla_oa_functions_pkg.get_ccid_description( \*xgl.chart_of_accounts_id*\ 50352, xal.code_combination_id) account_desc, --账户说明, --账户说明
+       xal.accounted_dr dr,
+       xal.accounted_cr cr,
+       xal.ae_line_num,
+       xte.entity_code \*,
+                                                                                                                                                                               
+                                                                                                                                                                               
+                                                                                                                                                                               xah.*,
+                                                                                                                                                                               xal.*,
+                                                                                                                                                                               xte.**\
+  FROM xla.xla_transaction_entities xte,
+       xla_events                   xe,
+       xla_ae_headers               xah,
+       xla_ae_lines                 xal,
+       gl_code_combinations_kfv     gcc,
+       --event class/event type
+       xla_event_classes_tl xect,
+       xla_event_types_tl   xet
+
+ WHERE 1 = 1
+   AND xah.ae_header_id = xal.ae_header_id
+   AND gcc.code_combination_id = xal.code_combination_id
+   AND xe.entity_id = xte.entity_id
+   AND xe.application_id = xte.application_id
+   AND xah.entity_id = xte.entity_id
+   AND xte.application_id = 707
+   AND xte.source_id_int_1 = 54869415 --material transaction
+   AND xte.entity_code = 'MTL_ACCOUNTING_EVENTS'
+      --event class/ event type
+   AND xet.language = userenv('LANG')
+   AND xect.application_id = xe.application_id --707
+   AND xect.entity_code = xet.entity_code
+   AND xect.event_class_code = xet.event_class_code
+   AND xect.language = userenv('LANG')
+   AND xet.event_type_code = xe.event_type_code --'WIP_COMP_ISSUE'
+
+----
+ ORDER BY xe.event_id,
+          xal.accounted_dr
+
+;
+
+SELECT *
+  FROM xla_gl_ledgers_v xgl; --chart_of_accounts_id--50352 SHE
 
 SELECT
-/*
+\*
 xal.accounted_dr    dr,
-xal.accounted_cr    cr,*/
+xal.accounted_cr    cr,*\
  xte.entity_id,
  xte.entity_code,
  xte.source_id_int_1,
  xte.*
-  FROM xla.xla_transaction_entities xte /*,
+  FROM xla.xla_transaction_entities xte \*,
        xla_ae_headers               xah,
-       xla_ae_lines                 xal*/
+       xla_ae_lines                 xal*\
  WHERE 1 = 1
-      /*AND xah.ae_header_id = xal.ae_header_id
-      AND xah.entity_id = xte.entity_id*/
+      \*AND xah.ae_header_id = xal.ae_header_id
+      AND xah.entity_id = xte.entity_id*\
    AND xte.entity_code = 'MTL_ACCOUNTING_EVENTS'
    AND xte.application_id = 707
    AND xte.ledger_id = 2023
@@ -465,10 +446,17 @@ xal.accounted_cr    cr,*/
 ;
 
 SELECT xe.event_id,
+       xe.event_type_code,
+       (SELECT xl.meaning
+          FROM xla_lookups xl
+         WHERE 1 = 1
+           AND xl.lookup_type = 'XLA_ACCOUNTING_CLASS'
+           AND xl.lookup_code = xal.accounting_class_code),
+       xal.accounting_class_code,
        xal.accounted_dr dr,
        xal.accounted_cr cr,
-       /*xe.event_status_code,
-       xe.process_status_code,*/
+       \*xe.event_status_code,
+       xe.process_status_code,*\
        xte.entity_id,
        xte.entity_code,
        xte.source_id_int_1,
@@ -480,6 +468,7 @@ SELECT xe.event_id,
  WHERE 1 = 1
    AND xte.entity_id = xe.entity_id
    AND xe.application_id = xte.application_id
+   AND xte.application_id = xah.application_id
    AND xah.ae_header_id = xal.ae_header_id
    AND xah.entity_id = xte.entity_id
    AND xte.entity_code = 'WIP_ACCOUNTING_EVENTS' --'MTL_ACCOUNTING_EVENTS'
@@ -541,12 +530,12 @@ SELECT '3' seq,
        xah.product_rule_code,
        xal.accounting_class_code,
        xal.ae_line_num,
-       xte.entity_code /*,
+       xte.entity_code \*,
        
        
        xah.*,
        xal.*,
-       xte.**/
+       xte.**\
   FROM xla.xla_transaction_entities xte,
        xla_ae_headers               xah,
        xla_ae_lines                 xal,
@@ -575,12 +564,12 @@ SELECT '3' seq,
        xah.product_rule_code,
        xal.accounting_class_code,
        xal.ae_line_num,
-       xte.entity_code /*,
+       xte.entity_code \*,
        
        
        xah.*,
        xal.*,
-       xte.**/
+       xte.**\
   FROM xla.xla_transaction_entities xte,
        xla_events                   xt,
        xla_ae_headers               xah,
@@ -612,12 +601,12 @@ SELECT '6' seq,
        xah.product_rule_code,
        xal.accounting_class_code,
        xal.ae_line_num,
-       xte.entity_code /*,
+       xte.entity_code \*,
        
        
        xah.*,
        xal.*,
-       xte.**/
+       xte.**\
   FROM xla.xla_transaction_entities xte,
        xla_events                   xt,
        xla_ae_headers               xah,
@@ -780,4 +769,415 @@ SELECT ct.trx_number,
    AND te.application_id = 222
    AND te.entity_code = 'TRANSACTIONS'
    AND nvl(te.source_id_int_1, (-99)) = ct.customer_trx_id
-   AND ct.customer_trx_id = 3139;
+   AND ct.customer_trx_id = 3139;*/
+
+--20180728
+
+--Conbine to one
+SELECT t.seq,
+       t.je_cate,
+       (SELECT jc.user_je_category_name
+  FROM gl_je_categories jc
+ WHERE 1 = 1
+   AND jc.je_category_name = t.je_cate --LIKE '%COGS%'
+   --AND jc.user_je_category_name LIKE '%COGS%'
+   ) u_je_cate,
+       t.event_id,
+       t.entity_id,
+       t.source_id_int_1 src_id,
+       t.event_class,
+       t.event_type,
+       t.entity_code,
+       --t.source_id_int_1 src_id,
+       --t.ledger_id,
+       --xah.description,
+       --xal.description,
+       (SELECT meaning
+          FROM xla_lookups xlk
+         WHERE 1 = 1
+           AND xlk.lookup_code = t.acct_class --'WIP_VALUATION'--xal.accounting_class_code
+           AND xlk.lookup_type = 'XLA_ACCOUNTING_CLASS') accouting_class,
+       --t.acct_class,
+       t.flag,
+       substr(t.concatenated_segments,
+              instr(t.concatenated_segments, '.', 1, 2) + 1,
+              instr(t.concatenated_segments, '.', 1, 3) - instr(t.concatenated_segments, '.', 1, 2) - 1) acc,
+       substr(t.account_desc,
+              instr(t.account_desc, '.', 1, 2) + 1,
+              instr(t.account_desc, '.', 1, 3) - instr(t.account_desc, '.', 1, 2) - 1) acc,
+       substr(t.concatenated_segments,
+              instr(t.concatenated_segments, '.', 1, 3) + 1,
+              instr(t.concatenated_segments, '.', 1, 4) - instr(t.concatenated_segments, '.', 1, 3) - 1) subacc,
+       substr(t.account_desc,
+              instr(t.account_desc, '.', 1, 3) + 1,
+              instr(t.account_desc, '.', 1, 4) - instr(t.account_desc, '.', 1, 3) - 1) subacc,
+       substr(t.concatenated_segments,
+              instr(t.concatenated_segments, '.', 1, 4) + 1,
+              instr(t.concatenated_segments, '.', 1, 5) - instr(t.concatenated_segments, '.', 1, 4) - 1) seg3,
+       substr(t.account_desc,
+              instr(t.account_desc, '.', 1, 4) + 1,
+              instr(t.account_desc, '.', 1, 5) - instr(t.account_desc, '.', 1, 4) - 1) seg3,
+       --t.concatenated_segments,
+       --t.account_desc,
+       t.dr                    dr,
+       t.cr                    cr,
+       t.acct_rule,
+       t.ae_line_num,
+       t.ledger_id,
+       t.concatenated_segments,
+       t.account_desc
+  FROM (
+  /*
+        --8.wip transation(issue resource)
+        SELECT 8 seq,
+                xah.je_category_name je_cate, --Subledger Journal Entry
+                xe.event_id,
+                xect.name event_class,
+                xet.name event_type,
+                --xe.event_type_code event_type,
+                \*
+                WIP_COMP_ISSUE:WIP Component Issue
+                CG_TXFR:Cost Group Transfer
+                *\
+                --xe.event_status_code,
+                --xe.process_status_code,
+                --xah.event_type_code   event_type,
+                xah.product_rule_code acct_rule,
+                xte.source_id_int_1,
+                xah.ledger_id,
+                --xah.description,
+                --xal.description,
+                xal.accounting_class_code acct_class,
+                decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
+                gcc.concatenated_segments,
+                xla_oa_functions_pkg.get_ccid_description( \*xgl.chart_of_accounts_id*\ 50352, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.accounted_dr dr,
+                xal.accounted_cr cr,
+                xal.ae_line_num,
+                xte.entity_code,
+                xte.entity_id,
+       xte.transaction_number,
+       xah.accounting_date,
+       xdl.source_distribution_type
+          FROM xla.xla_transaction_entities xte,
+                xla_events                   xe,
+                xla_ae_headers               xah,
+                xla_ae_lines                 xal,
+                xla_distribution_links       xdl, --improve efficient
+                gl_code_combinations_kfv     gcc,
+                --event class/event type
+                xla_event_classes_tl xect,
+                xla_event_types_tl   xet
+         WHERE 1 = 1
+           AND xah.ae_header_id = xal.ae_header_id
+           AND gcc.code_combination_id = xal.code_combination_id
+           AND xe.entity_id = xte.entity_id
+           AND xe.application_id = xte.application_id
+           AND xah.entity_id = xte.entity_id
+           AND xte.application_id = 707
+           AND xte.source_id_int_1 = 20771589 --wip transaction
+           AND xte.entity_code = 'WIP_ACCOUNTING_EVENTS'
+              --improve efficient
+           AND xah.ae_header_id = xdl.ae_header_id
+           AND xal.ae_line_num = xdl.ae_line_num
+           AND xdl.application_id = xte.application_id
+              ----
+              --event class/ event type
+           AND xet.language = userenv('LANG')
+           AND xect.application_id = xe.application_id --707
+           AND xet.application_id = xe.application_id --707
+           AND xect.entity_code = xet.entity_code
+           AND xet.entity_code = xte.entity_code
+           AND xect.event_class_code = xet.event_class_code
+           AND xect.language = userenv('LANG')
+           AND xet.event_type_code = xe.event_type_code
+        UNION ALL
+        
+        --9.WIP issue(issue material)
+        SELECT 9 seq,
+                xah.je_category_name je_cate, --Subledger Journal Entry
+                xe.event_id,
+                xect.name event_class,
+                xet.name event_type,
+                --xe.event_type_code event_type,
+                \*
+                WIP_COMP_ISSUE:WIP Component Issue
+                CG_TXFR:Cost Group Transfer
+                *\
+                --xe.event_status_code,
+                --xe.process_status_code,
+                --xah.event_type_code   event_type,
+                xah.product_rule_code acct_rule,
+                xte.source_id_int_1,
+                xah.ledger_id,
+                --xah.description,
+                --xal.description,
+                xal.accounting_class_code acct_class,
+                decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
+                gcc.concatenated_segments,
+                xla_oa_functions_pkg.get_ccid_description( \*xgl.chart_of_accounts_id*\ 50352, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.accounted_dr dr,
+                xal.accounted_cr cr,
+                xal.ae_line_num,
+                xte.entity_code,
+                xte.entity_id,
+       xte.transaction_number,
+       xah.accounting_date,
+       xdl.source_distribution_type
+          FROM xla.xla_transaction_entities xte,
+                xla_events                   xe,
+                xla_ae_headers               xah,
+                xla_ae_lines                 xal,
+                xla_distribution_links       xdl, --improve efficient
+                gl_code_combinations_kfv     gcc,
+                --event class/event type
+                xla_event_classes_tl xect,
+                xla_event_types_tl   xet
+        
+         WHERE 1 = 1
+           AND xah.ae_header_id = xal.ae_header_id
+           AND gcc.code_combination_id = xal.code_combination_id
+           AND xe.entity_id = xte.entity_id
+           AND xe.application_id = xte.application_id
+           AND xah.entity_id = xte.entity_id
+           AND xte.application_id = 707
+           AND xte.source_id_int_1 = 54869415 --material transaction
+           AND xte.entity_code = 'MTL_ACCOUNTING_EVENTS'
+              --improve efficient
+           AND xah.ae_header_id = xdl.ae_header_id
+           AND xal.ae_line_num = xdl.ae_line_num
+           AND xdl.application_id = xte.application_id
+              ----
+           AND xdl.source_distribution_type = 'MTL_TRANSACTION_ACCOUNTS' --'AP_INV_DIST'
+              --event class/ event type
+           AND xet.language = userenv('LANG')
+           AND xect.application_id = xe.application_id --707
+           AND xet.application_id = xe.application_id --707
+           AND xect.entity_code = xet.entity_code
+           AND xet.entity_code = xte.entity_code
+           AND xect.event_class_code = xet.event_class_code
+           AND xect.language = userenv('LANG')
+           AND xet.event_type_code = xe.event_type_code --'WIP_COMP_ISSUE'
+        
+        UNION ALL*/
+        ----10.CUX FG Completion(PA Expenditure)
+        SELECT 10 seq, --xdl.source_distribution_type,
+                xah.je_category_name je_cate, --Subledger Journal Entry
+                xe.event_id,
+                xect.name event_class,
+                xet.name event_type,
+                xah.product_rule_code acct_rule,
+                xte.source_id_int_1,
+                xah.ledger_id,
+                --xah.description,
+                --xal.description,
+                xal.accounting_class_code acct_class,
+                decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
+                gcc.concatenated_segments,
+                xla_oa_functions_pkg.get_ccid_description( /*xgl.chart_of_accounts_id*/ 50352, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.accounted_dr dr,
+                xal.accounted_cr cr,
+                xal.ae_line_num,
+                xte.entity_code,
+                xte.entity_id,
+       xte.transaction_number,
+       xah.accounting_date,
+       xdl.source_distribution_type
+          FROM xla.xla_transaction_entities xte,
+                xla_events                   xe,
+                xla_ae_headers               xah,
+                xla_ae_lines                 xal,
+                xla_distribution_links       xdl, --improve efficient
+                gl_code_combinations_kfv     gcc,
+                --event class/event type
+                xla_event_classes_tl xect,
+                xla_event_types_tl   xet
+        
+         WHERE 1 = 1
+           AND xah.ae_header_id = xal.ae_header_id
+           AND gcc.code_combination_id = xal.code_combination_id
+           AND xe.entity_id = xte.entity_id
+           AND xe.application_id = xte.application_id
+           AND xah.entity_id = xte.entity_id
+           AND xte.application_id = 275 --PA
+           AND xte.source_id_int_1 --= 15315881--15316832 --pa expenditure items
+           IN (15315881, 15316880, 15317881)
+           AND xte.entity_code = 'EXPENDITURES'
+              --improve efficient
+           AND xah.ae_header_id = xdl.ae_header_id
+           AND xal.ae_line_num = xdl.ae_line_num
+           AND xdl.application_id = xte.application_id
+              ----
+           AND xdl.source_distribution_type = 'R' --pa_expenditure_items_all
+              --event class/ event type
+           AND xet.language = userenv('LANG')
+           AND xect.application_id = xe.application_id --707
+           AND xet.application_id = xe.application_id --707
+           AND xect.entity_code = xet.entity_code
+           AND xet.entity_code = xte.entity_code
+           AND xect.event_class_code = xet.event_class_code
+           AND xect.language = userenv('LANG')
+           AND xet.event_type_code = xe.event_type_code --'WIP_COMP_ISSUE'
+           
+           UNION ALL
+           
+----11.CUX EQ COGS
+SELECT 11 seq, --xdl.source_distribution_type,
+       xah.je_category_name je_cate, --Subledger Journal Entry
+       xe.event_id,
+       xect.name event_class,
+       xet.name event_type,
+       xah.product_rule_code acct_rule,
+       xte.source_id_int_1,
+       xah.ledger_id,
+       --xah.description,
+       --xal.description,
+       xal.accounting_class_code acct_class,
+       decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
+       gcc.concatenated_segments,
+       xla_oa_functions_pkg.get_ccid_description( /*xgl.chart_of_accounts_id*/ 50352, xal.code_combination_id) account_desc, --账户说明, --账户说明
+       xal.accounted_dr dr,
+       xal.accounted_cr cr,
+       xal.ae_line_num,
+       xte.entity_code,
+       xte.entity_id,
+       xte.transaction_number,
+       xah.accounting_date,
+       xdl.source_distribution_type
+  FROM xla.xla_transaction_entities xte,
+       xla_events                   xe,
+       xla_ae_headers               xah,
+       xla_ae_lines                 xal,
+       xla_distribution_links       xdl, --improve efficient
+       gl_code_combinations_kfv     gcc,
+       --event class/event type
+       xla_event_classes_tl xect,
+       xla_event_types_tl   xet
+
+ WHERE 1 = 1
+   AND xah.ae_header_id = xal.ae_header_id
+   AND gcc.code_combination_id = xal.code_combination_id
+   AND xe.entity_id = xte.entity_id
+   AND xe.application_id = xte.application_id
+   AND xah.entity_id = xte.entity_id
+   AND xte.application_id = 275 --PA
+   --AND xte.source_id_int_1 = 15316832 --pa expenditure items
+   AND xte.transaction_number = 'C15317881'
+   AND xte.entity_code = 'MANUAL'--'EXPENDITURES'
+      --improve efficient
+   AND xah.ae_header_id = xdl.ae_header_id
+   AND xal.ae_line_num = xdl.ae_line_num
+   AND xdl.application_id = xte.application_id
+      ----
+   AND xdl.source_distribution_type = 'XLA_MANUAL'--'R' --pa_expenditure_items_all
+      --event class/ event type
+   AND xet.language = userenv('LANG')
+   AND xect.application_id = xe.application_id --707
+   AND xet.application_id = xe.application_id --707
+   AND xect.entity_code = xet.entity_code
+   AND xet.entity_code = xte.entity_code
+   AND xect.event_class_code = xet.event_class_code
+   AND xect.language = userenv('LANG')
+   AND xet.event_type_code = xe.event_type_code --'WIP_COMP_ISSUE'
+ 
+        
+        ) t
+ ORDER BY t.seq,
+          t.event_id,
+          t.flag DESC,
+          t.ae_line_num;
+
+----11.CUX EQ COGS
+SELECT 11 seq, --xdl.source_distribution_type,
+       xah.je_category_name je_cate, --Subledger Journal Entry
+       xe.event_id,
+       xect.name event_class,
+       xet.name event_type,
+       xah.product_rule_code acct_rule,
+       xte.source_id_int_1,
+       xah.ledger_id,
+       --xah.description,
+       --xal.description,
+       xal.accounting_class_code acct_class,
+       decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
+       gcc.concatenated_segments,
+       xla_oa_functions_pkg.get_ccid_description( /*xgl.chart_of_accounts_id*/ 50352, xal.code_combination_id) account_desc, --账户说明, --账户说明
+       xal.accounted_dr dr,
+       xal.accounted_cr cr,
+       xal.ae_line_num,
+       xte.entity_code,
+       xte.entity_id,
+       xte.transaction_number,
+       xah.accounting_date,
+       xte.source_id_int_1,
+       xdl.source_distribution_type
+  FROM xla.xla_transaction_entities xte,
+       xla_events                   xe,
+       xla_ae_headers               xah,
+       xla_ae_lines                 xal,
+       xla_distribution_links       xdl, --improve efficient
+       gl_code_combinations_kfv     gcc,
+       --event class/event type
+       xla_event_classes_tl xect,
+       xla_event_types_tl   xet
+
+ WHERE 1 = 1
+   AND xah.ae_header_id = xal.ae_header_id
+   AND gcc.code_combination_id = xal.code_combination_id
+   AND xe.entity_id = xte.entity_id
+   AND xe.application_id = xte.application_id
+   AND xah.entity_id = xte.entity_id
+   AND xte.application_id = 275 --PA
+   --AND xte.source_id_int_1 = 15316832 --pa expenditure items
+   AND xte.transaction_number = 'C15317881'
+   AND xte.entity_code = 'MANUAL'--'EXPENDITURES'
+      --improve efficient
+   AND xah.ae_header_id = xdl.ae_header_id
+   AND xal.ae_line_num = xdl.ae_line_num
+   AND xdl.application_id = xte.application_id
+      ----
+   AND xdl.source_distribution_type = 'XLA_MANUAL'--'R' --pa_expenditure_items_all
+      --event class/ event type
+   AND xet.language = userenv('LANG')
+   AND xect.application_id = xe.application_id --707
+   AND xet.application_id = xe.application_id --707
+   AND xect.entity_code = xet.entity_code
+   AND xet.entity_code = xte.entity_code
+   AND xect.event_class_code = xet.event_class_code
+   AND xect.language = userenv('LANG')
+   AND xet.event_type_code = xe.event_type_code --'WIP_COMP_ISSUE'
+   
+   --AND xah.ae_header_id = 24596702
+;
+
+SELECT *
+  FROM xla.xla_transaction_entities xte
+ WHERE 1 = 1
+   --AND xte.entity_code = 'EXPENDITURES'
+   AND xte.application_id = 275
+   AND xte.creation_date >= to_date('03-AUG-2018 17:00:23', 'dd-mon-yyyy hh24:mi:ss')
+   AND xte.creation_date >= to_date('03-AUG-2018 19:20:54', 'dd-mon-yyyy hh24:mi:ss')
+   --AND xte.created_by = 4270
+   ;
+/*
+--INSTR()   
+SELECT instr('SHE.Default.Manufacturing Department .RES ABSORP FIELD COST_PRO.Default.Default.Default', '.', 1, 3)
+  FROM dual;
+
+\*
+t.concatenated_segments
+start:instr(t.concatenated_segments, '.',1,2)+1
+end:(t.concatenated_segments, '.',1,3)-1
+length of string:end-start
+
+substr(t.concatenated_segments,instr(t.concatenated_segments, '.',1,2)+1,
+instr(t.concatenated_segments, '.',1,3)-instr(t.concatenated_segments, '.',1,2)
+) acc
+*\
+SELECT instr('GS00.0.1145500000.421103030.215110107.0.0', '.', 1, 2)
+  FROM dual;
+SELECT instr('GS00.0.1145500000.421103030.215110107.0.0', '.', 1, 3)
+  FROM dual;
+SELECT substr('GS00.0.1145500000.421103030.215110107.0.0', 8, 10)
+  FROM dual;
+*/

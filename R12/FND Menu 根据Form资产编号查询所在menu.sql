@@ -27,7 +27,9 @@ connect by prior menu_id = sub_menu_id;
                          and f3.function_id = f3l.function_id
                          and f3l.language = userenv('LANG')
                          and f3l.user_function_name =
-                             'XXINV: Pack Case Define Rules(SHE)'))
+                             'XXINV: Pack Case Define Rules(SHE)'
+                             --'Application Accounting Definitions'
+                             ))
  connect by prior menu_id = sub_menu_id;
  
  --menu_id = 86192

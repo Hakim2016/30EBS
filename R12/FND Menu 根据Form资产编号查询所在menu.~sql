@@ -29,3 +29,13 @@ connect by prior menu_id = sub_menu_id;
                          and f3l.user_function_name =
                              'XXINV: Pack Case Define Rules(SHE)'))
  connect by prior menu_id = sub_menu_id;
+ 
+ --menu_id = 86192
+select level, lpad(' ', level * 2, ' ') || menu_id, lpad(' ', level * 2, ' ')||PROMPT
+ from fnd_menu_entries_vl v
+ WHERE 1=1
+ AND v.PROMPT IS NOT NULL
+start with menu_id = 86192
+
+connect by prior sub_menu_id = menu_id;
+

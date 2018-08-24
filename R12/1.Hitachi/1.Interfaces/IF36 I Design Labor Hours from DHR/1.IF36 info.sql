@@ -35,7 +35,7 @@ SELECT v.mfg_number,
   FROM xxpa_labor_hours_v v
  WHERE 1 = 1
    AND v.creation_date > to_date('2018-06-20 17:08:00', 'yyyy-mm-dd hh24:mi:ss') --to_date('2018-06-01', 'yyyy-mm-dd')
-   AND v.department IN ('Research ' || '&' || ' Development' /*, 'Product Design'*/)
+   --AND v.department IN ('Research ' || '&' || ' Development' /*, 'Product Design'*/)
    ;
 
 SELECT *

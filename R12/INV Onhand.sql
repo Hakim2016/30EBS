@@ -12,18 +12,12 @@ SELECT msi.segment1,
       --AND    moq.inventory_item_id = 192680
    AND moq.inventory_item_id = msi.inventory_item_id
    AND msi.organization_id = moq.organization_id
-   AND moq.organization_id = 86
+      --AND moq.organization_id = 85
    AND msi.segment1
       --= 'H-32610372-A'
-       IN ('32722974-A-0000',
-           '33350600-A-0000',
-           '33444612-A-0000',
-           'G0011626-A-0000',
-           'H3000142-C-0000',
-           'Q0001481-A-0000',
-           'R311J00042',
-           'S31901-A-0000',
-           'S41366-C-0000')
+      --LIKE 'TAE0736-TH%'
+      IN ('L#GSW0303_001')
+       --IN ('16201906-F-0000','22510119-D-0000','32098009-C-0000','33148201-A-0000','G0001731-A-0000','G0001940-H-0000','H2000069-A-0000','H3004879-D-0000','Q0002345-A-0000','S35955-D-0000')
 --('H-32610372-A', 'H-1800018', 'H-32610372-A', '34261834-A', '34261834-A-0000')
  GROUP BY msi.segment1,
           hou.name,
@@ -78,15 +72,8 @@ SELECT msi.segment1,
    AND moq.organization_id = 86
    AND msi.segment1
       --= 'H-32610372-A'
-       IN ('32722974-A-0000',
-           '33350600-A-0000',
-           '33444612-A-0000',
-           'G0011626-A-0000',
-           'H3000142-C-0000',
-           'Q0001481-A-0000',
-           'R311J00042',
-           'S31901-A-0000',
-           'S41366-C-0000')
+      IN ('16201906-F-0000','22510119-D-0000','32098009-C-0000','33148201-A-0000','G0001731-A-0000','G0001940-H-0000','H2000069-A-0000','H3004879-D-0000','Q0002345-A-0000','S35955-D-0000')
+
 --('H-32610372-A', 'H-1800018', 'H-32610372-A', '34261834-A', '34261834-A-0000')
 /* GROUP BY msi.segment1,
 hou.name,
@@ -94,7 +81,8 @@ moq.organization_id,
 moq.subinventory_code*/
  ORDER BY hou.name;
 
-inv_project.get_locator(mmt.locator_id, mmt.organization_id) locator
+SELECT inv_project.get_locator( /*mmt.locator_id*/ 112140, /*mmt.organization_id*/ 161) locator
+  FROM dual;
 
 --org_id      Resp_id     Resp_app_id        Organization_id
 --HBS 101     51249       660                HB1  121
@@ -104,7 +92,7 @@ inv_project.get_locator(mmt.locator_id, mmt.organization_id) locator
 
 /*BEGIN
   fnd_global.apps_initialize(user_id      => 4270,
-                             resp_id      => 50778,
+                             resp_id      => 51272,
                              resp_appl_id => 20005);
   mo_global.init('M');
   FND_PROFILE.PUT('MFG_ORGANIZATION_ID', 86);

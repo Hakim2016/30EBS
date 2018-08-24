@@ -1,0 +1,107 @@
+/*CURSOR cur_fac_fg03 IS*/
+    --Oversea wip transaction
+      SELECT /*p_cost_type*/'FAC_FG' cost_type,
+             'OVERSEA-WIP-M' sub_type,
+             hou.organization_id org_id,
+             hou.name operation_ou,
+             mfg.task_id mfg_id,
+             mfg.task_number mfg#,
+             pp.gl_period_name,
+             ppt.project_type,
+             ood.organization_id exp_org_id,
+             ood.organization_name exp_org,
+             ppa.project_id,
+             ppa.segment1 project_number,
+             pt.task_id,
+             pt.task_number,
+             pp.end_date expenditure_item_date,
+             pp.end_date +
+             decode(to_char(pp.end_date, 'D'),
+                    1,
+                    0,
+                    8 - (to_char(pp.end_date, 'D'))) expenditure_ending_date,
+             pet.expenditure_type,
+             round((-1 * mta.base_transaction_value), 2) actual_cost,
+             we.wip_entity_name,
+             (mta.base_transaction_value) orig_cost,
+             to_char(pp.end_date, 'YYYYMMDD') expenditure_ref,
+             'MTL_TRANSACTION_ACCOUNTS' source_table,
+             mta.inv_sub_ledger_id source_line_id,
+             NULL line_type
+        FROM apps.mtl_material_transactions mmt,
+             apps.mtl_transaction_types     mtt,
+             mtl_transaction_accounts       mta,
+             org_organization_definitions   ood,
+             hr_operating_units             hou,
+             apps.wip_discrete_jobs         wdj,
+             wip_entities                   we,
+             apps.pa_projects               ppa,
+             pa_project_types_all           ppt,
+             apps.pa_tasks                  pt,
+             pa_tasks                       mfg,
+             apps.mtl_item_categories_v     msc,
+             pa_expenditure_types           pet,
+             pa_periods_all                 pp
+       WHERE 1 = 1
+         AND msc.inventory_item_id = wdj.primary_item_id
+         AND msc.organization_id = wdj.organization_id
+         AND msc.category_set_name = 'GSCM Item Category Set'
+         AND mmt.transaction_type_id = mtt.transaction_type_id
+         AND mmt.organization_id = ood.organization_id
+         AND ood.operating_unit = hou.organization_id
+         AND ood.organization_name = 'SHE_FAC_ORG'
+         AND mtt.transaction_type_name IN ('WIP Issue', 'WIP Return')
+         AND mmt.transaction_id = mta.transaction_id
+         AND mta.accounting_line_type = 7 --WIP valuation
+         AND mta.base_transaction_value <> 0
+         AND mmt.transaction_source_id = wdj.wip_entity_id
+         AND wdj.wip_entity_id = we.wip_entity_id
+         AND wdj.project_id = ppa.project_id
+         AND ppa.project_type = ppt.project_type
+         AND ppt.attribute7 = 'OVERSEA'
+         AND wdj.task_id = pt.task_id
+         AND pt.top_task_id = mfg.task_id
+         AND mmt.organization_id = wdj.organization_id
+         AND msc.category_concat_segs = pet.attribute15
+         AND pet.end_date_active IS NULL -- add by gusenlin 20130723  for 11 parts
+         AND ppa.org_id = pp.org_id
+         AND mmt.transaction_date <= pp.end_date + 0.99999
+         AND EXISTS
+       (SELECT 1
+                FROM mtl_material_transactions mmt
+               WHERE mmt.transaction_source_id = we.wip_entity_id
+                 AND mmt.transaction_type_id = 44 --WIP Completion
+                 AND mmt.final_completion_flag = 'Y')
+        /* AND 
+             EXISTS
+              (SELECT 1
+                 FROM xxpa.xxpa_cost_carry_over_tmp A
+                WHERE ood.organization_id = a.organization_id
+                  AND pet.attribute15 = a.category_concat_segs
+                  AND ppa.project_id = a.project_id
+                  AND pt.task_id = a.task_id)*/
+         --AND pp.gl_period_name = g_period_name
+   AND pp.start_date = to_date('20180401','yyyymmdd')
+   AND pt.task_number = 'SBH0216-PH.EQ'
+         /*AND (NOT EXISTS
+              (SELECT 1
+                 FROM xxpa_cost_flow_dtls_all xcfd
+                WHERE xcfd.cost_type = \*p_cost_type*\'FAC_FG'
+                  AND xcfd.source_table = 'MTL_TRANSACTION_ACCOUNTS'
+                  AND xcfd.source_line_id = mta.inv_sub_ledger_id))*/
+      ;
+      
+--org_id      Resp_id     Resp_app_id        Organization_id
+--HBS 101     51249       660                HB1  121
+--HEA 82      50676       660                SG1  83
+--HET 141     51272       20005              HE1  161
+--SHE 84      50778       20005              TH1  85  TH2 86
+/*
+BEGIN
+  fnd_global.apps_initialize(user_id      => 4270,
+                             resp_id      => 50778,
+                             resp_appl_id => 20005);
+  mo_global.init('M');
+  --FND_PROFILE.PUT('MFG_ORGANIZATION_ID', 86);
+  
+END;*/

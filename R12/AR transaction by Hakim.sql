@@ -7,7 +7,10 @@ SELECT rct.org_id,
        rct.*
   FROM ra_customer_trx_all rct
  WHERE 1 = 1
-   AND rct.trx_number IN ('DTOAP000171') --('JPE-18000050')--('10000017753')
+ AND rct.org_id = 84
+   --AND rct.trx_number IN ('DTOAP000171') --('JPE-18000050')--('10000017753')
+   AND rct.creation_date >= to_date('20180301','yyyymmdd')
+   AND rct.creation_date <= to_date('20180315','yyyymmdd')
 --AND rct.customer_trx_id = 4022542
 ;
 

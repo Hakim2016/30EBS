@@ -1,0 +1,10 @@
+UPDATE xxbcd.xx_pda_count_tag_scan xx
+   SET xx.import_flag = 'N'
+ WHERE 1 = 1
+   AND xx.tag_number = 'A3244';
+   --FRM Check Stock June 2013
+
+SELECT *
+  FROM xxbcd.xx_pda_count_tag_scan xx
+ WHERE 1 = 1
+   AND xx.tag_number = 'A3244';

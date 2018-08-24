@@ -16,7 +16,7 @@ INSERT INTO hkm_conc_req_summary
   SELECT *
     FROM fnd_conc_req_summary_v v
    WHERE 1 = 1
-     AND v.request_id = 15489358--15487352
+     AND v.request_id = 15515034--15514566--15514565--15512836--15512251--15512211--15511782--15508909--15508903--15508884--15508877--15508426--15508460--15508355--15508223--15508187--15508138--15508084--15508070--15507969--15507928--15489358--15487352
      --IN (15481910)
   --15481905
   --15481897
@@ -24,7 +24,8 @@ INSERT INTO hkm_conc_req_summary
 COMMIT;
 
 --check the monitor table
-SELECT * FROM hkm_conc_req_summary;
+SELECT * FROM hkm_conc_req_summary
+ORDER BY request_id DESC;
 --use column "PRINTER" to identify if monitor is needed
 --"N" no need for monitor
 

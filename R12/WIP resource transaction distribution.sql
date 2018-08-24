@@ -40,8 +40,10 @@ SELECT transaction_date,
        activity,
        overhead_basis_factor,
        basis_resource_id
-  FROM cst_distribution_v
+  FROM cst_distribution_v v
+  ,gl_code_combinations gcc
  WHERE organization_id = 86
+ AND gcc.code_combination_id = v.
    AND nvl(basis_resource_id, 0) <> -1
    AND (transaction_id = 20771589)
  ORDER BY transaction_date DESC,

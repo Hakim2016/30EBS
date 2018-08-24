@@ -14,76 +14,66 @@
 END;*/
 
 /*CURSOR cur_pa IS*/
-      SELECT PA.SEGMENT1 SO_NUMBER,
-             ei.expenditure_type cost_element,
-             party.Duns_Number_c CUSTOMER_code,
-             PARTY.PARTY_NAME CUSTOMER_name,
-             ei.EXPENDITURE_ITEM_DATE record_date,
-             DECODE(ET.ATTRIBUTE14, 'Taken', 2, 'Offset', 3, 'Transfer',4,2) PRICE_identification_code,
-             DECODE(EI.system_linkage_function,
-                    'ST',
-                    DECODE(pa_security.view_labor_costs(EI.project_id),
-                           'Y',
-                           EI.PROJECT_BURDENED_COST,
-                           NULL),
-                    'OT',
-                    DECODE(pa_security.view_labor_costs(EI.project_id),
-                           'Y',
-                           EI.PROJECT_BURDENED_COST,
-                           NULL),
-                    EI.PROJECT_BURDENED_COST) PRICE,
-             ei.Denom_Currency_Code Currency_Code,
-             substr(pc.EXPENDITURE_COMMENT,
-                    1,
-                    INSTR(pc.EXPENDITURE_COMMENT, '-', 1) - 1) PO_NUMBER,
-             PT2.TASK_NUMBER HBS_SG_MFG_NUMBER,
-             '' REMARK,
-             ei.expenditure_item_id source_id,
-             ei.project_id,
-             ei.task_id,
-             ei.org_id,
-             HOU.set_of_books_id LEDGER_ID,
-             OH.HEADER_ID SO_HEADER_ID
-        FROM PA_EXPENDITURE_ITEMS_ALL EI,
-             pa_expenditure_types     et,
-             PA_EXPENDITURES_ALL      x,
-             PA_PROJECTS              PA,
-             PA_TASKS                 PT,
-             PA_TASKS                 PT2,
-             OE_ORDER_HEADERS_ALL     OH,
-             hz_cust_accounts         CUST_ACCT,
-             hz_parties               party,
-             pa_expenditure_comments  pc,
-             HR_OPERATING_UNITS       HOU
+SELECT pa.segment1 so_number,
+       ei.expenditure_type cost_element,
+       party.duns_number_c customer_code,
+       party.party_name customer_name,
+       ei.expenditure_item_date record_date,
+       decode(et.attribute14, 'Taken', 2, 'Offset', 3, 'Transfer', 4, 2) price_identification_code,
+       decode(ei.system_linkage_function,
+              'ST',
+              decode(pa_security.view_labor_costs(ei.project_id), 'Y', ei.project_burdened_cost, NULL),
+              'OT',
+              decode(pa_security.view_labor_costs(ei.project_id), 'Y', ei.project_burdened_cost, NULL),
+              ei.project_burdened_cost) price,
+       ei.denom_currency_code currency_code,
+       substr(pc.expenditure_comment, 1, instr(pc.expenditure_comment, '-', 1) - 1) po_number,
+       pt2.task_number hbs_sg_mfg_number,
+       '' remark,
+       ei.expenditure_item_id source_id,
+       ei.project_id,
+       ei.task_id,
+       ei.org_id,
+       hou.set_of_books_id ledger_id,
+       oh.header_id so_header_id
+  FROM pa_expenditure_items_all ei,
+       pa_expenditure_types     et,
+       pa_expenditures_all      x,
+       pa_projects              pa,
+       pa_tasks                 pt,
+       pa_tasks                 pt2,
+       oe_order_headers_all     oh,
+       hz_cust_accounts         cust_acct,
+       hz_parties               party,
+       pa_expenditure_comments  pc,
+       hr_operating_units       hou
 
-       WHERE 1 = 1
-         and ei.expenditure_type = et.expenditure_type
-         AND EI.EXPENDITURE_ID = X.EXPENDITURE_ID
-         AND EI.project_id = PA.PROJECT_ID
-         AND EI.TASK_ID = PT.TASK_ID
-         AND PT.TOP_TASK_ID = PT2.TASK_ID
-         AND pa.ORG_ID = OH.ORG_ID
-         and pa.segment1 = to_char(OH.ORDER_NUMBER)
-         AND Oh.sold_to_org_id = cust_acct.cust_account_id(+)
-         AND CUST_ACCT.PARTY_ID = PARTY.PARTY_ID(+)
-         and ei.EXPENDITURE_ITEM_ID = pc.EXPENDITURE_ITEM_ID(+)
-         AND EI.ORG_ID = HOU.organization_id
-         and X.EXPENDITURE_STATUS_CODE = 'APPROVED'
-         and ei.PROJECT_BURDENED_COST is not null
-         and (ei.transaction_source is null or
-             ei.transaction_source = 'Other Cost2' or
-             ei.transaction_source = 'HBS_Oracle')
-/*         and et.attribute14 in ('Transfer','Offset','Taken')
-         AND NOT EXISTS
-       (SELECT 'Y'
-                FROM XXAP_JOURNAL_TO_R3_DATA_INT J
-               WHERE J.SOURCE_CODE = 'PA'
-                 AND J.SOURCE_ID = ei.expenditure_item_id)*/
+ WHERE 1 = 1
+   AND ei.expenditure_type = et.expenditure_type
+   AND ei.expenditure_id = x.expenditure_id
+   AND ei.project_id = pa.project_id
+   AND ei.task_id = pt.task_id
+   AND pt.top_task_id = pt2.task_id
+   AND pa.org_id = oh.org_id
+   AND pa.segment1 = to_char(oh.order_number)
+   AND oh.sold_to_org_id = cust_acct.cust_account_id(+)
+   AND cust_acct.party_id = party.party_id(+)
+   AND ei.expenditure_item_id = pc.expenditure_item_id(+)
+   AND ei.org_id = hou.organization_id
+   AND x.expenditure_status_code = 'APPROVED'
+   AND ei.project_burdened_cost IS NOT NULL
+   AND (ei.transaction_source IS NULL OR ei.transaction_source = 'Other Cost2' OR ei.transaction_source = 'HBS_Oracle')
+      /*         and et.attribute14 in ('Transfer','Offset','Taken')
+        AND NOT EXISTS
+      (SELECT 'Y'
+               FROM XXAP_JOURNAL_TO_R3_DATA_INT J
+              WHERE J.SOURCE_CODE = 'PA'
+                AND J.SOURCE_ID = ei.expenditure_item_id)*/
+      
+      /*AND ei.Last_Update_Date >=
+      NVL(P_START_DATE, EI.Last_Update_Date)*/
+   AND ei.expenditure_item_id IN (15429305,)
+   AND hou.set_of_books_id = nvl( /*g_ledger_id*/ 2041, hou.set_of_books_id)
+ ORDER BY ei.expenditure_item_id
 
-         /*AND ei.Last_Update_Date >=
-             NVL(P_START_DATE, EI.Last_Update_Date)*/
-         AND ei.expenditure_item_id IN(15429305, )
-         AND HOU.set_of_books_id = NVL(/*g_ledger_id*/2041, HOU.set_of_books_id)
-         order by ei.expenditure_item_id  
-         
-         ;
+;

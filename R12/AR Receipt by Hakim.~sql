@@ -1,0 +1,7 @@
+SELECT acr.receipt_date, acr.amount
+,acr.*
+  FROM ar_cash_receipts_all acr
+ WHERE 1=1
+ --AND acr.cash_receipt_id = 1004 --1000
+ AND acr.receipt_number = '2800000018'
+ AND acr.org_id = 82;

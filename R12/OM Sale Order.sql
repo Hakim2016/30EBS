@@ -7,8 +7,8 @@
 /*
 BEGIN
   fnd_global.apps_initialize(user_id      => 4270,
-                             resp_id      => 50778,
-                             resp_appl_id => 20005);
+                             resp_id      => 50676,
+                             resp_appl_id => 660);
   mo_global.init('M');
   
 END;
@@ -17,14 +17,40 @@ END;
 SELECT *
   FROM oe_order_headers_all ooh
  WHERE 1 = 1
-   --AND ooh.org_id = 101
-   AND ooh.order_number IN ('23000461')--('53020044'); --('53020400', '53020422');
-   ;
+      --AND ooh.org_id = 101
+   AND ooh.order_number IN ('23000461') --('53020044'); --('53020400', '53020422');
+;
 --so line dff1 dff4
-SELECT ooh.order_number,
+SELECT ooh.creation_date,
+       ooh.order_number,
+       ott.name so_type,
        ooh.booked_flag,
        ooh.cancelled_flag,
+       
+       ooh.attribute5,
+       ool.attribute5,
+       ool.attribute15,
+       ool.project_id,
+       ool.task_id,
+       
+       (SELECT ppa.segment1
+          FROM pa_projects_all ppa
+         WHERE 1 = 1
+           AND ppa.project_id = ool.project_id) prj_num,
+       (
+        
+        SELECT pt.task_number
+          FROM pa_tasks pt
+         WHERE 1 = 1
+           AND pt.project_id = ool.project_id
+           AND pt.task_id = ool.task_id) task_num,
        ool.ordered_item,
+       ool.line_number,
+       ool.cust_production_seq_num,
+       ool.ordered_quantity,
+       ool.pricing_quantity,
+       ool.pricing_quantity_uom,
+       ool.unit_selling_price,
        ool.line_number,
        ool.last_update_date,
        ott.name,
@@ -41,19 +67,81 @@ SELECT ooh.order_number,
        oe_order_lines_all     ool,
        oe_transaction_types_v ott
  WHERE 1 = 1
+   AND ooh.org_id = 82--84 --101
+   AND ott.transaction_type_id = ooh.order_type_id(+)
+   AND ott.org_id = ooh.org_id
+   AND ooh.header_id = ool.header_id(+)
+   AND ott.name = 'Order_HEA_Domestic_EQ_Sales'--'SHE_Oversea_Spare Parts'
+   AND ooh.cancelled_flag <> 'Y'
+   AND ooh.booked_flag = 'Y'
+   AND ooh.creation_date >= to_date('20170601', 'yyyymmdd')
+--AND ooh.order_number = 
+--'22011912'
+--'22013146'
+--'22010117'
+--'21000473'
+--'202474'
+--'23000414'
+--'23000461'--'11000144'--'12003425'
+--'10101647'--'10101629'--'11001299'--'11000884' --'53020261' --'53020362' --'53020261'--'53020165'--'53020155'--'53020400'
+--AND ool.ordered_item IN ('ST02938-IN')
+--('LB3901-PL210A')--('JED0210-VN','JED0211-VN','JED0212-VN','JED0219-VN','JED0220-VN','JED0225-VN');
+ ORDER BY ool.last_update_date DESC;
+
+--so line dff1 dff4 associated with ar
+SELECT ooh.order_number,
+       (SELECT xx.trx_number
+          FROM ra_customer_trx_all xx
+         WHERE 1 = 1
+           AND xx.customer_trx_id = rctl.customer_trx_id) ar_num,
+       ool.line_number so_line,
+       rctl.sales_order_line,
+       ott.name so_type,
+       ooh.booked_flag,
+       ooh.cancelled_flag,
+       ool.ordered_item,
+       ool.line_number,
+       ool.cust_production_seq_num,
+       ool.ordered_quantity,
+       ool.pricing_quantity,
+       ool.pricing_quantity_uom,
+       ool.unit_selling_price,
+       ool.line_number,
+       ool.last_update_date,
+       ott.name,
+       ooh.order_type_id,
+       ott.transaction_type_code,
+       (SELECT fu.user_name
+          FROM fnd_user fu
+         WHERE 1 = 1
+           AND fu.user_id = ool.last_updated_by) usr,
+       ool.attribute1,
+       ool.attribute4,
+       ool.*
+  FROM oe_order_headers_all      ooh,
+       oe_order_lines_all        ool,
+       oe_transaction_types_v    ott,
+       ra_customer_trx_lines_all rctl
+ WHERE 1 = 1
+      --AND rctl.sales_order = ooh.order_number
+      --AND ool.line_number || '.' || ool.shipment_number = rctl.sales_order_line
    AND ooh.org_id = 84 --101
    AND ott.transaction_type_id = ooh.order_type_id(+)
    AND ott.org_id = ooh.org_id
    AND ooh.header_id = ool.header_id(+)
-   AND ooh.order_number = 
-   --'202474'
-   --'23000414'
-   '23000461'--'11000144'--'12003425'
-      --'10101647'--'10101629'--'11001299'--'11000884' --'53020261' --'53020362' --'53020261'--'53020165'--'53020155'--'53020400'
+      --AND ott.name = 'SHE_Oversea_Spare Parts'
+      --AND ooh.cancelled_flag <> 'Y'
+      --AND ooh.creation_date >= to_date('20170601', 'yyyymmdd')
+   AND ooh.order_number = '22013146' --'22011912'
+--'22010117'
+--'21000473'
+--'202474'
+--'23000414'
+--'23000461'--'11000144'--'12003425'
+--'10101647'--'10101629'--'11001299'--'11000884' --'53020261' --'53020362' --'53020261'--'53020165'--'53020155'--'53020400'
 --AND ool.ordered_item IN ('ST02938-IN')
 --('LB3901-PL210A')--('JED0210-VN','JED0211-VN','JED0212-VN','JED0219-VN','JED0220-VN','JED0225-VN');
-ORDER BY ool.last_update_date
-;
+ ORDER BY ool.last_update_date;
 
 --packing list
 SELECT v.project_number,
@@ -64,9 +152,9 @@ SELECT v.project_number,
   FROM xxinv_packing_lists_v v
  WHERE 1 = 1
       --AND v.status_code LIKE 'DRAFT%'
-   AND v.project_number = '11001299'--'53020362'
-   --AND v.creation_date > to_date('2018-03-01', 'yyyy-mm-dd')
-   AND v.organization_id = 83--HEA_ORG--121--HBS_ORG
+   AND v.project_number = '11001299' --'53020362'
+      --AND v.creation_date > to_date('2018-03-01', 'yyyy-mm-dd')
+   AND v.organization_id = 83 --HEA_ORG--121--HBS_ORG
  ORDER BY v.project_number;
 
 --packing
@@ -127,9 +215,9 @@ SELECT case_type,
        country_of_origin,
        remark
   FROM xxinv_cases_packing_v v
- WHERE organization_id = 83--121
+ WHERE organization_id = 83 --121
       --AND (oe_header_id = 2127868)
-   AND v.project_number = '11001299'--'53020362' --'53020261' --'53020362'
+   AND v.project_number = '11001299' --'53020362' --'53020261' --'53020362'
    AND (scrap_flag = 'N')
  ORDER BY list_number DESC,
           case_number ASC;
@@ -156,9 +244,9 @@ SELECT --delivery_id,
  ship_from_country,
  ship_from_country_desc
   FROM xxinv_delivery_v
- WHERE 1=1
- --(created_by = 4270)
-   AND project_number = '11001299'--'53020362'
+ WHERE 1 = 1
+      --(created_by = 4270)
+   AND project_number = '11001299' --'53020362'
  ORDER BY delivery_number DESC;
 
 --Fully Delivery
@@ -172,9 +260,9 @@ SELECT org_id,
        fully_delivery_date,
        top_task_id
   FROM xxinv_delivery_headers_v
- WHERE 1=1
- AND org_id = 82--101
-   AND project_number = '11001299'--'53020261' --'53020362'
+ WHERE 1 = 1
+   AND org_id = 82 --101
+   AND project_number = '11001299' --'53020261' --'53020362'
  ORDER BY mfg_number;
 
 /*SELECT row_id,
@@ -252,8 +340,8 @@ SELECT xpmm.proj_milestone_id,
    AND pp.org_id = nvl(xpmm.org_id, pp.org_id)
    AND pt.project_id = xpmm.project_id(+)
    AND pt.task_number = xpmm.mfg_num(+)
-   AND pp.org_id = 82--101
-   AND pp.segment1 = '11001299'--'53020362' --'53020362' --'53020261'--'53020362'--'53020400'
+   AND pp.org_id = 82 --101
+   AND pp.segment1 = '11001299' --'53020362' --'53020362' --'53020261'--'53020362'--'53020400'
 --AND pt.task_number IN 
 --('JED0210-VN','JED0211-VN','JED0212-VN','JED0219-VN','JED0220-VN','JED0225-VN')
 --AND xpmm.fully_packing_date IS NOT NULL
@@ -271,11 +359,11 @@ SELECT xth.invoice_number,
        xxar_tax_invoice_lines_v   xtl
  WHERE 1 = 1
    AND xth.header_id = xtl.header_id
-      AND xth.invoice_number = 'SPE-17000226'--'DP-15000334'
+   AND xth.invoice_number = 'SPE-17000226' --'DP-15000334'
       --AND xth.invoice_number LIKE 'SPE%'
    AND xtl.item_number IS NOT NULL
-      AND xtl.creation_date > to_date('2018-03-01','yyyy-mm-dd')
-   --AND xth.tax_rate <> 0
+   AND xtl.creation_date > to_date('2018-03-01', 'yyyy-mm-dd')
+--AND xth.tax_rate <> 0
 --AND xth.delivery_number IS NOT NULL
 --AND xth.status_code = ''
 
@@ -305,7 +393,7 @@ SELECT rct.customer_trx_id,
        ra_customer_trx_lines_all rctl
  WHERE 1 = 1
    AND rct.customer_trx_id = rctl.customer_trx_id
-   AND rct.trx_number = 'SPE-17000226'--'SPR-17000624' --'JPE-18000001'
+   AND rct.trx_number = 'SPE-17000226' --'SPR-17000624' --'JPE-18000001'
 ;
 
 --xla
@@ -341,11 +429,11 @@ SELECT xe.event_id,
        xla_ae_lines                 xal
  WHERE 1 = 1
    AND xte.application_id = 222
-   AND xte.ledger_id = 2021--2041
+   AND xte.ledger_id = 2021 --2041
    AND xte.entity_id = xe.entity_id
    AND xte.entity_id = xah.entity_id
    AND xah.ae_header_id = xal.ae_header_id
-   AND xte.source_id_int_1 = 4156949--4167034
+   AND xte.source_id_int_1 = 4156949 --4167034
 --AND xah.description = 'Invoice Transaction Type - EQ_Oversea_Invoice Invoice Transaction Number - JPE-18000001 Document Sequence Category - Document Number -'
 --AND xah.creation_date > TRUNC(SYSDATE)
 --AND ROWNUM = 1
@@ -358,8 +446,8 @@ SELECT *
    AND xte.application_id = 222
    AND xe.application_id = xte.application_id
    AND xe.entity_id = xte.entity_id
-   AND xte.source_id_int_1 = 4156949--4167034
-   ;
+   AND xte.source_id_int_1 = 4156949 --4167034
+;
 
 SELECT *
   FROM fnd_application fa

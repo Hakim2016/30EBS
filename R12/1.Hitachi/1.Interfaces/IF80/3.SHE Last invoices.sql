@@ -52,6 +52,7 @@ HAVING COUNT(*) > 1
 SELECT decode(ppt.attribute7, 'OVERSEA', 'OVERSEA', 'DOMESTIC') isoversea,
        nvl(dih.last_invoice_flag, 'N') last_invoice_flag,
        dih.transaction_date,
+       ppa.segment1 prj_num,
        ool.task_id,
        ool.org_id,
        ool.ordered_item,

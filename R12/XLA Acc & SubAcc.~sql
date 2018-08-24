@@ -26,9 +26,9 @@ SELECT accv.flex_value acc,
        fnd_flex_values_vl  subaccv,
        fnd_flex_value_sets subaccs
  WHERE 1 = 1
-   AND accs.flex_value_set_name = 'HEA_ACCOUNT'
+   AND accs.flex_value_set_name = 'SHE_ACCOUNT'
    AND accs.flex_value_set_id = accv.flex_value_set_id
-   AND subaccs.flex_value_set_name = 'HEA_SUBACCOUNT'
+   AND subaccs.flex_value_set_name = 'SHE_SUBACCOUNT'
    AND subaccs.flex_value_set_id = subaccv.flex_value_set_id
    AND accv.flex_value = subaccv.parent_flex_value_low
 

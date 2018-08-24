@@ -6,7 +6,7 @@
 
 /*BEGIN
   fnd_global.apps_initialize(user_id      => 4270,
-                             resp_id      => 51249,
+                             resp_id      => 50676,
                              resp_appl_id => 660);
   mo_global.init('M');
   
@@ -62,7 +62,11 @@ SELECT xpmm.proj_milestone_id,
        pp.segment1          project_number,
        pt.task_id,
        pt.task_number       mfg_no,
+       xpmm.er_add_up_amount,
+       xpmm.cos_add_up_amount,
        --xpmm.creation_date,
+       xpmm.er_finish_flag,
+       xpmm.cos_finish_flag,
        xpmm.period_name,
        xpmm.ba_fully_packing_date,
        xpmm.fully_packing_date,
@@ -85,7 +89,7 @@ SELECT xpmm.proj_milestone_id,
 FROM   pa_projects_all          pp,
        pa_tasks             pt,
        hr_operating_units   hou  ,
-       xxpa_proj_milestone_manage     xpmm
+       xxpa_proj_milestone_manage_all     xpmm
 WHERE  pp.org_id               = hou.organization_id
   AND  pp.enabled_flag         = 'Y'
   AND  pp.project_status_code  = 'APPROVED'
@@ -95,13 +99,14 @@ WHERE  pp.org_id               = hou.organization_id
   AND  pp.org_id               = nvl(xpmm.org_id,pp.org_id)
   AND  pt.project_id           = xpmm.project_id(+)
   AND  pt.task_number          = xpmm.mfg_num(+)
-  AND pp.org_id = 101
-  AND pp.segment1 = '53020362'--'53020400'
+  AND pp.org_id = 82--101
+  AND pp.segment1 = '11001296'--'11001296'--'53020362'--'53020400'
   --AND pt.task_number IN 
   --('JED0210-VN','JED0211-VN','JED0212-VN','JED0219-VN','JED0220-VN','JED0225-VN')
-  --AND xpmm.fully_packing_date IS NOT NULL
-  --AND xpmm.fully_delivery_date IS NOT NULL
+  --AND xpmm.fully_packing_date IS NULL
+  --AND xpmm.fully_delivery_date IS NULL
   --AND ROWNUM < 5
+  --AND xpmm.cos_finish_flag = 'N'
 ORDER BY hou.name,
          pp.segment1
 ;

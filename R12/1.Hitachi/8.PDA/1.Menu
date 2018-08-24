@@ -1,0 +1,27 @@
+SELECT /*distinct*/ hm.menu_name menu_name,
+                            hf.function_path || '$' || hm.attribute1 || '$SHOW',
+                            hf.function_path,
+                            hm.attribute1,
+                            hm.menu_sequence
+                            FROM hfwk_users          hu,
+                            hfwk_user_resps     hup,
+                            hfwk_resp_menu      hrm,
+                            hfwk_menus          hm,
+                            hfwk_functions      hf,
+                            HFWK_MENU_GROUP_B   GB,
+                            HFWK_MENUS_RELATION MR
+                            WHERE hup.user_id = hu.user_id
+                            AND hrm.resp_id = hup.resp_id
+                            AND GB.MENU_GROUP_ID = hrm.menu_id
+                            AND MR.MENU_GROUP_ID = GB.MENU_GROUP_ID
+                            AND hf.function_id = hm.function_id
+                            AND hm.menu_type = 'PDA'
+                            AND MR.CHILD_MENU_ID = HM.MENU_ID
+                            AND SYSDATE BETWEEN hrm.start_date AND nvl(hrm.end_date, SYSDATE + 1)
+                            --AND hf.enabled_flag = 'Y'
+                            AND SYSDATE BETWEEN hm.start_date AND nvl(hm.end_date, SYSDATE + 1)
+                            AND SYSDATE BETWEEN hup.start_date AND nvl(hup.end_date, SYSDATE + 1)
+                            AND hu.user_id = 4062--4170--'" + userID + @"'
+                            ORDER BY hm.menu_sequence ASC;
+                            
+                            SELECT * FROM hfwk_menus_b;

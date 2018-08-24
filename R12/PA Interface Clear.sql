@@ -1,4 +1,4 @@
-﻿
+
 SELECT DISTINCT batch_name FROM pa_transaction_interface_all pa WHERE pa.org_id=84
 
 CREATE TABLE xxpa.pa_trx_interface_all130902

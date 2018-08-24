@@ -10,7 +10,7 @@ SELECT xic.interface_code,
  WHERE 1 = 1
    AND fef.executable_name = xic.concurrent_program_name(+)
       --AND xic.remote_system_code = 'R3'
-   AND xic.interface_code = 'IF81'
+   AND xic.interface_code = 'IF66'
 --AND xic.remote_system_code = 'HFG'
 /*  AND xic.interface_code IN 
 
@@ -23,6 +23,7 @@ SELECT xic.interface_code,
 --AND xic.USER_CONCURRENT_PROGRAM_NAME LIKE '%ixed%sset%'
 --AND xic.enabled_flag = 'N'
  ORDER BY 1;
+
 xxbom_eco_report_pkg;--.main
 
 /*
@@ -41,11 +42,3 @@ XXPJM:VO Interface Import(GOE->GSCM)
 
 */
 
-/*
-IF47
-XXPJMB009
-XXPJM
-XXPJM_LABOUR_BUDGET_INT
-XXPJM:Labor Hours Budget Interface
-
-*/

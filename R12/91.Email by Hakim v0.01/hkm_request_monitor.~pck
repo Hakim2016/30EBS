@@ -35,8 +35,8 @@ CREATE OR REPLACE PACKAGE hkm_request_monitor IS
   *             -----------  --------------     ------------      
   *             2013-12-21   liqing.liu         Created                    
   +==========================================================================*/
-  PROCEDURE main/*(errbuf  OUT NOCOPY VARCHAR2,
-                 retcode OUT NOCOPY VARCHAR2)*/;
+  PROCEDURE main(errbuf  OUT NOCOPY VARCHAR2,
+                 retcode OUT NOCOPY VARCHAR2);
 
 END hkm_request_monitor;
 /
@@ -66,6 +66,7 @@ CREATE OR REPLACE PACKAGE BODY hkm_request_monitor IS
   g_yes_no VARCHAR2(4) := NULL;
   TYPE l_data_type IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
   g_data_rec l_data_type;
+  g_env      VARCHAR2(20);
 
   -- paramter
   g_ledger_id       NUMBER;
@@ -149,11 +150,12 @@ CREATE OR REPLACE PACKAGE BODY hkm_request_monitor IS
 
   PROCEDURE remove_monitor IS
   BEGIN
-    FOR i IN 1..g_data_rec.count LOOP
+    FOR i IN 1 .. g_data_rec.count
+    LOOP
       UPDATE hkm_conc_req_summary crs
-      SET crs.printer = 'N'
-      WHERE 1=1
-      AND crs.request_id = g_data_rec(i);
+         SET crs.printer = 'N'
+       WHERE 1 = 1
+         AND crs.request_id = g_data_rec(i);
       log('Hakim: remove monitor of ' || g_data_rec(i));
     END LOOP;
   END remove_monitor;
@@ -347,13 +349,14 @@ CREATE OR REPLACE PACKAGE BODY hkm_request_monitor IS
                          x_msg_data      OUT NOCOPY VARCHAR2) IS
   
     CURSOR cur_monitor IS
-      SELECT *
-        FROM hkm_conc_req_summary crs
+      SELECT crs.*
+        FROM hkm_conc_req_summary   crs,
+             fnd_conc_req_summary_v v
        WHERE 1 = 1
-         --AND crs.status_code IN ('R', 'P')
-         AND crs.phase_code IN ('C')
-         AND crs.printer <> 'N'
-         ;
+         AND crs.request_id = v.request_id
+            --AND crs.status_code IN ('R', 'P')
+         AND v.phase_code IN ('C')
+         AND crs.printer <> 'N';
   
     CURSOR cur_htmls(p_request_id NUMBER) IS
       SELECT v.request_id,
@@ -635,7 +638,7 @@ CREATE OR REPLACE PACKAGE BODY hkm_request_monitor IS
     -- 3、输出报表内容
     process_data(x_return_status, x_msg_count, x_msg_data);
     raise_exception(x_return_status);
-  
+    log('Hakim: What about g_yes_no = ' || g_yes_no);
     IF g_yes_no = 'NO' THEN
       RETURN;
     END IF;
@@ -651,7 +654,8 @@ CREATE OR REPLACE PACKAGE BODY hkm_request_monitor IS
     xxhkm_send_mail_pkg.main(errbuf    => x_msg_data,
                              retcode   => x_msg_count,
                              p_content => g_html,
-                             p_subject => to_char(SYSDATE, 'yyyy-mm-dd hh24:mi:ss') || ' ' || g_report_title);
+                             p_subject => g_env || '@' || to_char(SYSDATE, 'yyyy-mm-dd hh24:mi:ss') || ' ' ||
+                                          g_report_title);
   
     --update what is completed, next time it will not be monitored
     remove_monitor;
@@ -686,15 +690,17 @@ CREATE OR REPLACE PACKAGE BODY hkm_request_monitor IS
                                                      x_msg_data       => x_msg_data);
   END process_request;
 
-  PROCEDURE main/*(errbuf  OUT NOCOPY VARCHAR2,
-                 retcode OUT NOCOPY VARCHAR2)*/ AS
-    errbuf VARCHAR2(2000);
-    retcode VARCHAR(2000);
+  PROCEDURE main(errbuf  OUT NOCOPY VARCHAR2,
+                 retcode OUT NOCOPY VARCHAR2) AS
     l_return_status VARCHAR2(30);
     l_msg_count     NUMBER;
     l_msg_data      VARCHAR2(4000);
     l_api_name CONSTANT VARCHAR2(30) := 'main';
   BEGIN
+    BEGIN
+    SELECT NAME INTO g_env FROM v$database;
+    END;
+     
     -- 1、输出日志头
     xxfnd_conc_utl.log_header;
   

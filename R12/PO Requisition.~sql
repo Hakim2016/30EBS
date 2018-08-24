@@ -27,7 +27,7 @@ SELECT rt.po_header_id,
 --AND rt.po_line_id
 ;
 
-SELECT prl.attribute1, prl.item_description, prh.*, prl.*
+SELECT prh.created_by, prl.attribute1, prl.item_description, prh.*, prl.*
   FROM po_requisition_headers_all prh,
   po_requisition_lines_all prl
  WHERE 1 = 1

@@ -1,6 +1,7 @@
 /*tips:
 1.line44 parameters.p_end_date - 1 should not be weekend whose exchange rate have not be maintained
 2.line128 chage the date
+3. =X3-Z3
 */
 SELECT hou.name,
        /*ptt.task_type,
@@ -125,8 +126,8 @@ SELECT hou.name,
        apps.pa_proj_elements               ppe,
        apps.pa_task_types                  ptt,
        --
-       (SELECT to_date('2018-06-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss') p_start_date,
-               to_date('2018-06-30 23:59:59', 'yyyy-mm-dd hh24:mi:ss') p_end_date,
+       (SELECT to_date('2018-07-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss') p_start_date,
+               to_date('2018-07-31 23:59:59', 'yyyy-mm-dd hh24:mi:ss') p_end_date,
                --
                /*'10003999'*/
                NULL po_number,

@@ -1,0 +1,61 @@
+--org_id      Resp_id     Resp_app_id        Organization_id
+--HBS 101     51249       660                HB1  121
+--HEA 82      50676       660                SG1  83
+--HET 141     51272       20005              HE1  161
+--SHE 84      50778       20005              TH1  85  TH2 86
+
+/*BEGIN
+  \*fnd_global.apps_initialize(user_id      => 4270,
+                             resp_id      => 50676,
+                             resp_appl_id => 660);*\
+  mo_global.init('M');
+  --FND_PROFILE.PUT('MFG_ORGANIZATION_ID', 86);
+
+END;*/
+
+SELECT DISTINCT t.org_id,
+                /*(SELECT ott.name --,ott.attribute5
+                 FROM oe_order_headers_all   ooh,
+                      oe_transaction_types_v ott
+                WHERE 1 = 1
+                  AND ooh.order_type_id = ott.transaction_type_id
+                  AND ott.org_id = t.org_id
+                  AND ooh.header_id = t.source_header_id)*/
+                ott.name so_type,
+                ppa.project_type,
+                t.eq_er_category,
+                ott.attribute5/*,
+                (SELECT ppa2.name
+                   FROM pa_projects_all ppa2
+                  WHERE 1 = 1
+                    AND ppa2.project_id = ott.attribute4) prj_type,
+                ott.attribute4*/
+
+  FROM xxpa_cost_gcpm_int     t,
+       pa_projects_all        ppa,
+       oe_order_headers_all   ooh,
+       oe_transaction_types_v ott
+
+ WHERE 1 = 1
+   AND ooh.order_type_id = ott.transaction_type_id
+   AND ott.org_id = t.org_id
+   AND ooh.header_id = t.source_header_id
+   AND t.project_id = ppa.project_id
+   AND t.org_id IN (84, 141)
+ ORDER BY t.org_id;
+
+SELECT ott.org_id,
+       ott.transaction_type_code trx_type,
+       ott.name order_type,
+       --ppa.segment1,
+       ppa.name prject_type,
+       ott.attribute5
+  FROM oe_transaction_types_v ott,
+       pa_projects_all        ppa
+ WHERE 1 = 1
+   AND ott.attribute4 = ppa.project_id(+)
+   AND ott.transaction_type_code = 'ORDER'
+--AND nvl(ott.end_date_active,SYSDATE) >= SYSDATE
+--AND ppa.project_type IS NOT NULL
+ORDER BY ott.org_id
+;

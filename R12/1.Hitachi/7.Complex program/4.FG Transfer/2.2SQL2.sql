@@ -80,3 +80,9 @@ SELECT 'FAC_FG' /*p_cost_type*/ cost_type,
                        AND xcfd.source_line_id = ct.cmt_distribution_id
                        AND xcfd.attribute1 = ct.line_type))
 AND ppe.proj_element_id = 1045474;
+/*
+SELECT * FROM pa_proj_elements          ppe,
+
+ WHERE 1=1 AND */
+ 
+ SELECT * FROM pa_tasks pt WHERE 1=1 AND pt.task_id = 1045474;

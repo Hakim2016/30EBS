@@ -215,7 +215,7 @@ SELECT t.seq,
            
            UNION ALL
         
-        --6.Import from AP Expense
+        --7.Import from AP Expense
         SELECT '7' seq,
                 xte.source_id_int_1,
                 xah.ledger_id,
@@ -282,9 +282,7 @@ SELECT '3' seq,
    AND xah.ae_header_id = xal.ae_header_id
    AND xah.entity_id = xte.entity_id
    AND xte.application_id = 707 --CST
-   AND xte.source_id_int_1 = 60911685 --15312121 --15486489--15429305--15312121--15429305
-
---AND xte.creation_date > SYSDATE - 1/24
+   AND xte.source_id_int_1 = 60911685 
 ;
 
 --2.Import from IF36 Labor hour
@@ -359,9 +357,7 @@ SELECT '6' seq,
    AND xah.ae_header_id = xal.ae_header_id
    AND xah.entity_id = xte.entity_id
    AND xte.application_id = 275
-   AND xte.source_id_int_1 = 15313134 --15312122 --60911685--15312121 --15486489--15429305--15312121--15429305
-
---AND xte.creation_date > SYSDATE - 1/24
+   AND xte.source_id_int_1 = 15313134 
 ;
 
 SELECT *

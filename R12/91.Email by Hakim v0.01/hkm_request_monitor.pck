@@ -33,7 +33,8 @@ CREATE OR REPLACE PACKAGE hkm_request_monitor IS
   *    History  :                                                              
   *             YYYY-MM-DD   Developer          Change   
   *             -----------  --------------     ------------      
-  *             2013-12-21   liqing.liu         Created                    
+  *             2013-12-21   liqing.liu         Created  
+  *             v1.01 20180730    Hakim         add environment info                 
   +==========================================================================*/
   PROCEDURE main(errbuf  OUT NOCOPY VARCHAR2,
                  retcode OUT NOCOPY VARCHAR2);
@@ -66,6 +67,7 @@ CREATE OR REPLACE PACKAGE BODY hkm_request_monitor IS
   g_yes_no VARCHAR2(4) := NULL;
   TYPE l_data_type IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
   g_data_rec l_data_type;
+  g_env      VARCHAR2(20);
 
   -- paramter
   g_ledger_id       NUMBER;
@@ -653,7 +655,8 @@ CREATE OR REPLACE PACKAGE BODY hkm_request_monitor IS
     xxhkm_send_mail_pkg.main(errbuf    => x_msg_data,
                              retcode   => x_msg_count,
                              p_content => g_html,
-                             p_subject => to_char(SYSDATE, 'yyyy-mm-dd hh24:mi:ss') || ' ' || g_report_title);
+                             p_subject => g_env || '@' || to_char(SYSDATE, 'yyyy-mm-dd hh24:mi:ss') || ' ' ||
+                                          g_report_title);
   
     --update what is completed, next time it will not be monitored
     remove_monitor;
@@ -695,6 +698,10 @@ CREATE OR REPLACE PACKAGE BODY hkm_request_monitor IS
     l_msg_data      VARCHAR2(4000);
     l_api_name CONSTANT VARCHAR2(30) := 'main';
   BEGIN
+    BEGIN
+    SELECT NAME INTO g_env FROM v$database;
+    END;
+     
     -- 1、输出日志头
     xxfnd_conc_utl.log_header;
   

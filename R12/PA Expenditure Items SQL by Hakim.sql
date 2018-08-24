@@ -1,6 +1,12 @@
 SELECT pei.expenditure_item_id trans_id,
+       pei.project_id,
        --pei.organization_id,
        pei.org_id,
+       pei.quantity,
+       pei.burden_cost,
+       pei.project_burdened_cost,
+       pei.expenditure_type,
+       pet.attribute15,
        pei.transaction_source,
        pet.expenditure_category,
        pei.expenditure_type,
@@ -25,8 +31,6 @@ SELECT pei.expenditure_item_id trans_id,
        pv.segment1 vendor_num,
        pei.quantity,
        pei.unit_of_measure,
-       pei.burden_cost,
-       pei.project_burdened_cost,
        pei.*
   FROM pa_expenditure_items_all pei,
        pa_expenditure_types     pet,
@@ -43,14 +47,18 @@ SELECT pei.expenditure_item_id trans_id,
    AND pei.task_id = pt.task_id
    AND pt.top_task_id = top.task_id
    AND pei.vendor_id = pv.vendor_id(+)
-      --AND top.task_number IN ('SLS0230-SG','LN0732-L2') --'TAD0021-TH'--mfg
-      --AND pt.task_number = 'TAD0021-TH.D.11'
-   --AND ppa.segment1 = '118010001'--'10101647' --'10202892'--'21000197'--'10101506' --'21000197' --proj_num
-   --AND ppa.org_id = 82 --84 --SHE --82 --HEA
+   --AND pei.expenditure_item_id = 15315822
+--AND pei.inventory_item_id = 15315822
+AND pei.task_id = 5725843
+--AND top.task_number IN ('SBH0216-PH')--('TAE0736-TH')--('SLS0230-SG','LN0732-L2') --'TAD0021-TH'--mfg
+--AND pt.task_number = 'TAD0021-TH.D.11'
+--AND ppa.segment1 = '215110107'--'21000400'--'118010001'--'10101647' --'10202892'--'21000197'--'10101506' --'21000197' --proj_num
+--AND ppa.org_id = 82 --84 --SHE --82 --HEA
 --AND pei.expenditure_item_date >= to_date('2018-03-01', 'yyyy-mm-dd')
---AND pei.creation_date >= to_date('2018-06-20', 'yyyy-mm-dd')
-   AND pei.orig_transaction_reference --= '52992559'
-   IN ('54869309')--('54154413')
+--AND pei.creation_date >= to_date('2017-08-09', 'yyyy-mm-dd')
+--AND pei.orig_transaction_reference --= '52992559'
+--IN ('54869309')--('54154413')
+--AND pei.quantity  = 0
  ORDER BY pet.expenditure_category,
           pet.expenditure_type
 
