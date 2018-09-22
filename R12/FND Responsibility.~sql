@@ -39,7 +39,7 @@ WHERE  1 = 1
 AND    UR.RESPONSIBILITY_ID = 20420
 AND    ur.user_id = 1111;
 
-UPDATE wf_all_user_role_assignments ur SET ur.END_DATE = to_date('2006-10-20','YYYY-MM-DD') WHERE ur.user_name = 'HQXXB02' AND ur.END_DATE = to_date('2006-10-22','YYYY-MM-DD');
+--UPDATE wf_all_user_role_assignments ur SET ur.END_DATE = to_date('2006-10-20','YYYY-MM-DD') WHERE ur.user_name = 'HQXXB02' AND ur.END_DATE = to_date('2006-10-22','YYYY-MM-DD');
 
 
 SELECT * FROM fnd_user u WHERE u.user_name = 'HQCGB27';
@@ -55,4 +55,4 @@ WHERE  u.user_id = a.user_id
 AND    r.responsibility_id = a.responsibility_id
 AND    r.application_id = a.responsibility_application_id
 AND    r.LANGUAGE = 'ZHS'
-AND    u.user_name = '';
+AND    u.user_name = 'HAND_HKM';

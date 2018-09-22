@@ -142,7 +142,7 @@ SELECT flv.meaning level_meaning,
    AND profile_value.application_id = fpo.application_id
       --AND profile_value.level_value = 50676
       -- AND profile_value.level_id = 10001--10003
-   AND fpo.user_profile_option_name LIKE  'XXINV%Delivery Note%A%'--'INV%RPC' --'MO%'
+   AND fpo.user_profile_option_name LIKE  'PA: Expenditures Per Set'--'PA_NUM_EXP%'--'XXINV%Delivery Note%A%'--'INV%RPC' --'MO%'
 ;
 /*
 10001   Site Level
@@ -159,9 +159,12 @@ SELECT fpo.profile_option_name,
        fpo.user_profile_option_name,
        fpo.*
   FROM fnd_profile_options_vl fpo
- WHERE fpo.user_profile_option_name LIKE 
- 'XXINV%Delivery Note%A%'
+ WHERE 1=1
+ --AND fpo.user_profile_option_name LIKE 
+ --'PA: Expenditures Per Set'
+ --'XXINV%Delivery Note%A%'
  --'INV%RPC%'
+ AND fpo.profile_option_name LIKE 'PA_SELECTIVE%'
  ;
 
 DECLARE
@@ -172,10 +175,10 @@ BEGIN
   /*stat := fnd_profile.save(x_name => 'INV_RPC_TIMEOUT',--'ORG_ID', 
                             x_value => '300',--286, 
                             x_level_name => 'SITE');*/
-  stat := fnd_profile.save(x_name => 'XXINV_DELIVERY_NOTE_AUTHORITY',--'ORG_ID', 
+  stat := fnd_profile.save(x_name => 'XXINV_DELIVERY_NOTE_AUTHORITY', 
                                      --'XXINV: Delivery Note Authority'
-                            --x_value => 'STOCK_IN',--'300',--286, 
-                            x_value => 'STOCK_OUT',
+                            x_value => 'STOCK_IN',--'300',--286, 
+                            --x_value => 'STOCK_OUT',
                             x_level_name => 'RESP',
                             x_level_value => 50778/*x_resp_id*/ );
 

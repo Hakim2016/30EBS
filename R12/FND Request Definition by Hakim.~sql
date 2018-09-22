@@ -14,7 +14,10 @@ SELECT fcp.user_concurrent_program_name program,
    AND fcp.executable_id = fef.executable_id
    --AND fcp.concurrent_program_name = 'XXARBTOG4'--'XXPAJIPATP'--'XXPAB001'--'XXPAJIPATP'--'XXPAFGTXN'--'CUXHNETGLACN'--'INCTCM'--'XXPAB003'
    AND fcp.user_concurrent_program_name LIKE 
-   'XXINV: Physical Inventory Tag Print'
+   'Create Accounting%Cost Management'
+   --'XXAP:AP Payble Summary Report(HEA/HBS)'
+   --'XXPA:Project Status Update(BA)'
+   --'XXINV: Physical Inventory Tag Print'
    --'XXPA:Project Revenue and Cost of Sales Recognition Request'
    --'XXPA:Project Status Update(Installation)'
    --'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)'
@@ -34,6 +37,7 @@ XXPAUPDATESTATUS
 XXPA:Project Status Update(Installation)
 xxpa_proj_milestone_mgr_pub.main
 */
+
 --Request with parameters
 SELECT 
 fcu.COLUMN_SEQ_NUM,

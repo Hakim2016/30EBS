@@ -4,8 +4,11 @@ SELECT acr.receipt_date,
   FROM ar_cash_receipts_all acr
  WHERE 1 = 1
       --AND acr.cash_receipt_id = 1004 --1000
-   AND acr.receipt_number = 'HKMTOAP013160' --'2800000018'
-   AND acr.org_id = 84;
+   AND acr.receipt_number = '1700000592'--'HKMTOAP013160' --'2800000018'
+   AND acr.org_id = 82
+   --AND acr.creation_date >= to_date('20180925','yyyymmdd')
+   
+   ;
 
 SELECT xe.event_id,
 xe.entity_id,

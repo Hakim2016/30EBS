@@ -1,0 +1,18 @@
+SELECT ass.set_of_books_id,
+       ass.customer_num,
+       ass.segment1,
+       ass.vat_registration_num,
+       ass.*
+  FROM ap_suppliers ass
+ WHERE 1 = 1
+      --AND --s.vendor_name --= '25183'
+      --AND ass.segment1 IN  ('GS00200893','GT00200893')
+   AND ass.vat_registration_num IN ('0135561014284','0015511407039')
+
+--'0135561014284'
+;
+
+SELECT *
+  FROM ap_supplier_sites_all ss
+ WHERE ss.vendor_id = 1058837 --16001
+;

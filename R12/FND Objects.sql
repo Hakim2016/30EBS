@@ -10,4 +10,7 @@ SELECT * FROM xxhkm_log xx WHERE 1=1 ;--AND
 SELECT *
   FROM dba_objects xx
  WHERE 1 = 1
-   AND xx.status = 'INVALID';
+   AND xx.status = 'INVALID'
+   --AND xx.OBJECT_NAME = 'XXPA_COST_EXPORT_GCPM_PKG2'
+   
+   ;

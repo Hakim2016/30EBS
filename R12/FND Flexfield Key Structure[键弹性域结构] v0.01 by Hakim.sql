@@ -33,7 +33,9 @@ SELECT fif.application_id,
    AND struct.id_flex_code = segs.id_flex_code --'MTLL'
       --
    AND segs.flex_value_set_id = vset.flex_value_set_id(+)
-   AND struct.id_flex_structure_name = 'XXGSCM INV Sales Orders' --"Title" in the lines
+   AND struct.id_flex_structure_name LIKE
+      --struct.id_flex_structure_name "Title" in the lines
+       'XXGSCM INV Sales Orders' --key flexfield
 --AND fif.id_flex_name = 'Sales Orders'--'Accounting Flexfield'--"Flexfield Title"
 --AND fif.application_table_name IN ('MTL_ITEM_LOCATIONS', 'GL_CODE_COMBINATIONS')
  ORDER BY fif.application_id,
@@ -49,3 +51,4 @@ SELECT xx.segment1,
   FROM mtl_sales_orders xx
  WHERE 1 = 1
    AND xx.segment1 = '22011912';
+

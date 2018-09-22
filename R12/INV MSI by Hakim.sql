@@ -7,8 +7,9 @@ SELECT msi.segment1,
   FROM mtl_system_items_b msi
  WHERE 1 = 1
    --AND msi.creation_date > SYSDATE - 60 --trunc(SYSDATE, 'yyyy')
-   --AND msi.organization_id = 83
-   AND msi.segment1 LIKE 'L#GSW0303_001'--'R111J00526'--'TAE0736-TH'--'S31901-A-0000'--'34261834%A%000'
+   --AND msi.organization_id = 83--83
+   AND msi.inventory_item_id = 15221846
+   --AND msi.segment1 LIKE 'SBL0043-SG-R-L#ARS0028'--'94001921-TM'--'L#GSW0303_001'--'R111J00526'--'TAE0736-TH'--'S31901-A-0000'--'34261834%A%000'
    --AND msi.organization_id IN (85, 86)--= 85 
    --AND msi.purchasing_item_flag = 'Y'
    --AND msi.inventory_item_flag = 'Y'

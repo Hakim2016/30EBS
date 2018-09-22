@@ -1,18 +1,23 @@
 --IF62
-SELECT intf.blart,
+SELECT intf.interface_file_name,
+       intf.blart,--trx type
        intf.zlsch,
-       intf.xblnr,
+       intf.xblnr,--trx num
        intf.ledger_id,
        intf.source_table,
        intf.*
   FROM xxgl_accounting_hfg_int intf
  WHERE 1 = 1
-      --AND intf.blart = 'KR'--'Y6'--'Y3'--AR--'Y6'--Y6_for_AP
-      --AND intf.ledger_id= 2021
+   --AND intf.blart = 'Y6' --'KR'--'Y6'--'Y3'--AR--'Y6'--Y6_for_AP
+   --AND intf.ledger_id = 2021
       --AND intf.XBLNR IN ('2003/2363/2364MAY18')--('58422148APR18')--('SPR-15000019','SPR-17000417')
-   AND trunc(intf.creation_date) = to_date('2018-08-02', 'yyyy-mm-dd')
---AND intf.creation_date >= to_date('2018-07-18 12:00:00','yyyy-mm-dd hh24:mi:ss')
---AND intf.request_id = 15904416
+   --AND trunc(intf.creation_date) = to_date('2018-08-02', 'yyyy-mm-dd')
+      --AND intf.creation_date >= to_date('2018-08-01 12:00:00','yyyy-mm-dd hh24:mi:ss')
+      --AND intf.request_id = 15904416
+      --AND intf.interface_file_name LIKE '201808021B0701ENGLJL0009%'
+      --AND intf.interface_file_name = '201808021B0701ENGLJL0009.TXT'--LIKE '201808021B0701ENGLJL0009%'
+        AND intf.interface_file_name = '201808021B0701ENGLJL0009.TXT'
+   --AND rownum = 1
 
 ;
 

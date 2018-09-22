@@ -1,14 +1,18 @@
-SELECT mmt.organization_id              orgs_id,
+SELECT 
+mmt.transaction_date,
+--mmt.creation_date,
+mmt.organization_id              orgs_id,
        msi.segment1,
        mtt.transaction_type_name        trx_type,
        mts.transaction_source_type_name trx_src_type,
        mmt.primary_quantity             qty,
        --mmt.source_code,
-       mmt.transaction_source_id,
-       (SELECT xx.segment1
+       --mmt.transaction_source_id,
+       (SELECT xx.segment1 || '.' || xx.segment2 || '.' || xx.segment3
           FROM mtl_sales_orders xx
          WHERE 1 = 1
-           AND xx.sales_order_id = 3256851) so_info,
+           AND xx.sales_order_id = mmt.transaction_source_id --3256851
+        ) so_info,
        mmt.source_line_id,
        inv_project.get_locator(mmt.locator_id, mmt.organization_id) locator, --
        mmt.costed_flag,
@@ -24,21 +28,32 @@ SELECT mmt.organization_id              orgs_id,
  WHERE 1 = 1
    AND mts.transaction_source_type_id = mmt.transaction_source_type_id
    AND mmt.transaction_type_id = mtt.transaction_type_id
-   AND mtt.transaction_type_name IN ('Sales Order Pick')
+   --AND mtt.transaction_type_name IN ('Sales Order Pick')
    AND mmt.inventory_item_id = msi.inventory_item_id
    AND mmt.organization_id = msi.organization_id
+   --AND mmt.costed_flag = 'N'
       --AND mmt.transaction_id = 54868663--60911685--8915869
       --AND mmt.last_update_date >= trunc(SYSDATE) - 365 --SYSDATE - 2
-   AND mmt.organization_id = 86
-   AND mmt.transaction_id >=
+   --AND mmt.organization_id = 83--121--86
+   --AND mmt.inventory_item_id = 3939072
+   AND mmt.transaction_id -->=
+   =56683536
+
+   --=5097
+   --= 54896869--54895834
       --33834547 --2017
-       49368602 --2018
+       --49368602 --2018
       --AND mmt.created_by = 4270
       --AND msi.segment1 = '1000EX-EN'
-   AND rownum = 1
+   /*AND EXISTS (SELECT 'Y'
+          FROM mtl_sales_orders mso
+         WHERE 1 = 1
+           AND mso.sales_order_id = mmt.transaction_source_id
+           AND mso.segment2 = 'SHE_Oversea_Spare Parts')*/
+--AND rownum <=1000
 /*AND mmt.source_code --= 'DN In'
 IN ('DN In', 'DN Out')*/
- ORDER BY mmt.transaction_id;
+ ORDER BY mmt.transaction_id DESC;
 
 SELECT mmt.transaction_id trx_id,
        mmt.transaction_date trx_date,
@@ -94,7 +109,7 @@ SELECT *
   FROM mtl_transaction_types mtt
  WHERE 1 = 1
       --AND mtt.transaction_type_id
-   AND mtt.transaction_type_name LIKE 'Sales Order Pick' --'Sales%Order%Pick'--
+   --AND mtt.transaction_type_name LIKE 'Sales Order Pick' --'Sales%Order%Pick'--
  ORDER BY mtt.creation_date --mtt.transaction_type_id
 ;
 

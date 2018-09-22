@@ -1,0 +1,8 @@
+/*
+IF60
+XXAR:Invoice Data Interface for SHE
+to BI
+XXAR_SHE_INVOICE_DATA_PKG.main
+XXAR_INVOICE_DATA_INTERFACE
+
+*/

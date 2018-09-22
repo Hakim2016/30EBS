@@ -46,7 +46,17 @@ SELECT v.request_id rqst_id,
          WHERE 1 = 1
            AND fa.application_id = v.responsibility_application_id) app_name,
        v.responsibility_id,
-       fr.responsibility_key
+       fr.responsibility_key,
+       fnd_webfile.get_url(3, --log 输出类型 --3 log
+                           v.request_id, --请求ID
+                           'APPLSYSPUB/PUB',
+                           'FCWW',
+                           10),
+       fnd_webfile.get_url(4, --output 输出类型  --4 output
+                           v.request_id, --请求ID
+                           'APPLSYSPUB/PUB',
+                           'FCWW',
+                           10)
   FROM fnd_conc_req_summary_v v,
        fnd_responsibility     fr,
        fnd_user               fu,
@@ -60,7 +70,21 @@ SELECT v.request_id rqst_id,
       --IN (16275615, 16278535)
       --AND v.program_short_name = 'XXPAUPDATESTATUS'
       --AND v.program LIKE 'Create Accounting%'
+--AND v.status_code = 'E'
+--AND v.phase_code IN ('R', 'P')
       AND v.user_concurrent_program_name LIKE
+      'XXPA:Project Cost Data Outbound'
+      --'XXPA:Progressive JIP and Sales Summary Report'
+      --'XXOM:SO Balance Report'
+      --'XX%'
+      --'Trial Balance%'
+      --'XXPA:Cost Card Report(HEA/HBS)'
+      --'%Cost Card%'
+      --'XXOM:SO Balance Report%'
+      --'Cost Manager'
+      --'Actual Cost Worker'
+      --'XXAR:Account Receivable Card'(2207196,897153)
+      --'%XXGL:Accounting Data Outbound HFG%'
       --'%IF68%'
       --'XXPA:Project Cost Data Outbound'
       --'XXWIP: Pull Item Quantity Checking'
@@ -126,9 +150,11 @@ SELECT v.request_id rqst_id,
 --AND trunc(v.request_date) = to_date('2018-07-13','yyyy-mm-dd')
 --AND v.argument_text LIKE '%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
 --AND v.requestor = 'HAND_HKM'--'HAND_LCR'--'70264934'--'HAND_HKM'
---AND v.status_code = 'E'
---AND v.phase_code IN ('R', 'P')
- ORDER BY v.request_id DESC;
+--AND v.request_id >= 16727489
+ ORDER BY 
+ --v.
+ v.request_id DESC
+ ;
 
 --add user info v1.01
 SELECT fu.user_id,

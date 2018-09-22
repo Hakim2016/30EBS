@@ -13,7 +13,8 @@ SELECT DISTINCT mmt.transaction_id,
    AND mmt.transaction_type_id = mtt.transaction_type_id
       --and   mmt.transaction_source_id = we.wip_entity_id
    AND ppa.project_id = pei.project_id
-   AND mmt.transaction_id = 54869415 --52992559 --28669285
+   AND pei.expenditure_item_id = 15284278
+   --AND mmt.transaction_id = 54869415 --52992559 --28669285
 ;
 --AND ppa.segment1 = '216070054'
 --and   we.wip_entity_name = '10467019'

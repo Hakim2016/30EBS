@@ -4,13 +4,18 @@ v1.01 add user info(user name & email)
 */
 SELECT v.request_id rqst_id,
        v.argument_text,
+       /*(SELECT ppa.segment1
+          FROM pa_projects_all ppa
+         WHERE 1 = 1
+           AND ppa.project_id = substr(v.argument_text, 1, instr(v.argument_text, ',') - 1)) prj_num,*/
+       --SUBSTR(v.argument_text, 1, INSTR(v.argument_text, ',')-1) prj_id,
        --v.request_date,
        --v.requested_start_date,
        v.actual_start_date act_strt_date,
        --v.requested_start_date start_date,
        v.actual_completion_date cplt_date,
        --(v.ACTUAL_COMPLETIOv.REQUESTED_START_DATEN_DATE - v.ACTUAL_START_DATE) / (60 * 60) "运行时间",
-       DECODE(v.actual_completion_date, NULL,TRUNC((SYSDATE - v.actual_start_date)*24,3), NULL) during,
+       decode(v.actual_completion_date, NULL, trunc((SYSDATE - v.actual_start_date) * 24, 3), NULL) during,
        trunc((v.actual_completion_date - v.actual_start_date) * 24) hr,
        round(((v.actual_completion_date - v.actual_start_date) * 24 -
              trunc((v.actual_completion_date - v.actual_start_date) * 24)) * 60,
@@ -46,7 +51,17 @@ SELECT v.request_id rqst_id,
          WHERE 1 = 1
            AND fa.application_id = v.responsibility_application_id) app_name,
        v.responsibility_id,
-       fr.responsibility_key
+       fr.responsibility_key,
+       fnd_webfile.get_url(3, --log 输出类型 --3 log
+                           v.request_id, --请求ID
+                           'APPLSYSPUB/PUB',
+                           'FCWW',
+                           10),
+       fnd_webfile.get_url(4, --output 输出类型  --4 output
+                           v.request_id, --请求ID
+                           'APPLSYSPUB/PUB',
+                           'FCWW',
+                           10)
   FROM fnd_conc_req_summary_v v,
        fnd_responsibility     fr,
        fnd_user               fu,
@@ -60,78 +75,89 @@ SELECT v.request_id rqst_id,
       --IN (16275615, 16278535)
       --AND v.program_short_name = 'XXPAUPDATESTATUS'
       --AND v.program LIKE 'Create Accounting%'
-      AND v.user_concurrent_program_name LIKE
-      '%XXGL:Accounting Data Outbound HFG%'
-      --'%IF68%'
-      --'XXPA:Project Cost Data Outbound'
-      --'XXWIP: Pull Item Quantity Checking'
-      --'XXPA:Project Revenue and Cost of Sales Recognition Request'
-      --'XXPA:EQ%s JIP Automatical Transfer Program'
-      --'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)'
-      --'PRC: Distribute Usage and Miscellaneous Costs'
-      --'%XXGL:Exchange Rate Inbound to HFG%'
-      --'XXPA:Project EQ Cost of Sales Recognition Request(SHE)'
-      --'XXPA: Finish Goods Transfer'
-      --'XXPA:Project Cost Analysis (SHE/HET) NEW'
-      --'XXPA:Project Wip Cost Analysis Detail'
-      --'XXPA: Project FG Completion Data Collection'
-      --'Item categories report'
-      --'%Supplier Costs Interface Audit'
-      --'%Cost Collection Manager'
-      --'%XXPJM:Labor Hours Budget Interface%'
-      --'Create Accounting%'
-      --'Create Accounting - Cost Management'
-      --'XXOM:Tax Invoice Print'
-      --'XXPA:Accrual Offset Auto Generate Program'
-      --'Period Close Reconciliation Report'
-      --'Receiving Value Report (XML)'
-      --'%COGS Monthly Report%'
-      --'XXPA:Project Revenue and Cost of Sales Recognition Request'
-      --'%XXPJM:Labor Hours Budget Interface%'--IF47
-      --'%Cost Incurred Report%'
-      --'XXPA:Project Cost Data Outbound'
-      --'XXPA:Generate Expenditure Batch For Cost Structure'
-      --'XXAR:HEA/HBS Tax Invoice Print'
-      --'XXAR: Billing Interface outbound to G4'
-      --'PRC: Update Project Summary Amounts'
-      --'AUD: Supplier Costs Interface Audit'
-      --'Projects Cost Collection Manager'
-      --'XXOM%SO Balance Report'
-      --'XXOM:SO Balance Report(Sales)'
-      --'Create Accounting%'
-      --'Cost Manager'
-      --'Actual Cost Worker'
-      --'%Project Cost Analysis%'
-      --'XXGL:Fixed Assets Outbound to HFG'
-      --'Projects Cost Collection Manager'
-      --'Cost Collection Manager'
-      --######conplatibility of <XXPA:Project Status Update(BA)> start
-      /*AND v.user_concurrent_program_name IN (
-      'XXPA:Project Status Update(BA)',
-      --'XXPA:Generate Expenditure Batch For Cost Structure',
-      'XXPA:Project Revenue and Cost of Sales Recognition Request',
-      --'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)',
-      --
-      'XXPA:Project Status Update(Installation)'
-      )*/
-      --######conplatibility of <XXPA:Project Status Update(BA)> end
-      --'XXPA:Project Status Update(BA)'
-      --'XXAR: Delivery Interface outbound GSCM to R3'
-      --'XXPA%Project Revenue and Cost of Sales Recognition Request'
-      --'Period Close Reconciliation Report'
-      --'PRC: Transaction Import'
-      --'XXPA:Project Cost Data Outbound'
-      
-      --AND v.request_date > TRUNC(SYSDATE)
-   --AND v.request_date <> v.requested_start_date
+      --AND v.status_code = 'E'
+      --AND v.phase_code IN ('R', 'P')
+   AND v.user_concurrent_program_name LIKE 'XXPA:Project Cost Detail Report (HEA/HBS)'
+--'XXPA:Project Cost Data Outbound'
+--'XXPA:Progressive JIP and Sales Summary Report'
+--'XXOM:SO Balance Report'
+--'XX%'
+--'Trial Balance%'
+--'XXPA:Cost Card Report(HEA/HBS)'
+--'%Cost Card%'
+--'XXOM:SO Balance Report%'
+--'Cost Manager'
+--'Actual Cost Worker'
+--'XXAR:Account Receivable Card'(2207196,897153)
+--'%XXGL:Accounting Data Outbound HFG%'
+--'%IF68%'
+--'XXPA:Project Cost Data Outbound'
+--'XXWIP: Pull Item Quantity Checking'
+--'XXPA:Project Revenue and Cost of Sales Recognition Request'
+--'XXPA:EQ%s JIP Automatical Transfer Program'
+--'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)'
+--'PRC: Distribute Usage and Miscellaneous Costs'
+--'%XXGL:Exchange Rate Inbound to HFG%'
+--'XXPA:Project EQ Cost of Sales Recognition Request(SHE)'
+--'XXPA: Finish Goods Transfer'
+--'XXPA:Project Cost Analysis (SHE/HET) NEW'
+--'XXPA:Project Wip Cost Analysis Detail'
+--'XXPA: Project FG Completion Data Collection'
+--'Item categories report'
+--'%Supplier Costs Interface Audit'
+--'%Cost Collection Manager'
+--'%XXPJM:Labor Hours Budget Interface%'
+--'Create Accounting%'
+--'Create Accounting - Cost Management'
+--'XXOM:Tax Invoice Print'
+--'XXPA:Accrual Offset Auto Generate Program'
+--'Period Close Reconciliation Report'
+--'Receiving Value Report (XML)'
+--'%COGS Monthly Report%'
+--'XXPA:Project Revenue and Cost of Sales Recognition Request'
+--'%XXPJM:Labor Hours Budget Interface%'--IF47
+--'%Cost Incurred Report%'
+--'XXPA:Project Cost Data Outbound'
+--'XXPA:Generate Expenditure Batch For Cost Structure'
+--'XXAR:HEA/HBS Tax Invoice Print'
+--'XXAR: Billing Interface outbound to G4'
+--'PRC: Update Project Summary Amounts'
+--'AUD: Supplier Costs Interface Audit'
+--'Projects Cost Collection Manager'
+--'XXOM%SO Balance Report'
+--'XXOM:SO Balance Report(Sales)'
+--'Create Accounting%'
+--'Cost Manager'
+--'Actual Cost Worker'
+--'%Project Cost Analysis%'
+--'XXGL:Fixed Assets Outbound to HFG'
+--'Projects Cost Collection Manager'
+--'Cost Collection Manager'
+--######conplatibility of <XXPA:Project Status Update(BA)> start
+/*AND v.user_concurrent_program_name IN (
+'XXPA:Project Status Update(BA)',
+--'XXPA:Generate Expenditure Batch For Cost Structure',
+'XXPA:Project Revenue and Cost of Sales Recognition Request',
+--'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)',
+--
+'XXPA:Project Status Update(Installation)'
+)*/
+--######conplatibility of <XXPA:Project Status Update(BA)> end
+--'XXPA:Project Status Update(BA)'
+--'XXAR: Delivery Interface outbound GSCM to R3'
+--'XXPA%Project Revenue and Cost of Sales Recognition Request'
+--'Period Close Reconciliation Report'
+--'PRC: Transaction Import'
+--'XXPA:Project Cost Data Outbound'
+
+--AND v.request_date > TRUNC(SYSDATE)
+--AND v.request_date <> v.requested_start_date
 --AND trunc(v.request_date) = to_date('2018-07-13','yyyy-mm-dd')
 --AND v.argument_text LIKE '%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
 --AND v.requestor = 'HAND_HKM'--'HAND_LCR'--'70264934'--'HAND_HKM'
---AND v.status_code = 'E'
---AND v.phase_code IN ('R', 'P')
-AND v.request_id >= 16727489
- ORDER BY v.request_id --DESC
- ;
+--AND v.request_id >= 16727489
+ ORDER BY --v.
+           v.request_id DESC;
 
 --add user info v1.01
 SELECT fu.user_id,

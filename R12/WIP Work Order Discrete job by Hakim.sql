@@ -39,8 +39,8 @@ SELECT wdj.organization_id,
       --AND wdj.creation_date >= to_date('20170601','yyyymmdd')
       --AND wdj.created_by = 4554--hand_ly
    AND wdj.task_id IS NOT NULL
-   AND we.wip_entity_name --= '10463049'
-       IN ('10753102', '10753103', '10753104', '10753105', '10753106', '10753107', '10753108', '10753110')
+   AND we.wip_entity_name = '10463050'--'10463049'
+       --IN ('10753102', '10753103', '10753104', '10753105', '10753106', '10753107', '10753108', '10753110')
 
 ;
 

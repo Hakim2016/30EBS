@@ -54,5 +54,7 @@ FROM   fnd_user_resp_groups_all a,
 WHERE  u.user_id = a.user_id
 AND    r.responsibility_id = a.responsibility_id
 AND    r.application_id = a.responsibility_application_id
-AND    r.LANGUAGE = 'ZHS'
-AND    u.user_name = 'HAND_HKM';
+AND    r.LANGUAGE = 'US'
+AND 
+AND    u.user_name = 'HAND_HKM'
+;

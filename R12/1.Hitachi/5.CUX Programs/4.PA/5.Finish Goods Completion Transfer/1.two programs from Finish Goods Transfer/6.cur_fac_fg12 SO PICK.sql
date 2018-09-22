@@ -3,6 +3,7 @@
 --Sales order pick release
 SELECT /*p_cost_type*/'FAC_FG' cost_type,
        'SO-PICK' sub_type,
+       --ool.attribute5,
        hou.organization_id org_id,
        hou.name operation_ou,
        mfg.task_id mfg_id,
@@ -66,7 +67,7 @@ SELECT /*p_cost_type*/'FAC_FG' cost_type,
                           'E', 3) = '1' --Transfered to PA
    AND mmt.primary_quantity < 0
    AND mmt.transaction_date <= pp.end_date + 0.99999
-   /*   
+      
    AND EXISTS (SELECT 1
           FROM oe_order_lines_all        ool2,
                ra_customer_trx_lines_all rctl,
@@ -82,17 +83,19 @@ SELECT /*p_cost_type*/'FAC_FG' cost_type,
            AND pt_ol.top_task_id = mfg.task_id
            AND pt_ol.project_id = ppa.project_id
            AND nvl(ool2.attribute5, '@#$') = nvl(ool.attribute5, '@#$')
-           AND rct.trx_date <= pp.end_date + 0.99999)*/
+           AND rct.trx_date <= pp.end_date + 0.99999)
       --end modified
    --AND pp.gl_period_name = g_period_name
-   --AND pp.start_date = to_date('20170801','yyyymmdd')
+   AND pp.start_date = to_date('20170301','yyyymmdd')
    --AND ppa.segment1 = '217060080'
-   AND mfg.task_number = 'SV00125-SG'
+   AND mfg.task_number = 'SBG0197-IN'--'SV00125-SG'
    /*AND (NOT EXISTS (SELECT 1
                       FROM xxpa_cost_flow_dtls_all xcfd
                      WHERE xcfd.cost_type = \*p_cost_type*\'FAC_FG'
                        AND xcfd.source_table = 'MTL_MATERIAL_TRANSACTIONS'
                        AND xcfd.source_line_id = mmt.transaction_id))*/
+                       
+                       AND mmt.organization_id = 86 
                        ;
       
 --org_id      Resp_id     Resp_app_id        Organization_id

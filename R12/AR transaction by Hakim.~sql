@@ -1,16 +1,35 @@
+
 --ar transaction
 --ar header
 
 SELECT rct.org_id,
        rct.trx_number,
+       rctt.name,
+       rctt.type,
        rct.last_update_date,
+       rct.attribute10,
        rct.*
-  FROM ra_customer_trx_all rct
+  FROM ra_customer_trx_all rct,
+  ra_cust_trx_types_all rctt
  WHERE 1 = 1
-   AND rct.trx_number IN ('DTOAP000171') --('JPE-18000050')--('10000017753')
+ AND rctt.org_id = rct.org_id
+ AND rctt.cust_trx_type_id = rct.cust_trx_type_id
+ --AND rctt.type IN ('CM', 'DM')
+   --AND rct.org_id = 101 --84
+AND rct.trx_number IN ('TFO000011')--('CTE1_454:TE_2004') --('JPE-18000050')--('10000017753')
+--AND rct.creation_date >= to_date('20180301','yyyymmdd')
+--AND rct.creation_date <= to_date('20180315','yyyymmdd')
 --AND rct.customer_trx_id = 4022542
 ;
 
+SELECT *
+  FROM ra_cust_trx_types_all rctt
+ WHERE 1 = 1
+ AND rctt.org_id = 101
+   --AND rctt.cust_trx_type_id = 1350
+   ;
+   
+   
 SELECT *
   FROM xla.xla_transaction_entities xte
  WHERE 1 = 1
@@ -72,7 +91,7 @@ SELECT rct2.org_id,
           FROM ra_batch_sources_all bsrc
          WHERE 1 = 1
            AND bsrc.batch_source_id = rct.batch_source_id
-           AND ROWNUM = 1) src2,
+           AND rownum = 1) src2,
        rct.creation_date,
        (SELECT rctt.name
           FROM ra_cust_trx_types_all rctt
@@ -83,16 +102,15 @@ SELECT rct2.org_id,
        ra_customer_trx_all rct2 --first
  WHERE 1 = 1
    AND rct2.customer_trx_id = rct.previous_customer_trx_id(+)
-   --AND rct.previous_customer_trx_id IS NOT NULL
+      --AND rct.previous_customer_trx_id IS NOT NULL
    AND rct2.trx_number LIKE /*'JPE-18000152'*/
        '%JPE%'
---AND rct.org_id = 101
-AND rct2.creation_date <= to_date('20180315','yyyymmdd')
+      --AND rct.org_id = 101
+   AND rct2.creation_date <= to_date('20180315', 'yyyymmdd')
  ORDER BY rct2.creation_date DESC;
 
-
 SELECT bsrc.name
-          FROM ra_batch_sources_all bsrc
-         WHERE 1 = 1
-           AND bsrc.batch_source_id = -1--4008--rct.batch_source_id
+  FROM ra_batch_sources_all bsrc
+ WHERE 1 = 1
+   AND bsrc.batch_source_id = -1 --4008--rct.batch_source_id
 ;

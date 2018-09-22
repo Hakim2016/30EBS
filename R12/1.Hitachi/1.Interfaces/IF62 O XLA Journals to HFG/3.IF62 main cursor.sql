@@ -46,8 +46,9 @@ SELECT xah.ae_header_id,
    AND xah.event_id = xe.event_id
    AND xe.process_status_code = 'P'
    AND xah.ledger_id = 2021 --g_ledger_id
+   AND xah.ae_header_id = 24601670
    AND xte.entity_code <> 'RECEIPTS' ---exclude receipt. --how to indentify cost transaction
-   AND NOT EXISTS (SELECT 1 -- added by Jaron.li@2014-12-18 begin
+   /*AND NOT EXISTS (SELECT 1 -- added by Jaron.li@2014-12-18 begin
           FROM rcv_transactions         rt,
                po_lines_all             pl,
                po_requisition_lines_all prl,
@@ -63,8 +64,8 @@ SELECT xah.ae_header_id,
            AND length(prl.attribute1) > 10
            AND EXISTS (SELECT 1
                   FROM gl_ledgers gl
-                 WHERE upper(gl.name) = 'HEA LEDGER' /*g_hea_ledger*/
-                   AND gl.ledger_id = xte.ledger_id))
+                 WHERE upper(gl.name) = 'HEA LEDGER' \*g_hea_ledger*\
+                   AND gl.ledger_id = xte.ledger_id))*/
    AND (nvl(xal.accounted_dr, 0) <> 0 OR nvl(xal.accounted_cr, 0) <> 0)
       /*AND (l_budat_limit IS NULL AND --
       xah.completed_date >= l_start_date OR --
@@ -77,7 +78,7 @@ SELECT xah.ae_header_id,
       WHERE xad.source_table = 'XLA_AE_LINES'--l_source_table
         AND xad.source_header_id = xal.ae_header_id
         AND xad.source_line_id = xal.ae_line_num)*/
-   AND NOT EXISTS (SELECT 1
+   /*AND NOT EXISTS (SELECT 1
           FROM xla_distribution_links xdl,
                xla_acct_line_types_tl jlt
          WHERE xdl.ae_header_id = xal.ae_header_id
@@ -94,10 +95,10 @@ SELECT xah.ae_header_id,
           FROM xla_ae_lines xal2
          WHERE xal2.ae_header_id = xah.ae_header_id
            AND (nvl(xal2.entered_dr, 0) + nvl(xal2.entered_cr, 0)) = 0
-           AND (nvl(xal2.accounted_dr, 0) + nvl(xal2.accounted_cr, 0)) <> 0)
+           AND (nvl(xal2.accounted_dr, 0) + nvl(xal2.accounted_cr, 0)) <> 0)*/
       
-   AND xte.application_id = 200 --AP
-   AND xte.source_id_int_1 = 1988890 --1950254--ap invoice id
+   --AND xte.application_id = 200 --AP
+   --AND xte.source_id_int_1 = 1988890 --1950254--ap invoice id
    AND (xte.source_id_int_1 NOT IN (1011559) OR xte.source_id_int_1 IS NULL)
  ORDER BY xah.application_id,
           xah.ae_header_id,

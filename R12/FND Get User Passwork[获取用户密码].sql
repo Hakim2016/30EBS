@@ -1,7 +1,9 @@
 SELECT xxfnd_fnd_web_sec.decrypt('APPS', fu.encrypted_user_password),
        fu.*
   FROM fnd_user fu
- WHERE fu.user_name = '70271678';
+ WHERE fu.user_name = '70236226'--'HAND_HKM'--'70271678'
+ 
+ ;
  
  
 /* 

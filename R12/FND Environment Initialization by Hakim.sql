@@ -1,8 +1,14 @@
 
-SELECT t.responsibility_id, t.*
-  FROM fnd_responsibility t
+SELECT t.responsibility_id,tl.responsibility_name,tl.language, t.*
+  FROM fnd_responsibility t,
+  fnd_responsibility_tl tl
  WHERE 1 = 1
-   AND t.responsibility_key LIKE '%HBS%SCM_SUPER_USER%';
+ AND t.responsibility_id = tl.responsibility_id
+ AND tl.language = 'US'
+   --AND t.responsibility_key LIKE --'%HBS%SCM_SUPER_USER%'
+   --'COST%MANAGEMENT%'
+   AND tl.responsibility_name LIKE 'Cost Management%SLA'
+   ;
    --HEA SCM SUPER USER
 
 select * from fnd_user fu where fu.user_name = 'HAND_HKM';

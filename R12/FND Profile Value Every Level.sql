@@ -35,6 +35,7 @@ SELECT flv.meaning level_meaning,
                 fpov.last_update_date
           FROM fnd_profile_option_values fpov,
                 fnd_application_vl        fa
+                
          WHERE 1 = 1
            AND fpov.level_id = 10002
            AND fpov.level_value = fa.application_id
@@ -142,7 +143,7 @@ SELECT flv.meaning level_meaning,
    AND profile_value.application_id = fpo.application_id
       --AND profile_value.level_value = 50676
       -- AND profile_value.level_id = 10001--10003
-   AND fpo.user_profile_option_name LIKE  'XXINV%Delivery Note%A%'--'INV%RPC' --'MO%'
+   AND fpo.user_profile_option_name LIKE  'PA: Expenditures Per Set'--'PA_NUM_EXP%'--'XXINV%Delivery Note%A%'--'INV%RPC' --'MO%'
 ;
 /*
 10001   Site Level
@@ -159,9 +160,13 @@ SELECT fpo.profile_option_name,
        fpo.user_profile_option_name,
        fpo.*
   FROM fnd_profile_options_vl fpo
- WHERE fpo.user_profile_option_name LIKE 
- 'XXINV%Delivery Note%A%'
+ WHERE 1=1
+ --AND fpo.user_profile_option_name LIKE 
+ --'PA: Expenditures Per Set'
+ --'XXINV%Delivery Note%A%'
  --'INV%RPC%'
+ AND fpo.profile_option_name LIKE --'PA_SELECTIVE%'
+ 'PA_NUM_EXP%'
  ;
 
 DECLARE

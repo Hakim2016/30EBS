@@ -14,7 +14,10 @@ SELECT fcp.user_concurrent_program_name program,
    AND fcp.executable_id = fef.executable_id
    --AND fcp.concurrent_program_name = 'XXARBTOG4'--'XXPAJIPATP'--'XXPAB001'--'XXPAJIPATP'--'XXPAFGTXN'--'CUXHNETGLACN'--'INCTCM'--'XXPAB003'
    AND fcp.user_concurrent_program_name LIKE 
-   'XXPA:Project Status Update(BA)'
+   'XXOM:SO Balance Report'
+   --'Create Accounting%Cost Management'
+   --'XXAP:AP Payble Summary Report(HEA/HBS)'
+   --'XXPA:Project Status Update(BA)'
    --'XXINV: Physical Inventory Tag Print'
    --'XXPA:Project Revenue and Cost of Sales Recognition Request'
    --'XXPA:Project Status Update(Installation)'

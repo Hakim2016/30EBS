@@ -10,7 +10,7 @@ SELECT xic.interface_code,
  WHERE 1 = 1
    AND fef.executable_name = xic.concurrent_program_name(+)
       --AND xic.remote_system_code = 'R3'
-   AND xic.interface_code = 'IF66'
+   AND xic.interface_code = 'IF60'
 --AND xic.remote_system_code = 'HFG'
 /*  AND xic.interface_code IN 
 
@@ -41,4 +41,3 @@ XXPJM:VO Interface Import(GOE->GSCM)
 
 
 */
-

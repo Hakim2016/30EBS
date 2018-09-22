@@ -3,7 +3,10 @@
 SELECT ppa.segment1,
        pt_mfg.task_number,
        xtdv.task_type,
-       xtdv.completed_percentage
+       xtdv.completed_percentage/*,
+       (SELECT *
+          FROM pa_progress_rollup ppr
+         WHERE 1 = 1 AND ppr.progress_rollup_id = )*/
 --,     xtdv.period_date
   FROM pa_proj_element_versions ppev,
        pa_projects_all          ppa,
@@ -13,7 +16,8 @@ SELECT ppa.segment1,
        pa_tasks                 pt_mfg,
        xxpa_task_dtls_v         xtdv,
        pa_tasks                 pt2
- WHERE ppev.project_id = ppa.project_id
+ WHERE 1 = 1
+   AND ppev.project_id = ppa.project_id
    AND ppev.proj_element_id = ppe.proj_element_id
    AND ppev.object_type = 'PA_TASKS'
    AND ppev.wbs_level = 1
@@ -55,8 +59,8 @@ SELECT completed_percentage
            AND pt.top_task_id = pt_mfg.task_id
            AND pt_mfg.task_number = 'SBG0231-SG' --'SFA0776-SG' --p_mfg_no
            AND ppe.element_number = pt.task_number /*
-                                                                                                                                                                                           AND ppev.parent_structure_version_id = nvl(pa_project_structure_utils.get_latest_wp_version(ppev.project_id),
-                                                                                                                                                                                                                                      pa_project_structure_utils.get_current_working_ver_id(ppev.project_id)) */
+                                                                                                                                                                                                         AND ppev.parent_structure_version_id = nvl(pa_project_structure_utils.get_latest_wp_version(ppev.project_id),
+                                                                                                                                                                                                                                                    pa_project_structure_utils.get_current_working_ver_id(ppev.project_id)) */
            AND ppev.parent_structure_version_id = xxpa_utils.get_structure_version_id2(ppev.project_id)
            AND xtdv.project_id(+) = ppev.project_id
               --AND xtdv.wbs_number(+) LIKE to_char(ppev.wbs_number) ||'%'

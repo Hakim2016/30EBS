@@ -38,15 +38,27 @@ CREATE OR REPLACE PACKAGE xxhkm_common_utl IS
   g_request_id NUMBER := fnd_global.conc_request_id;
   g_session_id NUMBER := userenv('sessionid');
 
+  g_she_ou NUMBER := 84;
+  g_het_ou NUMBER := 141;
+  g_hea_ou NUMBER := 82;
+  g_hbs_ou NUMBER := 101;
+
   PROCEDURE get_account_info(p_gl_code_combine_id IN NUMBER,
                              x_acc_num            OUT VARCHAR2,
                              x_acc_desc           OUT VARCHAR2);
 
-  PROCEDURE main(errbuf       OUT VARCHAR2,
+  FUNCTION get_ccid_description(p_coa_id IN INTEGER,
+                                p_ccid   IN INTEGER) RETURN VARCHAR2;
+  FUNCTION get_ccid_segments(p_coa_id IN INTEGER,
+                             p_ccid   IN INTEGER) RETURN VARCHAR2;
+  FUNCTION get_acc_cate(p_coa_id IN INTEGER,
+                        p_ccid   IN INTEGER) RETURN VARCHAR2;
+
+/*PROCEDURE main(errbuf       OUT VARCHAR2,
                  retcode      OUT VARCHAR2,
                  p_xxxxxxxxx1 IN VARCHAR2,
                  p_xxxxxxxxx2 IN VARCHAR2,
-                 p_xxxxxxxxx3 IN VARCHAR2);
+                 p_xxxxxxxxx3 IN VARCHAR2);*/
 END xxhkm_common_utl;
 /
 CREATE OR REPLACE PACKAGE BODY xxhkm_common_utl IS
@@ -95,7 +107,7 @@ CREATE OR REPLACE PACKAGE BODY xxhkm_common_utl IS
   --process_request
   PROCEDURE process_request(p_init_msg_list IN VARCHAR2 DEFAULT fnd_api.g_false,
                             p_commit        IN VARCHAR2 DEFAULT fnd_api.g_false,
-                            p_start_date  IN DATE,
+                            p_start_date    IN DATE,
                             x_return_status OUT NOCOPY VARCHAR2,
                             x_msg_count     OUT NOCOPY NUMBER,
                             x_msg_data      OUT NOCOPY VARCHAR2) IS
@@ -152,7 +164,133 @@ CREATE OR REPLACE PACKAGE BODY xxhkm_common_utl IS
     NULL;
   END get_account_info;
 
-  PROCEDURE main(errbuf       OUT VARCHAR2,
+  --FUNCTION get_ccid_description() IS 
+
+  FUNCTION get_ccid_description(p_coa_id IN INTEGER,
+                                p_ccid   IN INTEGER) RETURN VARCHAR2 IS
+  BEGIN
+    RETURN xla_oa_functions_pkg.get_ccid_description(p_coa_id, p_ccid);
+  
+  END get_ccid_description;
+
+  FUNCTION get_ccid_segments(p_coa_id IN INTEGER,
+                             p_ccid   IN INTEGER) RETURN VARCHAR2 IS
+    l_desc VARCHAR2(2400) := NULL;
+  BEGIN
+    xla_utility_pkg.trace('> .get_ccid_segments', 20);
+    
+    --fnd_flex_ext.get_segs('SQLGL', 'GL#', xgl.chart_of_accounts_id, xal.code_combination_id) account,
+               
+  
+    IF (fnd_flex_keyval.validate_ccid('SQLGL', 'GL#', p_coa_id, p_ccid)) THEN
+    
+      BEGIN
+        SELECT gcc.segment1 || '.' || gcc.segment2 || '.' || gcc.segment3 || '.' || gcc.segment4 || '.' || gcc.segment5 || '.' ||
+               gcc.segment6 || '.' || gcc.segment7
+          INTO l_desc
+        
+          FROM gl_code_combinations gcc
+         WHERE 1 = 1
+           AND gcc.code_combination_id = p_ccid;
+      END;
+      --l_desc := fnd_flex_keyval.concatenated_descriptions;
+    END IF;
+  
+    xla_utility_pkg.trace('< .get_ccid_segments', 20);
+    RETURN l_desc;
+  EXCEPTION
+    WHEN xla_exceptions_pkg.application_exception THEN
+      RAISE;
+    WHEN OTHERS THEN
+      xla_exceptions_pkg.raise_message(p_location => 'xxhkm_common_utl.get_ccid_segments');
+  END get_ccid_segments;
+
+  FUNCTION get_acc_cate(p_coa_id IN INTEGER,
+                        p_ccid   IN INTEGER) RETURN VARCHAR2 IS
+    l_desc           VARCHAR2(2400) := NULL;
+    l_ou             VARCHAR2(6) := NULL;
+    l_acc            VARCHAR2(20) := NULL;
+    l_acc_vs_name    VARCHAR2(25);
+    l_subacc_vs_name VARCHAR2(25);
+    l_acc_cate       VARCHAR2(25);
+    l_message        VARCHAR2(2400);
+  BEGIN
+    xla_utility_pkg.trace('> .get_account_category', 20);
+  
+    IF (fnd_flex_keyval.validate_ccid('SQLGL', 'GL#', p_coa_id, p_ccid)) THEN
+      BEGIN
+        SELECT gcc.segment3
+          INTO l_acc
+          FROM gl_code_combinations gcc
+         WHERE 1 = 1
+           AND gcc.chart_of_accounts_id = p_coa_id
+           AND gcc.code_combination_id = p_ccid;
+      END;
+    
+      BEGIN
+      
+        SELECT substr(hou.name, 1, 3)
+          INTO l_ou
+          FROM hr_operating_units           hou,
+               org_organization_definitions ood
+         WHERE 1 = 1
+           AND ood.set_of_books_id = hou.set_of_books_id
+           AND nvl(ood.operating_unit, -1) <> -1
+              --AND hou.default_legal_context_id = 24278
+           AND ood.chart_of_accounts_id = p_coa_id --50352
+           AND rownum = 1;
+      END;
+    
+      l_acc_vs_name    := l_ou || '_ACCOUNT';
+      l_subacc_vs_name := l_ou || '_SUBACCOUNT';
+    
+      BEGIN
+      
+        SELECT decode(substr(accv.compiled_value_attributes, 5, 1),
+                      'A',
+                      'Asset',
+                      'R',
+                      'Revenue',
+                      'O',
+                      'Owners Equlity',
+                      'E',
+                      'Expense',
+                      'L',
+                      'Liability') cate
+          INTO l_acc_cate
+        
+          FROM fnd_flex_values_vl  accv,
+               fnd_flex_value_sets accs,
+               fnd_flex_values_vl  subaccv,
+               fnd_flex_value_sets subaccs
+         WHERE 1 = 1
+           AND accs.flex_value_set_name = l_acc_vs_name --'HEA_ACCOUNT'
+           AND accs.flex_value_set_id = accv.flex_value_set_id
+           AND subaccs.flex_value_set_name = l_subacc_vs_name --'HEA_SUBACCOUNT'
+           AND subaccs.flex_value_set_id = subaccv.flex_value_set_id
+           AND accv.flex_value = subaccv.parent_flex_value_low
+           AND accv.flex_value = l_acc --'1145500000'--'1161500990'
+              --AND subaccv.flex_value = '1146011000'
+           AND rownum = 1
+        
+        ;
+      EXCEPTION
+        WHEN OTHERS THEN
+          l_message := '20.get acc_cate';
+      END;
+      --l_desc := fnd_flex_keyval.concatenated_descriptions;
+    END IF;
+  
+    xla_utility_pkg.trace('< .get_acc_cate', 20);
+    RETURN l_acc_cate;
+  EXCEPTION
+    WHEN xla_exceptions_pkg.application_exception THEN
+      RAISE;
+    WHEN OTHERS THEN
+      xla_exceptions_pkg.raise_message(p_location => 'xxhkm_common_utl.get_acc_cate' || l_message);
+  END get_acc_cate;
+
+/*PROCEDURE main(errbuf       OUT VARCHAR2,
                  retcode      OUT VARCHAR2,
                  p_xxxxxxxxx1 IN VARCHAR2,
                  p_xxxxxxxxx2 IN VARCHAR2,
@@ -199,6 +337,6 @@ CREATE OR REPLACE PACKAGE BODY xxhkm_common_utl IS
       xxfnd_conc_utl.log_message_list;
       retcode := '2';
       errbuf  := SQLERRM;
-  END;
+  END;*/
 END xxhkm_common_utl;
 /

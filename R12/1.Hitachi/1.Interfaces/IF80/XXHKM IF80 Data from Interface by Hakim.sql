@@ -74,10 +74,11 @@ SELECT intf.actual_month act_mon,
    AND ppa.project_id = pt.project_id
    AND pt.top_task_id = top.task_id
    AND pt.task_id = intf.task_id
-   AND intf.org_id = 84 --84--SHE --82--HEA
-      AND intf.eq_er_category = 'ER'--'EQ'--'ER'--'PARTS'--'EQ'
+   --AND intf.org_id = 82--84 --84--SHE --82--HEA
+      --AND intf.eq_er_category = 'ER'--'EQ'--'ER'--'PARTS'--'EQ'
    AND intf.mfg_num IN 
-   ('TFA0565-TH')
+   ('ST03116-ID','ST03247-TH','')
+   --('TFA0565-TH')
    --('LV1557-PL4','XU1428-BLK2-4','SBK0489-KW')--'SHE_Oversea_Assembly Parts'
    --('SAG0474-HK','JAC0061-PH','JAJ0044-MM')--'SHE_Oversea_Equipments
    --('SDB0143-PH','SS00457-HK','SUC0014-KW')--'SHE_Oversea_Spare Parts'
