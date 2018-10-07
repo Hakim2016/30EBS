@@ -65,5 +65,5 @@ SELECT acct.account_number 客户编码,
    AND bill_loc.location_id(+) = bill_ps.location_id
    AND bill_loc.country(+) = 'US' --美国
 
---AND acct.account_number = 'FB00000303'
+AND acct.account_number = 'FB00000303'--'HL00000020'--'FB00000303'
 ;

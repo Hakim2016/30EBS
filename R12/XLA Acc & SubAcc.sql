@@ -31,7 +31,7 @@ SELECT accv.flex_value acc,
    AND subaccs.flex_value_set_name = 'HEA_SUBACCOUNT'
    AND subaccs.flex_value_set_id = subaccv.flex_value_set_id
    AND accv.flex_value = subaccv.parent_flex_value_low
-   AND accv.flex_value = '1145400000'--'1161500990'
+   AND accv.flex_value = '1161500990'--'1145400000'--'1161500990'
    --AND subaccv.flex_value = '1146011000'
 
  ORDER BY accv.flex_value,

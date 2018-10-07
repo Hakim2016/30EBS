@@ -100,10 +100,12 @@ WHERE  pp.org_id               = hou.organization_id
   AND  pp.org_id               = nvl(xpmm.org_id,pp.org_id)
   AND  pt.project_id           = xpmm.project_id(+)
   AND  pt.task_number          = xpmm.mfg_num(+)
-  AND pp.org_id = 82--101
-  AND pp.segment1 = '11001297'--'11001296'--'11001296'--'53020362'--'53020400'
-  AND pt.task_number IN 
-  ('SBG0231-SG')
+  AND pp.org_id = 101--82--101
+   AND   xpmm.er_add_up_amount IS NULL
+   AND  xpmm.cos_add_up_amount IS NULL
+  --AND pp.segment1 = '11001297'--'11001296'--'11001296'--'53020362'--'53020400'
+  /*AND pt.task_number IN 
+  ('SBG0231-SG')*/
   --('JED0210-VN','JED0211-VN','JED0212-VN','JED0219-VN','JED0220-VN','JED0225-VN')
   --AND xpmm.fully_packing_date IS NULL
   --AND xpmm.fully_delivery_date IS NULL

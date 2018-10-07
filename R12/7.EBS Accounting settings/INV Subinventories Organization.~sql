@@ -19,7 +19,7 @@ SELECT sec.organization_id,
        org_organization_definitions   ood
  WHERE 1 = 1
    AND sec.organization_id = ood.organization_id
-   AND sec.organization_id = 86 --121
+   AND sec.organization_id = 83 --121
    
 --AND sec.secondary_inventory_name IN ('RM', '')
 

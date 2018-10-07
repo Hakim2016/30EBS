@@ -21,8 +21,8 @@ SELECT p.application_name appl_name,
    --AND p.application_id = 222
 --and t.set_of_books_id='2026'
 --AND t.period_name = 'APR-18'
-AND t.start_date = to_date('2018-06-01','yyyy-mm-dd')
-AND t.set_of_books_id = 2021--2041--2021
+AND t.start_date = to_date('2018-10-01','yyyy-mm-dd')
+AND t.set_of_books_id = 2023--2021--2041--2021
  ORDER BY t.application_id ASC,
           t.start_date     ASC;
 
@@ -86,8 +86,9 @@ SELECT oap.organization_id,
        oap.status
   FROM org_acct_periods_v oap
  WHERE oap.organization_id != 0
-   AND oap.organization_id = 83
-and oap.period_name='MAR-18'
+   AND oap.organization_id = 86--83
+   AND oap.start_date = to_date('2018-09-01','yyyy-mm-dd')
+--and oap.period_name=--'MAR-18'
  ORDER BY oap.organization_id,
           oap.start_date;
 

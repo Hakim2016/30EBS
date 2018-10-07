@@ -36,9 +36,14 @@ Select /*+RULE*/
    FROM v$session s, dba_dml_locks l, v$process p
  Where l.session_id = s.sid
     AND p.addr = s.paddr
-    --and l.name='MTL_TXN_REQUEST_LINES'
+    and l.name LIKE 'XLA%'--'MTL_TXN_REQUEST_LINES'
+    --AND s.client_identifier = '70236500'
  order by s.logon_time;
 
 --È¡ÏûËø±í£º
 
  --alter system kill session 'Session_ID,serial';
+
+SELECT * FROM XLA_ACCOUNTING_ERRORS err
+WHERE 1=1
+AND err.last_update_date > TRUNC(SYSDATE);

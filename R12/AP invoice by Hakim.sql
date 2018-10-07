@@ -18,10 +18,10 @@ SELECT aph.creation_date,
        pa_tasks        pt
  WHERE 1 = 1
    AND aph.task_id = pt.task_id(+)
-   AND aph.org_id = 101 --141--82--101--82 --84--SHE--82 --HEA
+   AND aph.org_id = 82--101 --141--82--101--82 --84--SHE--82 --HEA
    AND aph.project_id = ppa.project_id(+) --left join
-   AND aph.invoice_num IN --= 'TOEQ001597'--'210-702-004' --'SG00043803*8' --'107/5350';--454220
-       ('SPE-18000129')
+   --AND aph.invoice_num IN --= 'TOEQ001597'--'210-702-004' --'SG00043803*8' --'107/5350';--454220
+       --('SPE-18000129')
 --AND aph.invoice_num LIKE 'HKM%'
 --AND aph.creation_date >= to_date('2018-06-01', 'yyyy-mm-dd')
 --AND aph.invoice_type_lookup_code = 'PREPAYMENT'
@@ -46,12 +46,15 @@ SELECT aph.invoice_id,
        ap_invoice_lines_all apl
  WHERE 1 = 1
    AND aph.invoice_id = apl.invoice_id
-   AND aph.org_id = 101 --82
-   AND aph.invoice_num IN --LIKE 'USD%YUL%'
+   AND aph.org_id = 82--101 --82
+   --AND aph.invoice_num IN --LIKE 'USD%YUL%'
       --('GE18060191','GE18060212','GE18060218','GE18060219','GE18060228','GE18070008','GE18070010','GE18070021','GE18070062','GE18070082','GE18070086','GE18070089','GE18070090','GE18070101','GE18070103','GE18070104','GE18070105','GE18070108','GE18070114','GE18070122','GE18070126','GE18070129','GE18070130','GE18070131','GE18070132','GE18070133','GE18070134','GE18070135','GE18070136','GE18070137','GE18070138','GE18070139','GE18070140','GE18070141','GE18070143','GE18070144','GE18070145','GE18070146','GE18070147','GE18070148','GE18070149','GE18070150','GE18070151','GE18070152','GE18070154','GE18070155','GE18070156','GE18070157','GE18070158','GE18070159','GE18070160','GE18070161','GE18070165','GE18070169','GE18070172','GE18070174','GE18070178','GE18070179')
-       ('SPE-18000129') --('GE18060191')--('GE18070129')
+       --('SPE-18000129') --('GE18060191')--('GE18070129')
       --AND apl.amount <> 0
-   AND apl.line_number = 19
+   --AND apl.line_number = 19
+   AND aph.creation_date >= SYSDATE - 160
+   AND aph.project_id IS NOT NULL
+   AND aph.po_header_id IS NULL
  ORDER BY aph.invoice_num,
           apl.amount;
 

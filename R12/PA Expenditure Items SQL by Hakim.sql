@@ -64,10 +64,10 @@ SELECT pei.expenditure_item_id   pei_id,
        --IN (15168527, 15221846)
 --AND pei.inventory_item_id = 3939072--15315822
 --AND pei.task_id = 5725843
---AND top.task_number IN ('LN0732-L2')--('SBH0216-PH')--('TAE0736-TH')--('SLS0230-SG','LN0732-L2') --'TAD0021-TH'--mfg
+AND top.task_number IN ('SAC0826-SG')--('SBH0216-PH')--('TAE0736-TH')--('SLS0230-SG','LN0732-L2') --'TAD0021-TH'--mfg
 --AND pt.task_number = 'TAD0021-TH.D.11'
-AND ppa.segment1 = '215110107'--'11001262'--'10101506'--'215110107'--'21000400'--'118010001'--'10101647' --'10202892'--'21000197'--'10101506' --'21000197' --proj_num
-AND ppa.org_id = 84 --84 --SHE --82 --HEA
+AND ppa.segment1 = '11001297'--'215110107'--'11001262'--'10101506'--'215110107'--'21000400'--'118010001'--'10101647' --'10202892'--'21000197'--'10101506' --'21000197' --proj_num
+AND ppa.org_id = 82 --84 --SHE --82 --HEA
 --AND pei.expenditure_item_date >= to_date('2018-03-01', 'yyyy-mm-dd')
 --AND pei.creation_date >= to_date('2017-04-01', 'yyyy-mm-dd')
 --AND pei.creation_date <= to_date('2017-05-01', 'yyyy-mm-dd')

@@ -71,13 +71,18 @@ SELECT v.request_id rqst_id,
    AND fu.employee_id = pap.person_id(+)
    AND pap.effective_end_date > SYSDATE
    AND fr.responsibility_id = v.responsibility_id
-      --AND v.request_id = 16282868--16253168--16221488--13165995--16098690--15981725--15956670
+      --AND v.request_id = 16839045--16282868--16253168--16221488--13165995--16098690--15981725--15956670
       --IN (16275615, 16278535)
       --AND v.program_short_name = 'XXPAUPDATESTATUS'
-      --AND v.program LIKE 'Create Accounting%'
-      --AND v.status_code = 'E'
+      --AND v.program LIKE --'Create Accounting%'
+            --AND v.status_code = 'E'
       --AND v.phase_code IN ('R', 'P')
-   AND v.user_concurrent_program_name LIKE 'XXPA:Project Cost Detail Report (HEA/HBS)'
+   AND v.user_concurrent_program_name 
+   LIKE 
+   'XXPA:Project Cost Data Outbound'
+   --'XXPA%Project Revenue and Cost of Sales Recognition Request'
+   --'%Interface%Manager%'
+   --'XXPA:Project Cost Detail Report (HEA/HBS)'
 --'XXPA:Project Cost Data Outbound'
 --'XXPA:Progressive JIP and Sales Summary Report'
 --'XXOM:SO Balance Report'

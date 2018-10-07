@@ -126,8 +126,8 @@ SELECT hou.name,
        apps.pa_proj_elements               ppe,
        apps.pa_task_types                  ptt,
        --
-       (SELECT to_date('2018-07-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss') p_start_date,
-               to_date('2018-07-31 23:59:59', 'yyyy-mm-dd hh24:mi:ss') p_end_date,
+       (SELECT to_date('2018-08-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss') p_start_date,
+               to_date('2018-08-31 23:59:59', 'yyyy-mm-dd hh24:mi:ss') p_end_date,
                --
                /*'10003999'*/
                NULL po_number,

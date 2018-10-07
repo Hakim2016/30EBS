@@ -9,14 +9,14 @@ SELECT rct.org_id,
        rct.last_update_date,
        rct.attribute10,
        rct.*
-  FROM ra_customer_trx_all rct,
-  ra_cust_trx_types_all rctt
+  FROM ra_customer_trx_all   rct,
+       ra_cust_trx_types_all rctt
  WHERE 1 = 1
- AND rctt.org_id = rct.org_id
- AND rctt.cust_trx_type_id = rct.cust_trx_type_id
- --AND rctt.type IN ('CM', 'DM')
-   --AND rct.org_id = 101 --84
-AND rct.trx_number IN ('TFO000011')--('CTE1_454:TE_2004') --('JPE-18000050')--('10000017753')
+   AND rctt.org_id = rct.org_id
+   AND rctt.cust_trx_type_id = rct.cust_trx_type_id
+      --AND rctt.type IN ('CM', 'DM')
+      --AND rct.org_id = 101 --84
+   AND rct.trx_number IN ('HKM2018092101') --('TFO000011')--('CTE1_454:TE_2004') --('JPE-18000050')--('10000017753')
 --AND rct.creation_date >= to_date('20180301','yyyymmdd')
 --AND rct.creation_date <= to_date('20180315','yyyymmdd')
 --AND rct.customer_trx_id = 4022542
@@ -25,11 +25,10 @@ AND rct.trx_number IN ('TFO000011')--('CTE1_454:TE_2004') --('JPE-18000050')--('
 SELECT *
   FROM ra_cust_trx_types_all rctt
  WHERE 1 = 1
- AND rctt.org_id = 101
-   --AND rctt.cust_trx_type_id = 1350
-   ;
-   
-   
+   AND rctt.org_id = 101
+--AND rctt.cust_trx_type_id = 1350
+;
+
 SELECT *
   FROM xla.xla_transaction_entities xte
  WHERE 1 = 1

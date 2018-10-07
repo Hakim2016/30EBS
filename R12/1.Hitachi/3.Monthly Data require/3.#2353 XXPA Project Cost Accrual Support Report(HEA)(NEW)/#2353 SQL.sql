@@ -42,7 +42,7 @@ SELECT hou.name,
               0,
               gl_currency_api.convert_amount(poh.currency_code,
                                              'SGD',
-                                             parameters.p_end_date - 1, --pda.creation_date, -- p_conversion_date,
+                                             parameters.p_end_date - 2, --pda.creation_date, -- p_conversion_date,
                                              'Corporate',
                                              pol.unit_price *
                                              pda.quantity_ordered)) po_amount_sgd,
@@ -126,8 +126,8 @@ SELECT hou.name,
        apps.pa_proj_elements               ppe,
        apps.pa_task_types                  ptt,
        --
-       (SELECT to_date('2018-08-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss') p_start_date,
-               to_date('2018-08-31 23:59:59', 'yyyy-mm-dd hh24:mi:ss') p_end_date,
+       (SELECT to_date('2018-09-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss') p_start_date,
+               to_date('2018-09-30 23:59:59', 'yyyy-mm-dd hh24:mi:ss') p_end_date,
                --
                /*'10003999'*/
                NULL po_number,
