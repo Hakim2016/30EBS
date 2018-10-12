@@ -74,10 +74,10 @@ SELECT intf.actual_month act_mon,
    AND ppa.project_id = pt.project_id
    AND pt.top_task_id = top.task_id
    AND pt.task_id = intf.task_id
-   --AND intf.org_id = 82--84 --84--SHE --82--HEA
+   AND intf.org_id = 141--82--84 --84--SHE --82--HEA
       --AND intf.eq_er_category = 'ER'--'EQ'--'ER'--'PARTS'--'EQ'
-   AND intf.mfg_num IN 
-   ('ST03116-ID','ST03247-TH','')
+   --AND intf.mfg_num IN 
+   --('ST03116-ID','ST03247-TH','')
    --('TFA0565-TH')
    --('LV1557-PL4','XU1428-BLK2-4','SBK0489-KW')--'SHE_Oversea_Assembly Parts'
    --('SAG0474-HK','JAC0061-PH','JAJ0044-MM')--'SHE_Oversea_Equipments
@@ -99,19 +99,19 @@ SELECT intf.actual_month act_mon,
       --('TFA0931-TH')
       --AND pt.task_number LIKE '%.D.11'
       --AND (pt.task_number NOT LIKE '%.EQ' AND pt.task_number NOT LIKE '%.ER')
-      --AND intf.actual_month >= to_date('2016-01-01', 'yyyy-mm-dd')
+      AND intf.actual_month = to_date('2018-08-01', 'yyyy-mm-dd')
       --AND nvl(intf.subcon, 0) <> 0
       --AND ppa.segment1 = '11000144'--'213100127'
       --AND intf.additional_flag = '1'--'N'
       --AND intf.creation_date <= to_date('2018-08-01', 'yyyy-mm-dd')
       --AND intf.subcon <> 0
-   /*AND intf.group_id = (SELECT MAX(t2.group_id)
+   AND intf.group_id = (SELECT MAX(t2.group_id)
                           FROM xxpa_cost_gcpm_int t2
                          WHERE 1 = 1
                            AND t2.mfg_num = intf.mfg_num
                            AND t2.actual_month = intf.actual_month
                               --AND t2.creation_date <= to_date('2018-08-01', 'yyyy-mm-dd')
-                           AND t2.task_id = intf.task_id)*/
+                           AND t2.task_id = intf.task_id)
       
   /* AND EXISTS
  (SELECT 'Y'

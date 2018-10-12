@@ -237,7 +237,7 @@ UNION ALL*/
               ----
            AND xdl.source_distribution_type = 'XLA_MANUAL'--'R' --'MTL_TRANSACTION_ACCOUNTS'
               --event class/ event type
-           AND xet.language = userenv('LANG')
+           AND xet.language = userenv('LANG') 
            AND xect.application_id = xe.application_id --707
            AND xet.application_id = xe.application_id --707
            AND xect.entity_code = xet.entity_code
@@ -248,7 +248,8 @@ UNION ALL*/
            AND xte.application_id = 275
            AND xte.ledger_id = 2021
            AND xah.description LIKE --'11001296.SFA0776-SG%'--'12004080.ST03391-HK%'--'%11000592.SR00023-SG.Manual.3299764'
-           '12004080.ST03391-HK%'
+           '11001297.SBG0231-SG%'
+           --'12004080.ST03391-HK%'
            --AND xte.creation_date >= to_date('2015-01-01','yyyy-mm-dd')
            --AND xte.entity_id >= 8337882
            --AND xte.entity_id <= 8337900
