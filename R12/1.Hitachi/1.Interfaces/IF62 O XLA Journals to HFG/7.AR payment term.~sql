@@ -23,7 +23,7 @@ SELECT xx.creation_date,
   FROM ra_terms xx
  WHERE 1 = 1
    AND nvl(xx.end_date_active, SYSDATE) <= SYSDATE
-   AND xx.attribute10 IS NOT NULL
+   --AND xx.attribute10 IS NOT NULL
    --AND xx.created_by = 4411
  ORDER BY xx.attribute10;
 

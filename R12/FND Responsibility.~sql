@@ -1,58 +1,65 @@
--- R11
-/*
-SELECT rl.responsibility_name,
-       ur.start_date,
-       ur.end_date,
-       ur.user_id,
-       ur.application_id,
-       ur.responsibility_id
-FROM   fnd_user_responsibility ur,
-       fnd_responsibility_tl   rl
-WHERE  rl.responsibility_id = ur.responsibility_id
-AND    rl.LANGUAGE = 'ZHS'
-AND    rl.responsibility_name = '160_库存超级用户'
-AND    ur.user_id = 1273;
-*/
+-- R12
+
+SELECT RL.RESPONSIBILITY_NAME,
+       UR.START_DATE,
+       UR.END_DATE,
+       UR.USER_ID,
+       UR.APPLICATION_ID,
+       UR.RESPONSIBILITY_ID FND_RESP
+  FROM FND_RESPONSIBILITY UR, FND_RESPONSIBILITY_TL RL
+ WHERE RL.RESPONSIBILITY_ID = UR.RESPONSIBILITY_ID
+   AND RL.LANGUAGE = 'US' --'ZHS'
+--AND    rl.responsibility_name = '160_库存超级用户'
+--AND    ur.user_id = 1273
+;
+
+SELECT FRL.RESPONSIBILITY_NAME, FR.*, FRL.*
+  FROM FND_RESPONSIBILITY FR, FND_RESPONSIBILITY_TL FRL
+ WHERE 1 = 1
+   AND FRL.LANGUAGE = 'US'
+   AND FR.RESPONSIBILITY_ID = FRL.RESPONSIBILITY_ID
+   
+   AND upper(FRL.RESPONSIBILITY_NAME) LIKE '%FULL%'--'%ALL%'    
+   ;
 
 -- 11i
-SELECT rl.responsibility_name,
-       ur.start_date,
-       ur.end_date,
-       ur.user_id,
-       ur.responsibility_application_id application_id,
-       ur.responsibility_id
-FROM   apps.fnd_user_resp_groups_all ur,
-       applsys.fnd_responsibility_tl    rl
-WHERE  rl.responsibility_id = ur.responsibility_id
-AND    rl.LANGUAGE = 'US'
-AND    ur.user_id = 1111;
+SELECT RL.RESPONSIBILITY_NAME,
+       UR.START_DATE,
+       UR.END_DATE,
+       UR.USER_ID,
+       UR.RESPONSIBILITY_APPLICATION_ID APPLICATION_ID,
+       UR.RESPONSIBILITY_ID
+  FROM APPS.FND_USER_RESP_GROUPS_ALL UR, APPLSYS.FND_RESPONSIBILITY_TL RL
+ WHERE RL.RESPONSIBILITY_ID = UR.RESPONSIBILITY_ID
+   AND RL.LANGUAGE = 'US'
+   AND UR.USER_ID = 1111;
 
-SELECT * FROM
-apps.fnd_user_resp_groups_all ur
-WHERE  1 = 1
-AND    UR.RESPONSIBILITY_ID = 20420
-AND    ur.user_id = 1111;
+SELECT *
+  FROM APPS.FND_USER_RESP_GROUPS_ALL UR
+ WHERE 1 = 1
+   AND UR.RESPONSIBILITY_ID = 20420
+--AND    ur.user_id = 1111
+;
 
-UPDATE apps.fnd_user_resp_groups_all ur
-SET  ur.end_date = SYSDATE + 1
-WHERE  1 = 1
-AND    UR.RESPONSIBILITY_ID = 20420
-AND    ur.user_id = 1111;
+UPDATE APPS.FND_USER_RESP_GROUPS_ALL UR
+   SET UR.END_DATE = SYSDATE + 1
+ WHERE 1 = 1
+   AND UR.RESPONSIBILITY_ID = 20420
+   AND UR.USER_ID = 1111;
 
 --UPDATE wf_all_user_role_assignments ur SET ur.END_DATE = to_date('2006-10-20','YYYY-MM-DD') WHERE ur.user_name = 'HQXXB02' AND ur.END_DATE = to_date('2006-10-22','YYYY-MM-DD');
 
+SELECT * FROM FND_USER U WHERE U.USER_NAME = 'HQCGB27';
 
-SELECT * FROM fnd_user u WHERE u.user_name = 'HQCGB27';
-
-SELECT r.responsibility_name,
-       u.user_id,
-       r.responsibility_id,
-       a.responsibility_application_id
-FROM   fnd_user_resp_groups_all a,
-       fnd_user                 u,
-       fnd_responsibility_tl    r
-WHERE  u.user_id = a.user_id
-AND    r.responsibility_id = a.responsibility_id
-AND    r.application_id = a.responsibility_application_id
-AND    r.LANGUAGE = 'ZHS'
-AND    u.user_name = 'HAND_HKM';
+SELECT R.RESPONSIBILITY_NAME,
+       U.USER_ID,
+       R.RESPONSIBILITY_ID,
+       A.RESPONSIBILITY_APPLICATION_ID
+  FROM FND_USER_RESP_GROUPS_ALL A, FND_USER U, FND_RESPONSIBILITY_TL R
+ WHERE U.USER_ID = A.USER_ID
+   AND R.RESPONSIBILITY_ID = A.RESPONSIBILITY_ID
+   AND R.APPLICATION_ID = A.RESPONSIBILITY_APPLICATION_ID
+   AND R.LANGUAGE = 'US'
+      --AND 
+   AND U.USER_NAME = 'HAKIM' --'HAND_HKM'
+;

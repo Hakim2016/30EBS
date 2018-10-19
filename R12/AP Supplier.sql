@@ -1,4 +1,5 @@
 SELECT vdr.set_of_books_id,
+       vdr.segment1,
        sits.vendor_site_code,
        --vdr.customer_num,
        vdr.vendor_id,
@@ -9,8 +10,9 @@ SELECT vdr.set_of_books_id,
        ap_supplier_sites_all sits
  WHERE 1 = 1
    AND vdr.vendor_id = sits.vendor_id
+   AND sits.ORG_ID = 1129--HNET
       --AND --vdr.vendor_name --= '25183'
-   AND vdr.segment1 IN ('FB00003549','GS00200893','GT00200893') --('GS00200893','GT00200893')
+   --AND vdr.segment1 IN ('FB00003549','GS00200893','GT00200893') --('GS00200893','GT00200893')
 --AND vdr.vat_registration_num IN ('0135561014284','0015511407039')
 
 --'0135561014284'

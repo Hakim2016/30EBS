@@ -27,6 +27,7 @@ SELECT pap.person_id,
       --AND fu.person_party_id
       --AND hp.
    AND pap.party_id = hp.party_id
+   --AND pap.party_id = 9851
    AND fu.user_name IN --('70264934')--('10171749')--('71229010', '21097003')--
        ('HAND_LY', 'HAND_HKM')
       --AND fu.user_id = 1959--4370--1567--1200--1194--1148--2989--1590--3374--4270--1147--1244--1794--1244--1147
@@ -42,10 +43,11 @@ SELECT pap.person_id,
        pap.*
   FROM per_all_people_f pap
  WHERE 1 = 1
-   AND pap.person_id = 81
+   AND pap.person_id = 9851--81
    AND pap.effective_end_date > SYSDATE
 --AND pap.party_id = 27299
 ;
+
 
 UPDATE fnd_user fu
    SET fu.employee_id     = 1306, --HEA 81 SHE 1306
