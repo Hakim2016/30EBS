@@ -63,7 +63,7 @@ where 1=1
    and frg.request_group_id = frgu.request_group_id(+) --- 以上是请求组中间表与职责
    and fcp.CONCURRENT_PROGRAM_ID = frgu.REQUEST_UNIT_ID
    and frgu.UNIT_application_id = fcp.application_id
-   AND fcp.user_concurrent_program_name --= 'Manual Key in Expenditure Report'--'Item categories report'--'Create Accounting'
+   --AND fcp.user_concurrent_program_name --= 'Manual Key in Expenditure Report'--'Item categories report'--'Create Accounting'
    --LIKE '%Manual Key in Expenditure Report%'
    --and user_name = 'HAND_HKM' --- 'SUNYUKUN' 登录用户名,可变量
 order by User_id,

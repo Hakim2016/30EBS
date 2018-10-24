@@ -18,7 +18,7 @@ SELECT *
   FROM oe_order_headers_all ooh
  WHERE 1 = 1
       --AND ooh.org_id = 101
-   AND ooh.order_number IN ('11000801') --('23000461') --('53020044'); --('53020400', '53020422');
+   AND ooh.order_number IN ('11001269') --('23000461') --('53020044'); --('53020400', '53020422');
 ;
 SELECT xsh.source_system,
        ooh.*
@@ -27,7 +27,7 @@ SELECT xsh.source_system,
  WHERE 1 = 1
    AND ooh.header_id = xsh.so_header_id
       --AND ooh.org_id = 101
-   AND ooh.order_number IN ('12003134');
+   AND ooh.order_number IN ('11001269');
 
 --so line dff1 dff4
 SELECT ooh.creation_date,
@@ -39,10 +39,17 @@ SELECT ooh.creation_date,
            AND ooh.header_id = xsh.so_header_id) src_sys,
        ooh.booked_flag,
        ooh.cancelled_flag,
+       ott.transaction_type_id,
+       ool.line_type_id,
        
-       ooh.attribute5,
+       (SELECT ott2.attribute5
+          FROM oe_transaction_types_v ott2
+         WHERE 1 = 1
+           AND ott2.transaction_type_id = ool.line_type_id) line_type,
+       /*ooh.attribute5,
        ool.attribute5,
-       ool.attribute15,
+       ott.attribute5,
+       ool.attribute15,*/
        ool.project_id,
        ool.task_id,
        
@@ -84,12 +91,76 @@ SELECT ooh.creation_date,
    AND ott.transaction_type_id = ooh.order_type_id(+)
    AND ott.org_id = ooh.org_id
    AND ooh.header_id = ool.header_id(+)
-   AND ott.name = 'Order_HEA_Oversea Parts Sales'--'Order_HEA_Domestic_EQ_Sales' --'SHE_Oversea_Spare Parts'
+      --AND ott.name = 'Order_HEA_Oversea Parts Sales'--'Order_HEA_Domestic_EQ_Sales' --'SHE_Oversea_Spare Parts'
    AND ooh.cancelled_flag <> 'Y'
    AND ooh.booked_flag = 'Y'
-   AND ooh.creation_date >= to_date('20180101', 'yyyymmdd')
-AND ooh.order_number = 
-'12003633'
+      --AND ooh.creation_date >= to_date('20180101', 'yyyymmdd')
+   AND ooh.order_number --= '11001269'
+   IN
+   ('11001118',
+'11001269',
+'11001297',
+'11001319',
+'11001331',
+'118010009',
+'118010010',
+'118010014',
+'118010015',
+'118010016',
+'118040034',
+'118050009',
+'118050013',
+'118080004',
+'118080016',
+'118100013',
+'12002949',
+'12003423',
+'12003451',
+'12003468',
+'12003503',
+'12003510',
+'12003711',
+'12003744',
+'12003769',
+'12003785',
+'12003797',
+'12003803',
+'12003805',
+'12003849',
+'12003871',
+'12003875',
+'12003898',
+'12003914',
+'12003915',
+'12003916',
+'12003949',
+'12003972',
+'12003982',
+'12004008',
+'12004031',
+'12004032',
+'12004036',
+'12004039',
+'12004041',
+'12004043',
+'12004044',
+'12004050',
+'12004062',
+'12004064',
+'12004075',
+'12004077',
+'12004080',
+'12004116',
+'12004117',
+'12004137',
+'12004145',
+'12004147',
+'12004153',
+'12004154',
+'12004159',
+'12004169',
+'12004174')
+--'12003633'
 --'22011912'
 --'22013146'
 --'22010117'

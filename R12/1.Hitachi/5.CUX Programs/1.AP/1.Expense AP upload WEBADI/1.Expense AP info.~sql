@@ -6,8 +6,12 @@ xxap_expinvoice_upload_pkg.main
 */
 
 xxap_expinvoice_upload_pkg;--.main
+--after successfully created, data will be deleted
+SELECT * FROM xxap_invoices_interface xaphi
+WHERE 1=1
+AND xaphi.invoice_num = 'TG18090176'--'655-RMS-0490854'--'GE18070129'
 
-SELECT * FROM xxap_invoices_interface;
+;
 
 SELECT * FROM xxap_invoice_lines_interface;
 

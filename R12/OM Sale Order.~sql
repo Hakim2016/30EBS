@@ -18,7 +18,7 @@ SELECT *
   FROM oe_order_headers_all ooh
  WHERE 1 = 1
       --AND ooh.org_id = 101
-   AND ooh.order_number IN ('11000801') --('23000461') --('53020044'); --('53020400', '53020422');
+   AND ooh.order_number IN ('11001269') --('23000461') --('53020044'); --('53020400', '53020422');
 ;
 SELECT xsh.source_system,
        ooh.*
@@ -27,7 +27,7 @@ SELECT xsh.source_system,
  WHERE 1 = 1
    AND ooh.header_id = xsh.so_header_id
       --AND ooh.org_id = 101
-   AND ooh.order_number IN ('12003134');
+   AND ooh.order_number IN ('11001269');
 
 --so line dff1 dff4
 SELECT ooh.creation_date,
@@ -39,10 +39,17 @@ SELECT ooh.creation_date,
            AND ooh.header_id = xsh.so_header_id) src_sys,
        ooh.booked_flag,
        ooh.cancelled_flag,
+       ott.transaction_type_id,
+       ool.line_type_id,
        
-       ooh.attribute5,
+       (SELECT ott2.attribute5
+          FROM oe_transaction_types_v ott2
+         WHERE 1 = 1
+           AND ott2.transaction_type_id = ool.line_type_id) line_type,
+       /*ooh.attribute5,
        ool.attribute5,
-       ool.attribute15,
+       ott.attribute5,
+       ool.attribute15,*/
        ool.project_id,
        ool.task_id,
        
@@ -84,11 +91,12 @@ SELECT ooh.creation_date,
    AND ott.transaction_type_id = ooh.order_type_id(+)
    AND ott.org_id = ooh.org_id
    AND ooh.header_id = ool.header_id(+)
-   AND ott.name = 'Order_HEA_Oversea Parts Sales'--'Order_HEA_Domestic_EQ_Sales' --'SHE_Oversea_Spare Parts'
+      --AND ott.name = 'Order_HEA_Oversea Parts Sales'--'Order_HEA_Domestic_EQ_Sales' --'SHE_Oversea_Spare Parts'
    AND ooh.cancelled_flag <> 'Y'
    AND ooh.booked_flag = 'Y'
-   AND ooh.creation_date >= to_date('20170301', 'yyyymmdd')
---AND ooh.order_number = 
+      --AND ooh.creation_date >= to_date('20180101', 'yyyymmdd')
+   AND ooh.order_number = '11001269'
+--'12003633'
 --'22011912'
 --'22013146'
 --'22010117'

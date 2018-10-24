@@ -5,13 +5,20 @@ XXOMP001
 */
 
 --SHE Tax invoice
-SELECT v2.mfg_completion_date,
+SELECT --v2.mfg_completion_date,
        dih.document_number dih_num,
+       nvl(dih.last_invoice_flag, 'N') lst_inv,
+       dih.status_code,
        dih.so_number,
        --ooh.order_number,
        ppa.project_type,
-       ool.task_id,
+       --ool.task_id,
        ool.ordered_item,
+       --dil.quantity,
+       --dil.price,
+       dil.amount,
+       dih.transaction_date,
+       dih.creation_date,
        dil.header_id dih_id,
        dil.org_id,
        dih.transaction_date,
@@ -33,20 +40,23 @@ SELECT v2.mfg_completion_date,
    AND ool.project_id = ppa.project_id
    AND dih.header_id = dil.header_id
    AND dil.oe_line_id = ool.line_id
-   AND dih.org_id = 84
+   AND dih.org_id = 141--84
    AND dih.document_type = 'TAXINV'
+   AND ooh.order_number = '61000175'
       --AND ROWNUM = 1
-   AND dih.document_number = 'TOAP000085' --'TOAP013212'
+   --AND dih.document_number = 'TOAP000085' --'TOAP013212'
       --AND v2.mfg_completion_date IS NULL
       --AND dih.header_id = 57768754
       --AND dih.so_number = '217080209'--'21000749'
       --AND OOL.TASK_ID = P_TASK_ID
       --AND DIH.LAST_INVOICE_FLAG = 'Y'--todo170620 
       --AND nvl(ppt.attribute7, 'DOMESTIC') <> 'OVERSEA'
-   AND dih.transaction_date BETWEEN to_date('20180101', 'yyyymmdd')
-      /*P_START_DATE*/
-       AND /*P_END_DATE*/
-       to_date('20180331 23:59:59', 'yyyymmdd hh24:mi:ss')
+   /*AND dih.transaction_date BETWEEN to_date('20180101', 'yyyymmdd')
+      \*P_START_DATE*\
+       AND \*P_END_DATE*\
+       to_date('20180331 23:59:59', 'yyyymmdd hh24:mi:ss')*/
+ORDER BY ool.ordered_item DESC,
+       dih.transaction_date ASC
 
 ;
 

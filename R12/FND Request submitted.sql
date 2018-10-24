@@ -73,13 +73,19 @@ SELECT v.request_id rqst_id,
    AND fr.responsibility_id = v.responsibility_id
       --AND v.request_id = 16839045--16282868--16253168--16221488--13165995--16098690--15981725--15956670
       --IN (16275615, 16278535)
-      --AND v.program_short_name = 'XXPAUPDATESTATUS'
+      --AND v.program_short_name = 'XXINVB014'--'XXPAUPDATESTATUS'
       --AND v.program LIKE --'Create Accounting%'
             --AND v.status_code = 'E'
       --AND v.phase_code IN ('R', 'P')
    AND v.user_concurrent_program_name 
    LIKE 
-   'XXPA:Project Cost Data Outbound'
+   'XXPA%Movement%Monthly%Balance%Report'
+   --'XXPA%FG Monthly Report'
+   --'%Monthly Balance Report%'
+   --'XXPA:Project Revenue and Cost of Sales Recognition Request'
+   --'%XXINV: Inventory Item Information export%'
+   --'%Project%COGS%Monthly%'
+   --'XXPA:Project Cost Data Outbound'
    --'XXPA%Project Revenue and Cost of Sales Recognition Request'
    --'%Interface%Manager%'
    --'XXPA:Project Cost Detail Report (HEA/HBS)'
@@ -160,7 +166,7 @@ SELECT v.request_id rqst_id,
 --AND trunc(v.request_date) = to_date('2018-07-13','yyyy-mm-dd')
 --AND v.argument_text LIKE '%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
 --AND v.requestor = 'HAND_HKM'--'HAND_LCR'--'70264934'--'HAND_HKM'
---AND v.request_id >= 16727489
+--AND v.request_id = 17225733--17204202-->= 16727489
  ORDER BY --v.
            v.request_id DESC;
 

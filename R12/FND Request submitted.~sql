@@ -79,7 +79,8 @@ SELECT v.request_id rqst_id,
       --AND v.phase_code IN ('R', 'P')
    AND v.user_concurrent_program_name 
    LIKE 
-   'XXPA:Project Cost Data Outbound'
+   '%Project%COGS%Monthly%'
+   --'XXPA:Project Cost Data Outbound'
    --'XXPA%Project Revenue and Cost of Sales Recognition Request'
    --'%Interface%Manager%'
    --'XXPA:Project Cost Detail Report (HEA/HBS)'
