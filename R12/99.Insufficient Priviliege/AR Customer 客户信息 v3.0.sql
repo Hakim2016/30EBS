@@ -1,0 +1,83 @@
+--ALTER SESSION SET CURRENT_SCHEMA = apps; 
+SELECT ACCT.ACCOUNT_NUMBER AS 称谓,
+       PARTY.PARTY_NAME AS 名称,
+       PARTY.ADDRESS1 AS 客户公司注册地址,
+       PARTY.PRIMARY_PHONE_COUNTRY_CODE || ' ' ||
+       PARTY.PRIMARY_PHONE_AREA_CODE || ' ' || PARTY.PRIMARY_PHONE_NUMBER AS 客户公司联系电话,
+       
+       
+       IEBA.BANK_ACCOUNT_NUM AS 银行账户,
+       --ieba.CONTACT_NAME,
+       bank.PARTY_NAME AS 开户行,
+       (SELECT NAME
+          FROM apps.RA_TERMS RT
+         WHERE 1 = 1
+           AND RT.TERM_ID = HCP.STANDARD_TERMS) 付款条件, --寄发票地址层的付款规则
+       --ACCT.PAYMENT_TERM_ID,
+       --SHIP_TO_CUST_SITE.*,
+       --hcp.STANDARD_TERMS,
+       --ACCT.PAYMENT_TERM_ID,
+       --SHIP_SU.PAYMENT_TERM_ID,
+       --BILL_SU.PAYMENT_TERM_ID,
+       SHIP_SU.LOCATION  收货地点,
+       SHIP_LOC.ADDRESS1 收货地址,
+       BILL_SU.LOCATION  收单地点,
+       BILL_LOC.ADDRESS1 收单地址,
+       --999999              AS 收货联系人及电话,
+       --999999              AS 收发票联系人,
+       PARTY.TAX_REFERENCE AS 增值税登记号 /*（税号）*/,
+       PARTY.POSTAL_CODE   AS 邮政编码,
+       PARTY.COUNTRY       AS 国家,
+       PARTY.EMAIL_ADDRESS AS 电子邮件,
+       PARTY.TAX_NAME      AS 客户税分类
+
+  FROM apps.HZ_CUST_ACCOUNTS       ACCT,
+       apps.HZ_CUSTOMER_PROFILES   HCP,
+       apps.HZ_PARTIES             PARTY,
+       apps.HZ_CUST_ACCT_SITES_ALL SHIP_TO_CUST_SITE,
+       
+       
+       apps.IBY_ACCOUNT_OWNERS IAO, --IBY_EXT_BANK_ACCOUNTS
+       apps.IBY_EXT_BANK_ACCOUNTS IEBA,
+       apps.HZ_PARTIES BANK,
+       apps.HZ_PARTIES BRANCH,
+       
+       apps.HZ_CUST_SITE_USES_ALL  SHIP_SU, ----ship_to
+       apps.HZ_PARTY_SITES         SHIP_PS,
+       apps.HZ_LOCATIONS           SHIP_LOC,
+       apps.HZ_CUST_ACCT_SITES_ALL SHIP_CAS,
+       
+       apps.HZ_CUST_SITE_USES_ALL  BILL_SU, --bill_to
+       apps.HZ_PARTY_SITES         BILL_PS,
+       apps.HZ_LOCATIONS           BILL_LOC,
+       apps.HZ_CUST_ACCT_SITES_ALL BILL_CAS
+
+ WHERE 1 = 1
+   AND party.PARTY_ID = IAO.ACCOUNT_OWNER_PARTY_ID(+)
+   AND IAO.EXT_BANK_ACCOUNT_ID = IEBA.EXT_BANK_ACCOUNT_ID(+)
+   AND IEBA.BANK_ID = BANK.PARTY_ID(+)
+   AND IEBA.BRANCH_ID = BRANCH.PARTY_ID(+)
+   AND HCP.CUST_ACCOUNT_ID = ACCT.CUST_ACCOUNT_ID
+   AND ACCT.STATUS = 'A'
+      --AND party.country = 'US' --美国
+   AND ACCT.PARTY_ID = PARTY.PARTY_ID
+   AND SHIP_TO_CUST_SITE.CUST_ACCOUNT_ID = ACCT.CUST_ACCOUNT_ID
+   AND SHIP_TO_CUST_SITE.STATUS = 'A'
+      --ship_to
+   AND SHIP_SU.SITE_USE_CODE(+) = 'SHIP_TO'
+   AND SHIP_SU.CUST_ACCT_SITE_ID(+) = SHIP_TO_CUST_SITE.CUST_ACCT_SITE_ID
+   AND SHIP_SU.STATUS(+) = 'A'
+   AND SHIP_SU.CUST_ACCT_SITE_ID = SHIP_CAS.CUST_ACCT_SITE_ID(+)
+   AND SHIP_CAS.PARTY_SITE_ID = SHIP_PS.PARTY_SITE_ID(+)
+   AND SHIP_LOC.LOCATION_ID(+) = SHIP_PS.LOCATION_ID
+      --AND ship_loc.country(+) = 'US' --美国
+      --bill_to  
+   AND BILL_SU.SITE_USE_CODE(+) = 'BILL_TO'
+   AND BILL_SU.CUST_ACCT_SITE_ID(+) = SHIP_TO_CUST_SITE.CUST_ACCT_SITE_ID
+   AND BILL_SU.STATUS(+) = 'A'
+   AND BILL_SU.CUST_ACCT_SITE_ID = BILL_CAS.CUST_ACCT_SITE_ID(+)
+   AND BILL_CAS.PARTY_SITE_ID = BILL_PS.PARTY_SITE_ID(+)
+   AND BILL_LOC.LOCATION_ID(+) = BILL_PS.LOCATION_ID
+      --AND bill_loc.country(+) = 'US' --美国
+   --AND ACCT.ACCOUNT_NUMBER = 'ZZKL01' --ZZKL01
+   --AND PARTY.PARTY_NAME LIKE 'HNET%'
