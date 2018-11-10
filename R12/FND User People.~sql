@@ -47,7 +47,7 @@ SELECT pap.person_id,
    AND pap.effective_end_date > SYSDATE
 --AND pap.party_id = 27299
 ;
-SELECT * FROM fnd_user;
+
 
 UPDATE fnd_user fu
    SET fu.employee_id     = 1306, --HEA 81 SHE 1306
