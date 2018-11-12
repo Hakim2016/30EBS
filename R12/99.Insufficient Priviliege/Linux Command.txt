@@ -1,0 +1,8 @@
+计算目录占用空间  	du -sh
+磁盘使用情况		df -lh
+目录文件数量	 	ls -l |grep "^-" | wc -l
+
+
+1.在Vim中可以直接查看文件编码
+:set fileencoding
+即可显示文件编码格式。

@@ -1,6 +1,0 @@
-select * from apps.FND_CONC_REQ_SUMMARY_V
-where 1=1
-and program = 'XXPA:Project Revenue and Cost of Sales Recognition Request'--Program Name
-and request_date between to_date('2016/10/01','yyyy/mm/dd') and sysdate --to_date('2016/10/31','yyyy/mm/dd')
-
-

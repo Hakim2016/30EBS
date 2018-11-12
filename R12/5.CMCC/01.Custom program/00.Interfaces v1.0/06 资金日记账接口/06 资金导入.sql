@@ -1,0 +1,13 @@
+--06 资金日记账导入接口表
+SELECT itf.*
+  FROM apps.hr_operating_units           hou,
+       apps.cux_gl_ws_capital_je_itf itf
+ WHERE itf.affiliation = hou.short_code
+   AND itf.creation_date between
+       to_date('2018-10-30 18:00:00', 'YYYY-MM-DD HH24:MI:SS') and to_date('2018-10-31 12:00:00', 'YYYY-MM-DD HH24:MI:SS') -- 日用
+   --AND itf.creation_date BETWEEN
+   --    to_date('2018-10-31 12:00:00', 'YYYY-MM-DD HH24:MI:SS') AND to_date('2018-10-31 18:00:00', 'YYYY-MM-DD HH24:MI:SS') -- 夜用
+   AND itf.process_status_lookup_code = 'ERROR'
+   AND hou.name LIKE '%ZJ%'
+   
+   ;
