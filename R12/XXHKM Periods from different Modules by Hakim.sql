@@ -22,7 +22,7 @@ SELECT p.application_name appl_name,
 --and t.set_of_books_id='2026'
 --AND t.period_name = 'APR-18'
 AND t.start_date = to_date('2018-10-01','yyyy-mm-dd')
-AND t.set_of_books_id = 2023--2021--2041--2021
+AND t.set_of_books_id = 2021--2023--2021--2041--2021
  ORDER BY t.application_id ASC,
           t.start_date     ASC;
 

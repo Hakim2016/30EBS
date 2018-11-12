@@ -3,13 +3,13 @@
 SELECT RL.RESPONSIBILITY_NAME,
        UR.START_DATE,
        UR.END_DATE,
-       --UR.USER_ID,
+       UR.USER_ID,
        UR.APPLICATION_ID,
        UR.RESPONSIBILITY_ID FND_RESP
   FROM FND_RESPONSIBILITY UR, FND_RESPONSIBILITY_TL RL
  WHERE RL.RESPONSIBILITY_ID = UR.RESPONSIBILITY_ID
    AND RL.LANGUAGE = 'US' --'ZHS'
-   AND    rl.responsibility_name LIKE '%User%Manage%'--= '160_库存超级用户'
+--AND    rl.responsibility_name = '160_库存超级用户'
 --AND    ur.user_id = 1273
 ;
 

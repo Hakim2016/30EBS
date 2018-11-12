@@ -1,4 +1,4 @@
-
+--说明性弹性域的值存放在同一张表的attribute中
 SELECT dfv.title,
        dfv.descriptive_flexfield_name,
        dfv.default_context_field_name,
