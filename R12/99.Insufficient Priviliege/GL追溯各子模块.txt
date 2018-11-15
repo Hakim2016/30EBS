@@ -1,0 +1,354 @@
+4. GL追溯子模块（各模块表与xla.xla_transaction_entities 表的关联可以参数此表中的关系 xla.xla_entity_id_mappings）
+
+4.1 GL追溯AP发票(关联PO表可以用invoice_id,event_id)
+当source是Payables,category 是Purchase Invoices 用这段SQL追溯
+
+SELECT NVL (ael.accounted_dr, ael.entered_dr) account_dr,
+                NVL (ael.accounted_cr, ael.entered_cr) account_cr,
+                aia.invoice_num,
+                aia.invoice_date,
+                aia.org_id,
+                aia.invoice_id,ael.ae_header_id, ael.ae_line_num,
+                aeh.event_id
+           FROM gl_je_lines jl,
+                gl_je_headers jh,
+                gl_import_references gir,
+                xla_ae_lines ael,
+                xla_ae_headers aeh,
+                xla.xla_transaction_entities xte,
+                ap_invoices_all aia
+          WHERE jl.je_header_id = jh.je_header_id
+            AND jl.ledger_id = jh.ledger_id
+            AND jl.je_header_id = gir.je_header_id
+            AND jl.je_line_num = gir.je_line_num
+            AND jl.je_header_id = p_header_id
+            AND jl.je_line_num = p_line_num
+            AND jh.je_batch_id = gir.je_batch_id
+            AND jh.je_category = 'Purchase Invoices'
+            AND jh.je_source = 'Payables'
+            AND gir.gl_sl_link_id = ael.gl_sl_link_id
+            AND gir.gl_sl_link_table = ael.gl_sl_link_table
+            AND ael.ae_header_id = aeh.ae_header_id
+            AND ael.application_id = aeh.application_id
+            AND aeh.entity_id = xte.entity_id
+            AND aeh.application_id = xte.application_id
+            and xte.ledger_Id = p_ledger_id
+            AND xte.entity_code = 'AP_INVOICES'
+            AND NVL (xte.source_id_int_1, (-99)) = aia.invoice_id
+            AND xte.application_id = 200;
+
+4.2 GL追溯AP付款
+当source是Payables,category 是payments,则使用下面这个SQL来取出追朔的数据
+
+SELECT DISTINCT aca.bank_account_name l_ref2,
+                   pd.payment_document_name
+                || '-'
+                || aca.doc_sequence_value l_ref3,
+                TO_CHAR (aca.check_date, 'yyyy/mm/dd') l_ref4,
+                aca.check_id trx_hdr_id,
+                ael.accounting_class_code acct_line_type_name,
+                pd.payment_document_name NAME,
+                NVL (ael.accounted_cr, ael.entered_cr) account_cr,
+                NVL (ael.accounted_dr, ael.entered_dr) account_dr,
+                ael.ae_header_id, ael.ae_line_num
+           FROM gl_je_lines jl,
+                gl_je_headers jh,
+                gl_import_references gir,
+                xla_ae_lines ael,
+                xla_ae_headers aeh,
+                xla.xla_transaction_entities xte,
+                ap_checks_all aca,
+                ce_payment_documents pd,
+                po_vendor_sites_all pvs
+          WHERE jl.je_header_id = jh.je_header_id
+            AND jl.ledger_id = jh.ledger_id
+            AND jl.je_header_id = gir.je_header_id
+            AND jl.je_line_num = gir.je_line_num
+            AND jl.je_header_id = p_header_id
+            AND jl.je_line_num = p_line_num
+            AND jh.je_batch_id = gir.je_batch_id
+            AND jh.je_category = 'Payments'
+            AND jh.je_source = 'Payables'
+            AND gir.gl_sl_link_id = ael.gl_sl_link_id
+            AND gir.gl_sl_link_table = ael.gl_sl_link_table
+            AND ael.ae_header_id = aeh.ae_header_id
+            AND ael.application_id = aeh.application_id
+            AND aeh.entity_id = xte.entity_id
+            AND aeh.application_id = xte.application_id
+            AND NVL (xte.source_id_int_1, (-99)) = aca.check_id
+            AND xte.application_id = 200
+            AND xte.entity_code = 'AP_PAYMENTS'
+            AND aca.payment_document_id = pd.payment_document_id
+            AND aca.vendor_id = pvs.vendor_id
+            AND aca.vendor_site_id = pvs.vendor_site_id;
+
+4.3 GL追溯AR 发票
+当source 是Receivables，category是('Sales Invoices','Credit Memos','Debit Memos')
+
+SELECT DISTINCT NVL (rc.tax_reference, rc.customer_name) l_ref2,
+                NVL (rcta.interface_header_attribute1,
+                     rcta.trx_number) l_ref3,
+                TO_CHAR (rcta.trx_date, 'YYYY/MM/DD') l_ref4,
+                NVL (rcta.purchase_order, rcta.comments) l_ref5,
+                rcta.customer_trx_id trx_hdr_id,
+                ael.accounting_class_code acct_line_type_name,
+                NVL (ael.accounted_cr, ael.entered_cr) account_cr,
+                NVL (ael.accounted_dr, ael.entered_dr) account_dr,
+                ael.ae_header_id, ael.ae_line_num
+           FROM gl_je_lines jl,
+                gl_je_headers jh,
+                gl_import_references gir,
+                xla_ae_lines ael,
+                xla_ae_headers aeh,
+                xla.xla_transaction_entities xte,
+                ra_customer_trx_all rcta,
+                ar_customers rc,
+                ar_site_uses_v rsua
+          WHERE jl.je_header_id = jh.je_header_id
+            AND jl.ledger_id = jh.ledger_id
+            AND jl.je_header_id = gir.je_header_id
+            AND jl.je_line_num = gir.je_line_num
+            AND jl.je_header_id = p_header_id
+            AND jl.je_line_num = p_line_num
+            AND jh.je_batch_id = gir.je_batch_id
+            AND jh.je_category IN
+                            ('Credit Memos', 'Sales Invoices', 'Debit Memos')
+            AND jh.je_source = 'Receivables'
+            AND gir.gl_sl_link_id = ael.gl_sl_link_id
+            AND gir.gl_sl_link_table = ael.gl_sl_link_table
+            AND ael.ae_header_id = aeh.ae_header_id
+            AND ael.application_id = aeh.application_id
+            AND aeh.entity_id = xte.entity_id
+            AND aeh.application_id = xte.application_id
+            AND xte.source_id_int_1 = rcta.customer_trx_id
+            AND xte.transaction_number = rcta.trx_number
+            AND xte.application_id = 222
+            AND xte.entity_code = 'TRANSACTIONS'
+            AND rcta.bill_to_site_use_id = rsua.site_use_id(+)
+            AND rcta.bill_to_customer_id = rc.customer_id(+)
+            AND rsua.site_use_code(+) = 'BILL_TO';
+
+4.4 GL追溯AR 收款
+当source是Receivables，category是('Trade Receipts','Misc Receipts')
+
+SELECT DISTINCT aba.bank_account_num l_ref2,
+                NVL (acra.customer_receipt_reference,
+                     acra.receipt_number
+                    ) l_ref3,
+                TO_CHAR (acra.receipt_date, 'YYYY/MM/DD') l_ref4,
+                acra.comments, acra.cash_receipt_id trx_hdr_id,
+                ael.accounting_class_code acct_line_type_name,
+                NVL (ael.accounted_cr, ael.entered_cr) account_cr,
+                NVL (ael.accounted_dr, ael.entered_dr) account_dr,
+                ael.ae_header_id, ael.ae_line_num
+           FROM gl_je_lines jl,
+                gl_je_headers jh,
+                gl_import_references gir,
+                xla_ae_lines ael,
+                xla_ae_headers aeh,
+                xla.xla_transaction_entities xte,
+                ar_cash_receipts_all acra,
+                ce_bank_acct_uses_all cbau,
+                ce_bank_accounts aba,
+                ar_site_uses_v rsua,
+                ar_addresses_v raa,
+                ar_customers rc
+          WHERE jl.je_header_id = jh.je_header_id
+            AND jl.ledger_id = jh.ledger_id
+            AND jl.je_header_id = gir.je_header_id
+            AND jl.je_line_num = gir.je_line_num
+            AND jl.je_header_id = p_header_id
+            AND jl.je_line_num = p_line_num
+            AND jh.je_batch_id = gir.je_batch_id
+            AND jh.je_category IN ('Misc Receipts', 'Trade Receipts')
+            AND jh.je_source = 'Receivables'
+            AND gir.gl_sl_link_id = ael.gl_sl_link_id
+            AND gir.gl_sl_link_table = ael.gl_sl_link_table
+            AND ael.ae_header_id = aeh.ae_header_id
+            AND ael.application_id = aeh.application_id
+            AND aeh.entity_id = xte.entity_id
+            AND aeh.application_id = xte.application_id
+            AND NVL (xte.source_id_int_1, (-99)) = acra.cash_receipt_id
+            AND xte.application_id = 222
+            AND xte.entity_code = 'RECEIPTS'
+            AND acra.remit_bank_acct_use_id = cbau.bank_acct_use_id
+            AND cbau.bank_account_id = aba.bank_account_id
+            AND acra.customer_site_use_id = rsua.site_use_id(+)
+            AND rsua.address_id = raa.address_id(+)
+            AND raa.customer_id = rc.customer_id(+);
+
+4.5 GL追溯INV
+当source是Cost Management, category是'Inventory'
+SELECT distinct mmt.transaction_id, mmt.source_code, mmt.source_line_id,
+       mmt.trx_source_line_id,
+       mtst.transaction_source_type_name trx_source_type_name,
+       NVL (ael.accounted_cr, ael.entered_cr) account_cr,
+       NVL (ael.accounted_dr, ael.entered_dr) account_dr,
+       ael.ae_header_id ,ael.ae_line_num
+  FROM gl_je_lines jl,
+       gl_je_headers jh,
+       gl_import_references gir,
+       xla_ae_lines ael,
+       xla_ae_headers aeh,
+       xla.xla_transaction_entities xte,
+       mtl_material_transactions mmt,
+       mtl_txn_source_types mtst
+ WHERE jl.je_header_id = jh.je_header_id
+   AND jl.ledger_id = jh.ledger_id
+   AND jl.je_header_id = gir.je_header_id
+   AND jl.je_line_num = gir.je_line_num
+   AND jl.je_header_id = p_header_id
+   AND jl.je_line_num = p_line_num
+   AND jh.je_batch_id = gir.je_batch_id
+   AND jh.je_category in ('Inventory','MTL')
+   AND jh.je_source = 'Cost Management'
+   AND gir.gl_sl_link_id = ael.gl_sl_link_id
+   AND gir.gl_sl_link_table = ael.gl_sl_link_table
+   AND ael.ae_header_id = aeh.ae_header_id
+   AND ael.application_id = aeh.application_id
+   AND aeh.entity_id = xte.entity_id
+   and aeh.application_id = xte.application_id
+   AND nvl(xte.source_id_int_1,(-99)) = mmt.transaction_id
+   AND xte.application_id = 707
+   AND xte.entity_code = 'MTL_ACCOUNTING_EVENTS'
+   AND mtst.transaction_source_type_id = mmt.transaction_source_type_id
+
+4.6 GL追溯PO
+当source是Cost Management, category是RECEIVING
+
+SELECT xte.SOURCE_ID_INT_1 source_line_id,
+        nvl(ael.accounted_cr ,ael.entered_cr) account_cr,
+        nvl(ael.accounted_dr ,ael.entered_dr) account_dr
+  FROM gl_je_lines jl,
+       gl_je_headers jh,
+       gl_import_references gir,
+       xla_ae_lines ael,
+       xla_ae_headers aeh,
+       xla.xla_transaction_entities xte,
+       rcv_transactions rt
+ WHERE jl.je_header_id = jh.je_header_id
+   AND jl.ledger_id = jh.ledger_id
+   AND jl.je_header_id = gir.je_header_id
+   AND jl.je_line_num = gir.je_line_num
+   AND jl.je_header_id =p_header_id
+   AND jl.je_line_num = p_line_num
+   AND jh.je_batch_id = gir.je_batch_id
+   AND jh.je_category = 'Receiving'
+   AND jh.je_source = 'Cost Management'
+   AND gir.gl_sl_link_id = ael.gl_sl_link_id
+   AND gir.gl_sl_link_table = ael.gl_sl_link_table
+   AND ael.ae_header_id = aeh.ae_header_id
+   AND ael.ledger_id = aeh.ledger_id
+   and aeh.ENTITY_ID = xte.entity_id
+   and aeh.APPLICATION_ID = xte.APPLICATION_ID
+   AND xte.application_id = 707
+   AND xte.entity_code = 'RCV_ACCOUNTING_EVENTS'
+   and AND nvl(xte.source_id_int_1,(-99)) = rt.transaction_id
+
+4.7 GL追溯WIP
+当source是Cost Management, category是WIP
+
+SELECT xte.SOURCE_ID_INT_1 source_line_id,
+        nvl(ael.accounted_cr ,ael.entered_cr) account_cr,
+        nvl(ael.accounted_dr ,ael.entered_dr) account_dr
+  FROM gl_je_lines jl,
+       gl_je_headers jh,
+       gl_import_references gir,
+       xla_ae_lines ael,
+       xla_ae_headers aeh,
+       xla.xla_transaction_entities xte,
+       wip_transactions rt
+ WHERE jl.je_header_id = jh.je_header_id
+   AND jl.ledger_id = jh.ledger_id
+   AND jl.je_header_id = gir.je_header_id
+   AND jl.je_line_num = gir.je_line_num
+   AND jl.je_header_id =p_header_id
+   AND jl.je_line_num = p_line_num
+   AND jh.je_batch_id = gir.je_batch_id
+   AND jh.je_category = 'Receiving'
+   AND jh.je_source = 'Cost Management'
+   AND gir.gl_sl_link_id = ael.gl_sl_link_id
+   AND gir.gl_sl_link_table = ael.gl_sl_link_table
+   AND ael.ae_header_id = aeh.ae_header_id
+   AND ael.ledger_id = aeh.ledger_id
+   and aeh.ENTITY_ID = xte.entity_id
+   and aeh.APPLICATION_ID = xte.APPLICATION_ID
+   AND xte.application_id = 707
+   AND xte.entity_code = 'WIP_ACCOUNTING_EVENTS'
+   and AND nvl(xte.source_id_int_1,(-99)) = rt.transaction_id
+
+4.8 GL追溯FA
+
+SELECT distinct ad.description asset_description,
+       NVL (ael.accounted_cr, ael.entered_cr) account_cr,
+       NVL (ael.accounted_dr, ael.entered_dr) account_dr,
+       fl.meaning||'-'||th.transaction_header_id l_ref16
+  FROM gl_je_lines jl,
+       gl_je_headers jh,
+       gl_import_references gir,
+       xla_ae_lines ael,
+       xla_ae_headers aeh,
+       xla.xla_transaction_entities xte,
+       fa_transaction_headers th,
+       fa_additions ad,
+       fa_lookups fl
+ WHERE jl.je_header_id = jh.je_header_id
+   AND jl.ledger_id = jh.ledger_id
+   AND jl.je_header_id = gir.je_header_id
+   AND jl.je_line_num = gir.je_line_num
+   AND jl.je_header_id = p_header_id
+   AND jl.je_line_num = p_line_num
+   AND jh.je_batch_id = gir.je_batch_id
+   AND jh.je_category IN ('Addition', 'Adjustment', 'Retirement', 'Transfer')
+   AND jh.je_source = 'Assets'
+   AND gir.gl_sl_link_id = ael.gl_sl_link_id
+   AND gir.gl_sl_link_table = ael.gl_sl_link_table
+   AND ael.ae_header_id = aeh.ae_header_id
+   AND ael.application_id = aeh.application_id
+   and ael.application_id = 140
+   AND aeh.entity_id = xte.entity_id
+   and aeh.application_id = xte.application_id
+   and aeh.application_id = 140
+   and xte.ledger_id = :p_sob_id
+   and xte.entity_code = 'TRANSACTIONS'
+   AND NVL(xte.source_id_int_1,(-99)) = th.transaction_header_id
+   AND xte.application_id = 140
+   AND th.asset_id = ad.asset_id
+   AND fl.lookup_type = 'FAXOLTRX'
+   AND fl.lookup_code = th.transaction_type_code
+UNION ALL
+SELECT distinct ad.description asset_description,
+       NVL (ael.accounted_cr, ael.entered_cr) account_cr,
+       NVL (ael.accounted_dr, ael.entered_dr) account_dr,
+       null l_ref16
+  FROM gl_je_lines jl,
+       gl_je_headers jh,
+       gl_import_references gir,
+       xla_ae_lines ael,
+       xla_ae_headers aeh,
+       xla.xla_transaction_entities xte,
+       fa_deprn_detail dd,
+       fa_additions ad
+ WHERE jl.je_header_id = jh.je_header_id
+   AND jl.ledger_id = jh.ledger_id
+   AND jl.je_header_id = gir.je_header_id
+   AND jl.je_line_num = gir.je_line_num
+   AND jl.je_header_id = p_header_id
+   AND jl.je_line_num = p_line_num
+   AND jh.je_batch_id = gir.je_batch_id
+   AND jh.je_category = 'Depreciation'
+   AND jh.je_source = 'Assets'
+   AND gir.gl_sl_link_id = ael.gl_sl_link_id
+   AND gir.gl_sl_link_table = ael.gl_sl_link_table
+   AND ael.ae_header_id = aeh.ae_header_id
+   AND ael.application_id = aeh.application_id
+   and ael.application_id = 140
+   AND aeh.entity_id = xte.entity_id
+   and aeh.application_id = xte.application_id
+   and aeh.application_id = 140
+   and xte.ledger_id = :p_sob_id
+   and xte.entity_code = 'DEPRECIATION'
+   AND NVL(xte.source_id_int_1,(-99)) = dd.asset_id
+   and NVL (xte.source_id_int_2, (-99)) = dd.period_counter
+   AND xte.application_id = 140
+   AND dd.asset_id = ad.asset_id;

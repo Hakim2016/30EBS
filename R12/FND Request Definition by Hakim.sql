@@ -13,12 +13,12 @@ SELECT fcp.user_concurrent_program_name program,
  WHERE 1 = 1
    AND fcp.executable_id = fef.executable_id
    --AND fcp.concurrent_program_name = 'XXARBTOG4'--'XXPAJIPATP'--'XXPAB001'--'XXPAJIPATP'--'XXPAFGTXN'--'CUXHNETGLACN'--'INCTCM'--'XXPAB003'
-   AND upper(fcp.user_concurrent_program_name) LIKE 
+   --AND upper(fcp.user_concurrent_program_name) LIKE 
    --'%ÐÂÄÜÔ´%'
    --'%REVENUE%RECOGNITION%%%'
    --'%INVOICE%ON%HOLD%'
-   --AND fcp.user_concurrent_program_name LIKE 
-   
+   AND fcp.user_concurrent_program_name LIKE 
+   'XXPA:Project COGS Monthly Report(SHE)_NEW'
    --'XXOM:SO Balance Report'
    --'Create Accounting%Cost Management'
    --'XXAP:AP Payble Summary Report(HEA/HBS)'

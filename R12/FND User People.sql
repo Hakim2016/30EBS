@@ -7,6 +7,7 @@ SHE   1104              27047
 SELECT pap.person_id,
        pap.party_id,
        fu.user_name,
+       fu.creation_date,
        fu.person_party_id,
        fu.employee_id,
        hp.party_type,
@@ -20,20 +21,24 @@ SELECT pap.person_id,
        pap.email_address,
        fu.*,
        pap.*
-  FROM fnd_user         fu,
-       per_all_people_f pap,
-       hz_parties       hp
+  FROM apps.fnd_user         fu,
+       apps.per_all_people_f pap,
+       apps.hz_parties       hp
  WHERE 1 = 1
       --AND fu.person_party_id
       --AND hp.
    AND pap.party_id = hp.party_id
    --AND pap.party_id = 9851
    AND fu.user_name IN --('70264934')--('10171749')--('71229010', '21097003')--
-       ('HAND_LY', 'HAND_HKM')
+       ('71432413')
+       --('22006270')
+       
+       --('HAND_LY', 'HAND_HKM')
       --AND fu.user_id = 1959--4370--1567--1200--1194--1148--2989--1590--3374--4270--1147--1244--1794--1244--1147
    AND fu.employee_id = pap.person_id
 --AND pap.effective_end_date > SYSDATE
 ;
+SELECT * from apps.fnd_user fu where 1=1 AND fu.user_id = 22006270;
 
 SELECT pap.person_id,
        pap.party_id,
@@ -47,7 +52,7 @@ SELECT pap.person_id,
    AND pap.effective_end_date > SYSDATE
 --AND pap.party_id = 27299
 ;
-
+SELECT * FROM fnd_user;
 
 UPDATE fnd_user fu
    SET fu.employee_id     = 1306, --HEA 81 SHE 1306

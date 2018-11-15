@@ -1,0 +1,43 @@
+--根据Form资产编号查询所在menu
+
+--资产编号 function_name
+select level, lpad(' ', level * 2, ' ') || menu_id, lpad(' ', level * 2, ' ')||PROMPT
+ from fnd_menu_entries_vl v
+ WHERE 1=1
+ AND v.PROMPT IS NOT NULL
+start with menu_id =
+           (select fme.menu_id
+              from fnd_menu_entries fme
+             where fme.function_id =
+                   (select f3.function_id
+                      from fnd_form_functions f3
+                     where f3.function_name = 'XXINVF016'))
+connect by prior menu_id = sub_menu_id;
+
+--根据user_function_name
+ select lpad(' ', level * 2, ' ') || menu_id, PROMPT
+   from fnd_menu_entries_vl
+  start with menu_id =
+             (select fme.menu_id
+                from fnd_menu_entries fme
+               where fme.function_id =
+                     (select f3.function_id
+                        from fnd_form_functions f3, fnd_form_functions_tl f3l
+                       where 1 = 1
+                         and f3.function_id = f3l.function_id
+                         and f3l.language = userenv('LANG')
+                         and f3l.user_function_name =
+                             'XXINV: Pack Case Define Rules(SHE)'
+                             --'Application Accounting Definitions'
+                             ))
+ connect by prior menu_id = sub_menu_id;
+ 
+ --menu_id = 86192
+select level, lpad(' ', level * 2, ' ') || menu_id, lpad(' ', level * 2, ' ')||PROMPT
+ from fnd_menu_entries_vl v
+ WHERE 1=1
+ AND v.PROMPT IS NOT NULL
+start with menu_id = 86192
+
+connect by prior sub_menu_id = menu_id;
+

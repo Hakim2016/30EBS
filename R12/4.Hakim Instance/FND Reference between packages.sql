@@ -1,0 +1,51 @@
+--all source reference
+SELECT *
+  FROM all_source als
+ WHERE 1 = 1
+   AND upper(als.text) LIKE '%%' --'%Schedule%start%date%greater%than%end%date%';
+;
+SELECT DISTINCT als.name
+  FROM all_source als
+ WHERE 1 = 1
+   AND upper(als.text) LIKE UPPER('%get_locator%') --'%Schedule%start%date%greater%than%end%date%';
+   AND als.type = 'PACKAGE BODY'
+   --AND als.name LIKE 'XX%MAIL%'
+;
+
+SELECT * FROM all_objects ao
+WHERE 1=1
+AND ao.object_type = 'PACKAGE BODY'
+AND ao.object_name LIKE 'XX%MAIL%'
+;
+xxGL_COMMON_UTIL;
+XXAR_UTILS;
+
+SELECT DISTINCT t.name
+  FROM all_source t
+ WHERE 1 = 1
+   AND t.text LIKE '%p_actual_finish_date%'
+   AND t.type LIKE 'PACKAGE BODY'
+   AND EXISTS (SELECT 1
+          FROM all_dependencies ad
+         WHERE 1 = 1
+           AND ad.referenced_name = 'PA_TASK_PUB1'
+           AND ad.name = t.name);
+
+SELECT DISTINCT t.name
+  FROM all_source t
+ WHERE 1 = 1
+   AND upper(t.text) LIKE '%XXPO_002E_007%'--'EBS the available'--'%Delivery Qty%'
+   AND t.type LIKE 'PACKAGE BODY';
+   
+SELECT * FROM fnd_new_messages fnm
+WHERE 1=1
+AND fnm.message_text LIKE '%EBS the available%'--'%Delivery Qty%'
+;
+
+SELECT object_name,
+       object_type,
+       owner,
+       status,
+       obj.*
+  FROM dba_objects obj
+ WHERE status = 'INVALID';

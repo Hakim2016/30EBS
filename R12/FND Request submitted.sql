@@ -47,7 +47,7 @@ SELECT v.request_id rqst_id,
        v.argument_text,
        v.responsibility_application_id app_id,
        (SELECT fa.application_short_name
-          FROM fnd_application fa
+          FROM apps.fnd_application fa
          WHERE 1 = 1
            AND fa.application_id = v.responsibility_application_id) app_name,
        v.responsibility_id,
@@ -62,10 +62,10 @@ SELECT v.request_id rqst_id,
                            'APPLSYSPUB/PUB',
                            'FCWW',
                            10)
-  FROM fnd_conc_req_summary_v v,
-       fnd_responsibility     fr,
-       fnd_user               fu,
-       per_all_people_f       pap
+  FROM apps.fnd_conc_req_summary_v v,
+       apps.fnd_responsibility     fr,
+       apps.fnd_user               fu,
+       apps.per_all_people_f       pap
  WHERE 1 = 1
    AND fu.user_id = v.requested_by
    AND fu.employee_id = pap.person_id(+)
@@ -79,7 +79,9 @@ SELECT v.request_id rqst_id,
       --AND v.phase_code IN ('R', 'P')
    AND v.user_concurrent_program_name 
    LIKE 
-   '%XXPA:Project Cost Data Outbound%'
+   'XXAR:HEA/HBS Credit Note Application Print'
+   --'XXPA:Project COGS Monthly Report%'
+   --'%XXPA:Project Cost Data Outbound%'
    --'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)'
    --'XXPA%Movement%Monthly%Balance%Report'
    --'XXPA%FG Monthly Report'

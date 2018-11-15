@@ -6,4 +6,4 @@ SELECT * --gdr.conversion_rate
    AND gdr.to_currency = 'SGD' --p_to_currency
    AND gdr.status_code != 'D'
       AND gdr.conversion_type = 'Corporate'--p_conversion_type
-   AND gdr.conversion_date = to_date('01-Mar-2018', 'DD-MM-YYYY') --trunc(p_conversion_date);
+   AND gdr.conversion_date = to_date('30-SEP-2018', 'DD-MM-YYYY') --trunc(p_conversion_date);

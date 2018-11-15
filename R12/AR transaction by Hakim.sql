@@ -1,7 +1,6 @@
 
 --ar transaction
 --ar header
-
 SELECT rct.org_id,
        rct.trx_number,
        rctt.name,
@@ -14,12 +13,15 @@ SELECT rct.org_id,
  WHERE 1 = 1
    AND rctt.org_id = rct.org_id
    AND rctt.cust_trx_type_id = rct.cust_trx_type_id
+   --AND rct.customer_trx_id = 4890563--4865153
       --AND rctt.type IN ('CM', 'DM')
-      --AND rct.org_id = 101 --84
-   AND rct.trx_number IN ('HKM2018092101') --('TFO000011')--('CTE1_454:TE_2004') --('JPE-18000050')--('10000017753')
+      AND rct.org_id = 101 --84
+      AND rctt.name = ''
+   --AND rct.trx_number IN ('HKM2018092101') --('TFO000011')--('CTE1_454:TE_2004') --('JPE-18000050')--('10000017753')
 --AND rct.creation_date >= to_date('20180301','yyyymmdd')
 --AND rct.creation_date <= to_date('20180315','yyyymmdd')
 --AND rct.customer_trx_id = 4022542
+ORDER BY rct.creation_date DESC
 ;
 
 SELECT *
