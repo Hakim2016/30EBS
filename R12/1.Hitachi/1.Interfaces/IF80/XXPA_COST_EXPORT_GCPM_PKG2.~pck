@@ -88,27 +88,7 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
       3.00  2017-07-03  Jingjing.He New CR
       4.00  2017-09-06  Jingjing.He Modify
       5.00  2018-02-26  jingjing.he Modify
-      6.00  2018-05-31L jingjing.he Modify migrated on 20180621(for 14559)
-            bug:
-            SHE&HET failed to get the start date of the month which cause no AR invoices collected.
-      7.00  2018-07-19L jingjing.he Modify migrated on 20181019(for 13510+14559)
-            1.#13510 SHE Material logic changing
-            2.#14559 SHE EQ/ER logic changing
-              Different projects have the same MFG number
-              PROJECT_TYPE            ORDER_TYPE                EQ ER Category 
-              SHE FAC_Assy Parts   SHE_Oversea_Assembly Parts       EQ
-              SHE FAC_Assy Parts   SHE_Oversea_Spare Parts          PARTS
-              SHE FAC_Elevator     SHE_Oversea_Equipments           EQ
-            3.#14559 "additional flag" logic in SHE changing
-              MFG has 2 last invoices in different months cause different sales amount. 
-      7.01  2018-08-14L jingjing.he Modify migrated on 20181019(for 13510+14559)
-             hand_over_date
-      8.00  2018-10-25L jingjing.he Modify 
-            #16775 packing_freight add to expense
-      8.01  2018-11-14L jingjing.he Modify
-            1.#16775 change hea er labour logic
-            2.#16775 change she/het labour logic
-            3.add column 'Over Head' value is null
+      6.00  2018-05-31L jingjing.he Modify
   ==================================================*/
   G_SEPERATOR  VARCHAR2(1) := CHR(9);
   G_PA_APPL_ID NUMBER := XXFND_CONST.APPL_ID_PA;
@@ -621,14 +601,14 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
     CURSOR CUR_SUBCON IS
       SELECT SUM(0 - XCFD.EXPENDITURE_AMOUNT) AMT
         FROM XXPA_COST_FLOW_DTLS_ALL XCFD /*,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         pa_projects_all         pa,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         pa_tasks                pt,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         pa_expenditure_types    pet*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               pa_projects_all         pa,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               pa_tasks                pt,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               pa_expenditure_types    pet*/
        WHERE /*xcfd.project_id = pa.project_id
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     AND xcfd.org_id = pa.org_id
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     AND xcfd.task_id = pt.task_id
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     AND xcfd.expenditure_type = pet.expenditure_type
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           AND xcfd.org_id = pa.org_id
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           AND xcfd.task_id = pt.task_id
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           AND xcfd.expenditure_type = pet.expenditure_type
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           AND*/
        SUBSTR(XCFD.EXPENDITURE_REFERENCE, 1, 7) = 'ACCRUAL'
        AND NVL(XCFD.TRANSFERED_PA_FLAG, 'N') = 'Y'
        AND XCFD.TASK_ID = P_TASK_ID
@@ -640,7 +620,7 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
               'FAC_TO_HO_FG',
               'SHE_HQ_ORG',
               'FINAL_FG', /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    'SHE_HQ_ORG',*/
+                                                                                                  'SHE_HQ_ORG',*/
               DECODE(XCFD.ORG_ID, 141, 'HET_HQ_ORG', 'SHE_HQ_ORG'), --Modify by jingjing 20180226 v5.00
               NULL) IN
        (SELECT OOD.ORGANIZATION_NAME
@@ -1637,37 +1617,19 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
       SELECT PT.TASK_NUMBER FROM PA_TASKS PT WHERE PT.TASK_ID = P_TASK_ID;
   
     CURSOR EQ_ER(P_TASK_ID IN NUMBER) IS
-    --v7.01  mod by hakim @20180814 start
-    /*SELECT PPA.PROJECT_TYPE, NVL(OTT.ATTRIBUTE5, 'EQ')
-                                                                    FROM PA_TASKS                 PT,
-                                                                         PA_PROJECTS_ALL          PPA,
-                                                                         OE_ORDER_LINES_ALL       OOL,
-                                                                         OE_TRANSACTION_TYPES_ALL OTT
-                                                                   WHERE 1 = 1
-                                                                     AND OOL.TASK_ID = PT.TASK_ID
-                                                                     AND OOL.LINE_TYPE_ID = OTT.TRANSACTION_TYPE_ID
-                                                                     AND PT.PROJECT_ID = PPA.PROJECT_ID
-                                                                     AND PT.TASK_ID = P_TASK_ID;*/
-      SELECT PPA.PROJECT_TYPE,
-             NVL(OTT.ATTRIBUTE5, 'EQ'),
-             ott.name order_type
-        FROM PA_TASKS                PT,
-             PA_PROJECTS_ALL         PPA,
-             OE_ORDER_LINES_ALL      OOL,
-             OE_TRANSACTION_TYPES_VL OTT,
-             oe_order_headers_all    ooh
+      SELECT PPA.PROJECT_TYPE, NVL(OTT.ATTRIBUTE5, 'EQ')
+        FROM PA_TASKS                 PT,
+             PA_PROJECTS_ALL          PPA,
+             OE_ORDER_LINES_ALL       OOL,
+             OE_TRANSACTION_TYPES_ALL OTT
        WHERE 1 = 1
          AND OOL.TASK_ID = PT.TASK_ID
+         AND OOL.LINE_TYPE_ID = OTT.TRANSACTION_TYPE_ID
          AND PT.PROJECT_ID = PPA.PROJECT_ID
-         AND ooh.header_id = ool.header_id
-         AND ooh.order_type_id = OTT.TRANSACTION_TYPE_ID
-         AND PT.TASK_ID = P_TASK_ID
-         AND ROWNUM = 1;
-    --v7.01  mod by hakim @20180814 end
-    L_END_ER     VARCHAR2(20);
-    L_PRJ_TYPE   VARCHAR2(20);
-    L_ATTR5      VARCHAR2(20);
-    l_order_type VARCHAR2(30);
+         AND PT.TASK_ID = P_TASK_ID;
+    L_END_ER   VARCHAR2(20);
+    L_PRJ_TYPE VARCHAR2(20);
+    L_ATTR5    VARCHAR2(20);
   BEGIN
     OPEN ISER(P_TASK_ID);
     FETCH ISER
@@ -1679,14 +1641,9 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
   
     OPEN EQ_ER(P_TASK_ID);
     FETCH EQ_ER
-      INTO L_PRJ_TYPE, L_ATTR5, l_order_type;
+      INTO L_PRJ_TYPE, L_ATTR5;
     CLOSE EQ_ER;
-  
-    -- mod by Hakim @2018-08-14L modify V7.01
-    IF /*L_PRJ_TYPE*/
-     l_order_type IN ( /*'SHE FAC_Assy Parts',  'SHE FAC_Elevator'*/'SHE_Oversea_Assembly Parts',
-                      'SHE_Oversea_Equipments') THEN
-    
+    IF L_PRJ_TYPE IN ('SHE FAC_Assy Parts', 'SHE FAC_Elevator') THEN
       RETURN 'EQ';
     ELSIF L_ATTR5 = 'PART' THEN
       RETURN 'PARTS';
@@ -2424,7 +2381,7 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
     DELETE FROM XXPA_COST_GCPM_COGS_T2; --xxpa_proj_rev_cogs_tmp;
   
     IF P_TYPE = 'EQ' THEN
-      LOG('start insert XXPA_COST_GCPM_COGS_T2 ');
+    
       INSERT INTO XXPA_COST_GCPM_COGS_T2 --xxpa_proj_rev_cogs_tmp
         (PROJECT_ID,
          TOP_TASK_ID,
@@ -2475,7 +2432,7 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
            AND PA.ORG_ID = G_HEA_OU --todo20170605
            AND TOP.TASK_ID = NVL(P_TOP_TASK_ID, TOP.TASK_ID)
          GROUP BY PA.PROJECT_ID, TOP.TASK_ID, XAH.AE_HEADER_ID;
-      LOG('end insert XXPA_COST_GCPM_COGS_T2 ');
+    
     ELSIF P_TYPE = 'ER' THEN
     
       INSERT INTO XXPA_COST_GCPM_COGS_T2 --xxpa_proj_rev_cogs_tmp
@@ -2588,37 +2545,36 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
     L_PRE_SALE_AMOUNT NUMBER;
   
     TYPE COST_TAB IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
-    L_INDEX              NUMBER;
-    L_FUNC_COST          NUMBER;
-    L_FUNC_COST_TAB      COST_TAB;
-    L_START_DATE         DATE;
-    L_END_DATE           DATE;
-    L_SEQ_NUM            NUMBER;
-    L_RETURN_STATUS      VARCHAR2(1);
-    L_ERROR_MESSAGE      VARCHAR2(2000);
-    L_COMPLETION_STATUS  BOOLEAN;
-    L_MODEL              XXPJM_SO_ADDTN_LINES_ALL.MODEL%TYPE;
-    L_STOPS              XXPJM_SO_ADDTN_LINES_ALL.STOPS%TYPE;
-    L_OTHERS             NUMBER;
-    L_QTY                NUMBER;
-    L_START_INDEX        NUMBER;
-    L_END_INDEX          NUMBER;
-    L_LAYOUT_TYPE        VARCHAR2(240);
-    L_EXIST              VARCHAR2(20);
-    L_ISOVERSEA          VARCHAR2(20);
-    L_EXIST_TAX_INVOICE  VARCHAR2(20);
-    L_EXIST_NO_SO        VARCHAR2(20);
-    L_SALES_AMOUNT       NUMBER;
-    L_COGS               NUMBER; --add by jingjing.He 20170703
-    L_MATERIAL           NUMBER; --add by jingjing.He 20170703
-    L_EXPENSE            NUMBER; --add by jingjing.He 20170703
-    L_LABOUR             NUMBER; --add by jingjing.He 20170703
-    L_SUBCON             NUMBER; --add by jingjing.He 20170703
-    L_PACKING_FREIGHT    NUMBER; --add by jingjing.He 20170703
-    L_LAST_INVOICE_FLAG  VARCHAR2(20);
-    I                    NUMBER;
-    L_PROJECT_TYPE7      VARCHAR2(240);
-    l_last_invoice_count NUMBER; --add by Hakim @2018-07-19L
+    L_INDEX             NUMBER;
+    L_FUNC_COST         NUMBER;
+    L_FUNC_COST_TAB     COST_TAB;
+    L_START_DATE        DATE;
+    L_END_DATE          DATE;
+    L_SEQ_NUM           NUMBER;
+    L_RETURN_STATUS     VARCHAR2(1);
+    L_ERROR_MESSAGE     VARCHAR2(2000);
+    L_COMPLETION_STATUS BOOLEAN;
+    L_MODEL             XXPJM_SO_ADDTN_LINES_ALL.MODEL%TYPE;
+    L_STOPS             XXPJM_SO_ADDTN_LINES_ALL.STOPS%TYPE;
+    L_OTHERS            NUMBER;
+    L_QTY               NUMBER;
+    L_START_INDEX       NUMBER;
+    L_END_INDEX         NUMBER;
+    L_LAYOUT_TYPE       VARCHAR2(240);
+    L_EXIST             VARCHAR2(20);
+    L_ISOVERSEA         VARCHAR2(20);
+    L_EXIST_TAX_INVOICE VARCHAR2(20);
+    L_EXIST_NO_SO       VARCHAR2(20);
+    L_SALES_AMOUNT      NUMBER;
+    L_COGS              NUMBER; --add by jingjing.He 20170703
+    L_MATERIAL          NUMBER; --add by jingjing.He 20170703
+    L_EXPENSE           NUMBER; --add by jingjing.He 20170703
+    L_LABOUR            NUMBER; --add by jingjing.He 20170703
+    L_SUBCON            NUMBER; --add by jingjing.He 20170703
+    L_PACKING_FREIGHT   NUMBER; --add by jingjing.He 20170703
+    L_LAST_INVOICE_FLAG VARCHAR2(20);
+    I                   NUMBER;
+    L_PROJECT_TYPE7     VARCHAR2(240);
   
     CURSOR CUR_TASK IS
       SELECT PT.PROJECT_ID,
@@ -2649,13 +2605,7 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
          AND PT.TOP_TASK_ID = PTOP.TASK_ID
          AND PT.PROJECT_ID = PPA.PROJECT_ID
          AND PPA.PROJECT_TYPE = PTT.PROJECT_TYPE
-         AND PPA.ORG_ID = PTT.ORG_ID
-      --AND PTOP.TASK_NUMBER =
-      --('JAC0061-PH')--('SBK0489-KW')--('SDB0143-PH','SS00457-HK')--('TFA0694-TH','TFA0683-TH','TFA0663-TH')
-      --'TAE0987-TH' 
-      --'TFA0565-TH'
-      /*AND pt.task_id = 4592927*/
-      ;
+         AND PPA.ORG_ID = PTT.ORG_ID;
     CURSOR CUR_MFG(P_TASK_ID IN NUMBER) IS
       SELECT NVL(SUM(DECODE(PET.EXPENDITURE_CATEGORY,
                             'Material',
@@ -2676,16 +2626,6 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
                             PEI.BURDEN_COST,
                             0)),
                  0) LABOUR,
-             -- add by Hakim @20181114L start v8.01
-             NVL(SUM(DECODE(PET.EXPENDITURE_CATEGORY,
-                            'Labour',
-                            DECODE(PET.EXPENDITURE_TYPE,
-                                   'Inst21_Labour',
-                                   PEI.BURDEN_COST,
-                                   0),
-                            0)),
-                 0) Inst21_Labour,
-             -- add by Hakim @20181114L end v8.01
              NVL(SUM(DECODE(PET.EXPENDITURE_CATEGORY,
                             'Labour',
                             DECODE(PET.EXPENDITURE_TYPE,
@@ -2918,7 +2858,6 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
          AND PPE.TYPE_ID = PTT.TASK_TYPE_ID
          AND PTT.TASK_TYPE = 'EQ COST'
          AND P_SECTION = GET_SECTION(T.TOP_TASK_ID, P_PERIOD)
-      --AND TOP.TASK_ID = 2985497 --add by Hakim @20181004L for test only
        GROUP BY EQ.TASK_ID,
                 T.TOP_TASK_ID,
                 TOP.TASK_NUMBER,
@@ -3100,9 +3039,7 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
         
           --add by jingjing.he start 20170703
           --deal with additional flag
-          --mod by Hakim @20181004L V7.01
-          IF ONE_LINE.HAND_OVER_DATE IS NULL OR
-             ONE_LINE.HAND_OVER_DATE > L_END_DATE THEN
+          IF ONE_LINE.HAND_OVER_DATE IS NULL THEN
             GOTO NEXT_ONE_LINE;
             /*IF ONE_LINE.ADDITIONAL_FLAG = 'Y' THEN
               L_INTERFACE_REC.ADDITIONAL_FLAG := '1';
@@ -3169,17 +3106,7 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
                                              L_FUNC_COST_TAB(4) +
                                              L_FUNC_COST_TAB(5) +
                                              L_FUNC_COST_TAB(6) +
-                                             L_FUNC_COST_TAB(7) +
-                                             L_FUNC_COST_TAB(8) + --add by Hakim @20181114L start v8.01
-                                             L_FUNC_COST_TAB(9) +
-                                             L_FUNC_COST_TAB(10) +
-                                             L_FUNC_COST_TAB(11) +
-                                             L_FUNC_COST_TAB(12) +
-                                             L_FUNC_COST_TAB(13) +
-                                             L_FUNC_COST_TAB(14) +
-                                             L_FUNC_COST_TAB(15) +
-                                             L_FUNC_COST_TAB(16) +
-                                             L_FUNC_COST_TAB(17); --add by Hakim @20181114L end v8.01
+                                             L_FUNC_COST_TAB(7);
           L_INTERFACE_REC.SUBCON          := L_FUNC_COST_TAB(23) +
                                              L_FUNC_COST_TAB(24);
           L_INTERFACE_REC.PACKING_FREIGHT := L_FUNC_COST_TAB(25) +
@@ -3261,11 +3188,6 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
             /* l_interface_rec.preperiod_sale_amount := rec_order.sale_amount *
             get_so_rate(rec_order.currency_code,
                         rec_order.ordered_date);*/
-            --V8.00 add by Hakim @20181025L start
-            L_INTERFACE_REC.EXPENSE         := L_INTERFACE_REC.EXPENSE +
-                                               L_INTERFACE_REC.PACKING_FREIGHT;
-            L_INTERFACE_REC.PACKING_FREIGHT := 0;
-            --V8.00 add by Hakim @20181025L end
             IF L_DEBUG = 'Y' THEN
               DEBUG('Inser into  xxpa_cost_gcpm_int');
             END IF;
@@ -3296,7 +3218,6 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
     
       L_LAYOUT_TYPE := 'EQ';
       IF L_LAYOUT_TYPE = 'EQ' THEN
-        LOG('start generate cogs data');
         GENERATE_COGS_DATA(P_INIT_MSG_LIST => FND_API.G_TRUE,
                            X_RETURN_STATUS => X_RETURN_STATUS,
                            X_MSG_COUNT     => X_MSG_COUNT,
@@ -3306,7 +3227,6 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
                            P_TYPE          => L_LAYOUT_TYPE,
                            P_PROJECT_ID    => NULL,
                            P_TOP_TASK_ID   => NULL);
-        LOG('end generate cogs data');
         IF X_RETURN_STATUS = FND_API.G_RET_STS_ERROR THEN
           RAISE FND_API.G_EXC_ERROR;
         ELSIF X_RETURN_STATUS = FND_API.G_RET_STS_UNEXP_ERROR THEN
@@ -3334,7 +3254,6 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
                                      L_END_DATE,
                                      P_GL_PERIOD,
                                      I) LOOP
-            LOG('1. get into cursor ONE_LINE');
             BEGIN
             
               SELECT PPT.ATTRIBUTE7
@@ -3342,7 +3261,6 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
                 FROM PA_PROJECT_TYPES_ALL PPT
                WHERE PPT.PROJECT_TYPE = ONE_LINE.PROJECT_TYPE;
             END;
-          
             --todo
             L_INTERFACE_REC.MFG_NUM         := ONE_LINE.TASK_NUMBER;
             L_INTERFACE_REC.SITE            := ONE_LINE.SITE;
@@ -3394,7 +3312,7 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
           
             FOR REC_ORDER IN CUR_ORDER(P_PROJECT_ID => ONE_LINE.PROJECT_ID,
                                        P_TASK_ID    => ONE_LINE.TASK_ID) LOOP
-              LOG('2. get into cursor REC_ORDER');
+            
               L_INTERFACE_REC.SOURCE_HEADER_ID := REC_ORDER.HEADER_ID;
               L_INTERFACE_REC.LINE_NUMBER      := REC_ORDER.LINE_NUMBER;
               L_INTERFACE_REC.GG_CODE          := REC_ORDER.GG_CODE;
@@ -3424,11 +3342,7 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
               L_INTERFACE_REC.SALE_AMOUNT := ROUND(NVL(ONE_LINE.SALES_AMOUNT,
                                                        0),
                                                    2);
-              --V8.00 add by Hakim @20181025L start
-              L_INTERFACE_REC.EXPENSE         := L_INTERFACE_REC.EXPENSE +
-                                                 L_INTERFACE_REC.PACKING_FREIGHT;
-              L_INTERFACE_REC.PACKING_FREIGHT := 0;
-              --V8.00 add by Hakim @20181025L end
+            
               IF L_DEBUG = 'Y' THEN
                 DEBUG('Inser into  xxpa_cost_gcpm_int');
               END IF;
@@ -3473,9 +3387,6 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
                      P_START_DATE    => L_START_DATE,
                      P_END_DATE      => L_END_DATE,
                      P_ORG_ID        => P_ORG_ID);
-      /*FOR rec_temp IN (SELECT * FROM XXPA_COST_GCPM_TASK_T2) LOOP
-        dbms_output.put_line('rec_temp.task_id: ' || rec_temp.task_id);
-      END LOOP;*/
     
       IF X_RETURN_STATUS = FND_API.G_RET_STS_ERROR THEN
         RAISE FND_API.G_EXC_ERROR;
@@ -3501,11 +3412,9 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
         L_SUBCON_YTD                    := 0;
         L_PACKING_FREIGHT_YTD           := 0;
         L_PRE_SALE_AMOUNT               := 0;
-        --add by Hakim test @20180720L
-        /*dbms_output.put_line('REC_MFG.TASK_ID: ' || REC_MFG.TASK_ID);*/
+      
         --todo now
         FOR REC_WIP IN CUR_MFG(REC_MFG.TASK_ID) LOOP
-        
           GET_WIP_AMOUNT(P_TASK_ID             => REC_MFG.TASK_ID,
                          X_MATERIAL_YTD        => L_MATERIAL_YTD,
                          X_EXPENSE_YTD         => L_EXPENSE_YTD,
@@ -3514,44 +3423,24 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
                          X_PACKING_FREIGHT_YTD => L_PACKING_FREIGHT_YTD);
         
           L_INTERFACE_REC.MATERIAL_YTD := REC_WIP.MATERIAL;
-          L_INTERFACE_REC.SUBCON_YTD   := GET_SUBCON(REC_MFG.TASK_ID,
-                                                     P_ORG_ID,
-                                                     L_END_DATE);
           L_INTERFACE_REC.EXPENSE_YTD  := REC_WIP.EXPENSE -
                                           REC_WIP.PACKING_FREIGHT;
-          --mod by Hakim @20181114L start v8.01
-          /*L_INTERFACE_REC.LABOUR_YTD          := REC_WIP.LABOUR -
-          REC_WIP.SUBCON;*/
-          L_INTERFACE_REC.LABOUR_YTD := REC_WIP.LABOUR -
-                                        REC_WIP.Inst21_Labour;
-          --mod by Hakim @20181114L end v8.01
+          L_INTERFACE_REC.LABOUR_YTD   := REC_WIP.LABOUR - REC_WIP.SUBCON;
+        
+          L_INTERFACE_REC.SUBCON_YTD          := GET_SUBCON(REC_MFG.TASK_ID,
+                                                            P_ORG_ID,
+                                                            L_END_DATE);
           L_INTERFACE_REC.PACKING_FREIGHT_YTD := REC_WIP.PACKING_FREIGHT;
           --
-          -- mod by Hakim @2018-07-19L V7.00 start
-          IF GET_EQ_ER(REC_MFG.TASK_ID) = 'EQ' THEN
-            L_INTERFACE_REC.MATERIAL := REC_WIP.MATERIAL - L_MATERIAL_YTD +
-                                       /*GET_SUBCON(REC_MFG.TASK_ID,
-                                                                                                                                                                                                                                                                                             P_ORG_ID,
-                                                                                                                                                                                                                                                                                             L_END_DATE)*/
-                                        L_INTERFACE_REC.SUBCON_YTD -
-                                        L_SUBCON_YTD;
-            L_INTERFACE_REC.SUBCON   := 0;
-          ELSE
-            L_INTERFACE_REC.MATERIAL := REC_WIP.MATERIAL - L_MATERIAL_YTD;
-            L_INTERFACE_REC.SUBCON   := L_INTERFACE_REC.SUBCON_YTD -
-                                        L_SUBCON_YTD;
-          END IF;
-          -- mod by Hakim @2018-07-19L V7.00 end
+          L_INTERFACE_REC.MATERIAL := REC_WIP.MATERIAL - L_MATERIAL_YTD;
+          L_INTERFACE_REC.EXPENSE  := REC_WIP.EXPENSE -
+                                      REC_WIP.PACKING_FREIGHT -
+                                      L_EXPENSE_YTD;
+          L_INTERFACE_REC.LABOUR   := REC_WIP.LABOUR - REC_WIP.SUBCON -
+                                      L_LABOUR_YTD;
         
-          L_INTERFACE_REC.EXPENSE := REC_WIP.EXPENSE -
-                                     REC_WIP.PACKING_FREIGHT -
-                                     L_EXPENSE_YTD;
-          --mod by Hakim @20181114L start v8.01
-          /*L_INTERFACE_REC.LABOUR  := REC_WIP.LABOUR - REC_WIP.SUBCON -
-          L_LABOUR_YTD;*/
-          L_INTERFACE_REC.LABOUR := REC_WIP.LABOUR - REC_WIP.Inst21_Labour -
-                                    L_LABOUR_YTD;
-          --mod by Hakim @20181114L end v8.01
+          L_INTERFACE_REC.SUBCON          := L_INTERFACE_REC.SUBCON_YTD -
+                                             L_SUBCON_YTD;
           L_INTERFACE_REC.PACKING_FREIGHT := REC_WIP.PACKING_FREIGHT -
                                              L_PACKING_FREIGHT_YTD;
         END LOOP;
@@ -3620,32 +3509,10 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
               --If it is last invoice
               IF L_LAST_INVOICE_FLAG = 'Y' THEN
                 L_INTERFACE_REC.ADDITIONAL_FLAG := '0';
-                --mod by Hakim @20180719L V7.00 start
-                BEGIN
-                  SELECT COUNT(1)
-                    INTO l_last_invoice_count
-                    FROM XXPA_COST_GCPM_INT xcgi
-                   WHERE xcgi.task_id = rec_mfg.task_id
-                     AND xcgi.additional_flag = 0
-                     AND xcgi.actual_month < l_start_date;
-                EXCEPTION
-                  WHEN NO_DATA_FOUND THEN
-                    l_last_invoice_count := 0;
-                END;
-                IF l_last_invoice_count > 0 THEN
-                  GET_ADD_SALE_AMOUNT(P_TASK_ID      => REC_MFG.TASK_ID,
+                GET_FIRST_SALE_AMOUNT(P_TASK_ID      => REC_MFG.TASK_ID,
                                       P_START_DATE   => L_START_DATE,
                                       P_END_DATE     => L_END_DATE,
-                                      P_ISOVERSEA    => 'DOMESTIC',
                                       X_SALES_AMOUNT => L_SALES_AMOUNT);
-                ELSE
-                  GET_FIRST_SALE_AMOUNT(P_TASK_ID      => REC_MFG.TASK_ID,
-                                        P_START_DATE   => L_START_DATE,
-                                        P_END_DATE     => L_END_DATE,
-                                        X_SALES_AMOUNT => L_SALES_AMOUNT);
-                END IF;
-              
-                --mod by Hakim @20180719L V7.00 end
                 L_INTERFACE_REC.SALE_AMOUNT := ROUND(NVL(L_SALES_AMOUNT, 0),
                                                      2);
               ELSE
@@ -3700,11 +3567,7 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
               END IF;
             END IF;
           END IF;
-          --V8.00 add by Hakim @20181025L start
-          L_INTERFACE_REC.EXPENSE         := L_INTERFACE_REC.EXPENSE +
-                                             L_INTERFACE_REC.PACKING_FREIGHT;
-          L_INTERFACE_REC.PACKING_FREIGHT := 0;
-          --V8.00 add by Hakim @20181025L end
+        
           IF L_DEBUG = 'Y' THEN
             DEBUG('Inser into  xxpa_cost_gcpm_int');
           END IF;
@@ -3726,15 +3589,9 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
              L_INTERFACE_REC.EXPENSE <> 0 OR L_INTERFACE_REC.LABOUR <> 0 OR
              L_INTERFACE_REC.SUBCON <> 0 OR
              L_INTERFACE_REC.PACKING_FREIGHT <> 0)) THEN
-            --V7.00 add by Hakim @20180719L start
-            /*IF L_INTERFACE_REC.ADDITIONAL_FLAG IS NULL THEN
-              L_INTERFACE_REC.ADDITIONAL_FLAG := GET_ADDITIONAL_FLAG(L_INTERFACE_REC.TASK_ID);
-            END IF;*/
-            IF L_INTERFACE_REC.ADDITIONAL_FLAG IS NULL OR
-               L_INTERFACE_REC.ADDITIONAL_FLAG <> 'N' THEN
+            IF L_INTERFACE_REC.ADDITIONAL_FLAG IS NULL THEN
               L_INTERFACE_REC.ADDITIONAL_FLAG := GET_ADDITIONAL_FLAG(L_INTERFACE_REC.TASK_ID);
             END IF;
-            --V7.00 add by Hakim @20180719L end
             L_INTERFACE_REC.ACTUAL_MONTH := L_START_DATE;
             SELECT XXPA_COST_GCPM_INT_ROW_S.NEXTVAL
               INTO L_INTERFACE_REC.UNIQUE_ID
@@ -3903,9 +3760,9 @@ CREATE OR REPLACE PACKAGE BODY XXPA_COST_EXPORT_GCPM_PKG2 IS
                        GSB.CURRENCY_CODE
                   FROM GL_SETS_OF_BOOKS GSB, HR_OPERATING_UNITS HOU
                  WHERE GSB.SET_OF_BOOKS_ID = HOU.SET_OF_BOOKS_ID
-                   AND HOU.ORGANIZATION_ID NOT IN (101)) LOOP
-      --AND HOU.ORGANIZATION_ID IN (G_HEA_OU)) LOOP
-      --AND HOU.ORGANIZATION_ID IN (G_she_OU)) LOOP
+                      AND HOU.ORGANIZATION_ID NOT IN (101)) LOOP
+                      --AND HOU.ORGANIZATION_ID IN (G_HEA_OU)) LOOP
+                   --AND HOU.ORGANIZATION_ID IN (G_she_OU)) LOOP
       G_PERIOD_NAME     := NULL;
       G_PRE_PERIOD_DATE := NULL;
       G_LEDGER_ID       := REC.SET_OF_BOOKS_ID;
