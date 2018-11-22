@@ -1,0 +1,7 @@
+SELECT gjh.name journal,
+       gjh.description,
+       gjh.*
+  FROM gl_je_headers_v gjh
+ WHERE 1 = 1
+   AND gjh.description LIKE '%HS00101380HKM%'--'%SG00050348*7%'
+   ;

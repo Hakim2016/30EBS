@@ -24,13 +24,13 @@ aph.creation_date,
    AND aph.task_id = pt.task_id(+)
    AND aph.org_id = 82 --101 --141--82--101--82 --84--SHE--82 --HEA
    AND aph.project_id = ppa.project_id(+) --left join
-   AND aph.invoice_num IN --= 'TOEQ001597'--'210-702-004' --'SG00043803*8' --'107/5350';--454220
+   /*AND aph.invoice_num IN --= 'TOEQ001597'--'210-702-004' --'SG00043803*8' --'107/5350';--454220
       --('SPE-18000129')
        (
        'SG00050348*7'
-)
+)*/
 --AND aph.invoice_num LIKE 'HKM%'
---AND aph.creation_date >= to_date('2018-06-01', 'yyyy-mm-dd')
+AND aph.creation_date >= to_date('2018-03-01', 'yyyy-mm-dd')
 --AND aph.invoice_type_lookup_code = 'PREPAYMENT'
  ORDER BY aph.invoice_id DESC
 
