@@ -1,117 +1,119 @@
 
 --ar transaction
 --ar header
-SELECT rct.org_id,
-       rct.trx_number,
-       rctt.name,
-       rctt.type,
-       rct.last_update_date,
-       rct.attribute10,
-       rct.*
-  FROM ra_customer_trx_all   rct,
-       ra_cust_trx_types_all rctt
+SELECT RCT.ORG_ID,
+       RCT.TRX_NUMBER,
+       RCTT.NAME,
+       RCTT.TYPE,
+       RCT.LAST_UPDATE_DATE,
+       RCT.ATTRIBUTE10,
+       RCT.*
+  FROM RA_CUSTOMER_TRX_ALL RCT, RA_CUST_TRX_TYPES_ALL RCTT
  WHERE 1 = 1
-   AND rctt.org_id = rct.org_id
-   AND rctt.cust_trx_type_id = rct.cust_trx_type_id
-   --AND rct.customer_trx_id = 4890563--4865153
+   AND RCTT.ORG_ID = RCT.ORG_ID
+   AND RCTT.CUST_TRX_TYPE_ID = RCT.CUST_TRX_TYPE_ID
+      --AND rct.customer_trx_id = 4890563--4865153
       --AND rctt.type IN ('CM', 'DM')
-      AND rct.org_id = 101 --84
-      AND rctt.name = ''
-   --AND rct.trx_number IN ('HKM2018092101') --('TFO000011')--('CTE1_454:TE_2004') --('JPE-18000050')--('10000017753')
+   AND RCT.ORG_ID = 84 --101 --84
+      --AND rctt.name = ''
+      --AND rct.trx_number IN ('JPE-18000315','600000000010')--('HKM2018092101') --('TFO000011')--('CTE1_454:TE_2004') --('JPE-18000050')--('10000017753')
+   AND RCT.TRX_NUMBER LIKE 'TFO000049'--'TFO000049' --'%6%10'
 --AND rct.creation_date >= to_date('20180301','yyyymmdd')
 --AND rct.creation_date <= to_date('20180315','yyyymmdd')
 --AND rct.customer_trx_id = 4022542
-ORDER BY rct.creation_date DESC
-;
+ ORDER BY RCT.CREATION_DATE DESC;
 
 SELECT *
-  FROM ra_cust_trx_types_all rctt
+  FROM RA_CUST_TRX_TYPES_ALL RCTT
  WHERE 1 = 1
-   AND rctt.org_id = 101
+   AND RCTT.ORG_ID = 101
 --AND rctt.cust_trx_type_id = 1350
 ;
 
 SELECT *
-  FROM xla.xla_transaction_entities xte
+  FROM XLA.XLA_TRANSACTION_ENTITIES XTE
  WHERE 1 = 1
-   AND xte.application_id = 222
-   AND xte.source_id_int_1 = 4292291 --3586252
+   AND XTE.APPLICATION_ID = 222
+   AND XTE.SOURCE_ID_INT_1 = 4292291 --3586252
 ;
 
 SELECT *
-  FROM xla_ae_headers xah
+  FROM XLA_AE_HEADERS XAH
  WHERE 1 = 1
-   AND xah.application_id = 222
-   AND xah.entity_id = 25134577;
+   AND XAH.APPLICATION_ID = 222
+   AND XAH.ENTITY_ID = 25134577;
 
-SELECT rct.customer_trx_id,
-       rct.trx_number,
-       rct.creation_date    rct_created,
-       rct.last_update_date rct_update,
-       xte.creation_date    xte_created,
-       xah.creation_date    xah_created,
-       xah.gl_transfer_date
-  FROM ra_customer_trx_all          rct,
-       xla.xla_transaction_entities xte,
-       xla_ae_headers               xah
+SELECT RCT.CUSTOMER_TRX_ID,
+       RCT.TRX_NUMBER,
+       RCT.CREATION_DATE    RCT_CREATED,
+       RCT.LAST_UPDATE_DATE RCT_UPDATE,
+       XTE.CREATION_DATE    XTE_CREATED,
+       XAH.CREATION_DATE    XAH_CREATED,
+       XAH.GL_TRANSFER_DATE
+  FROM RA_CUSTOMER_TRX_ALL          RCT,
+       XLA.XLA_TRANSACTION_ENTITIES XTE,
+       XLA_AE_HEADERS               XAH
  WHERE 1 = 1
-   AND rct.customer_trx_id = xte.source_id_int_1
-   AND xte.entity_id = xah.entity_id
-   AND xte.application_id = 222 --AR
-   AND rct.trx_number IN ('JPE-18000050') --('JPE-17000146', 'JPE-17000461')
+   AND RCT.CUSTOMER_TRX_ID = XTE.SOURCE_ID_INT_1
+   AND XTE.ENTITY_ID = XAH.ENTITY_ID
+   AND XTE.APPLICATION_ID = 222 --AR
+   AND RCT.TRX_NUMBER IN ('JPE-18000050') --('JPE-17000146', 'JPE-17000461')
 ;
 
-SELECT rct.previous_customer_trx_id,
-       rct.*,
-       rctl.*
-  FROM ra_customer_trx_all       rct,
-       ra_customer_trx_lines_all rctl
+SELECT --rct.previous_customer_trx_id,
+ RCTL.DESCRIPTION, rctl.customer_trx_line_id,
+ 
+ rctl.unit_selling_price,rctl.line_number,
+ 
+ RCT.*, RCTL.*
+  FROM RA_CUSTOMER_TRX_ALL RCT, RA_CUSTOMER_TRX_LINES_ALL RCTL
  WHERE 1 = 1
-   AND rct.customer_trx_id = rctl.customer_trx_id
-      --AND rct.trx_number = 'JPE-17000146'
-   AND rct.previous_customer_trx_id IS NOT NULL;
+   AND RCT.CUSTOMER_TRX_ID = RCTL.CUSTOMER_TRX_ID
+   AND RCT.TRX_NUMBER = 'TFO000049'--'TFO000049' --'JPE-17000146'
+--AND rct.previous_customer_trx_id IS NOT NULL
+;
 
-SELECT rct2.org_id,
-       rct2.trx_number, --first
-       rct2.cust_trx_type_id trx_id,
-       rct2.batch_source_id,
-       (SELECT bsrc.name
-          FROM ra_batch_sources_all bsrc
+SELECT RCT2.ORG_ID,
+       RCT2.TRX_NUMBER, --first
+       RCT2.CUST_TRX_TYPE_ID TRX_ID,
+       RCT2.BATCH_SOURCE_ID,
+       (SELECT BSRC.NAME
+          FROM RA_BATCH_SOURCES_ALL BSRC
          WHERE 1 = 1
-           AND bsrc.batch_source_id = rct2.batch_source_id) src,
-       rct2.creation_date,
-       (SELECT rctt.name
-          FROM ra_cust_trx_types_all rctt
+           AND BSRC.BATCH_SOURCE_ID = RCT2.BATCH_SOURCE_ID) SRC,
+       RCT2.CREATION_DATE,
+       (SELECT RCTT.NAME
+          FROM RA_CUST_TRX_TYPES_ALL RCTT
          WHERE 1 = 1
-           AND rctt.cust_trx_type_id = rct2.cust_trx_type_id
-           AND rownum = 1) name1,
-       rct.trx_number,
-       rct.cust_trx_type_id,
-       rct.batch_source_id,
-       (SELECT bsrc.name
-          FROM ra_batch_sources_all bsrc
+           AND RCTT.CUST_TRX_TYPE_ID = RCT2.CUST_TRX_TYPE_ID
+           AND ROWNUM = 1) NAME1,
+       RCT.TRX_NUMBER,
+       RCT.CUST_TRX_TYPE_ID,
+       RCT.BATCH_SOURCE_ID,
+       (SELECT BSRC.NAME
+          FROM RA_BATCH_SOURCES_ALL BSRC
          WHERE 1 = 1
-           AND bsrc.batch_source_id = rct.batch_source_id
-           AND rownum = 1) src2,
-       rct.creation_date,
-       (SELECT rctt.name
-          FROM ra_cust_trx_types_all rctt
+           AND BSRC.BATCH_SOURCE_ID = RCT.BATCH_SOURCE_ID
+           AND ROWNUM = 1) SRC2,
+       RCT.CREATION_DATE,
+       (SELECT RCTT.NAME
+          FROM RA_CUST_TRX_TYPES_ALL RCTT
          WHERE 1 = 1
-           AND rctt.cust_trx_type_id = rct.cust_trx_type_id
-           AND rownum = 1) name2
-  FROM ra_customer_trx_all rct, --second
-       ra_customer_trx_all rct2 --first
+           AND RCTT.CUST_TRX_TYPE_ID = RCT.CUST_TRX_TYPE_ID
+           AND ROWNUM = 1) NAME2
+  FROM RA_CUSTOMER_TRX_ALL RCT, --second
+       RA_CUSTOMER_TRX_ALL RCT2 --first
  WHERE 1 = 1
-   AND rct2.customer_trx_id = rct.previous_customer_trx_id(+)
+   AND RCT2.CUSTOMER_TRX_ID = RCT.PREVIOUS_CUSTOMER_TRX_ID(+)
       --AND rct.previous_customer_trx_id IS NOT NULL
-   AND rct2.trx_number LIKE /*'JPE-18000152'*/
+   AND RCT2.TRX_NUMBER LIKE /*'JPE-18000152'*/
        '%JPE%'
       --AND rct.org_id = 101
-   AND rct2.creation_date <= to_date('20180315', 'yyyymmdd')
- ORDER BY rct2.creation_date DESC;
+   AND RCT2.CREATION_DATE <= TO_DATE('20180315', 'yyyymmdd')
+ ORDER BY RCT2.CREATION_DATE DESC;
 
-SELECT bsrc.name
-  FROM ra_batch_sources_all bsrc
+SELECT BSRC.NAME
+  FROM RA_BATCH_SOURCES_ALL BSRC
  WHERE 1 = 1
-   AND bsrc.batch_source_id = -1 --4008--rct.batch_source_id
+   AND BSRC.BATCH_SOURCE_ID = -1 --4008--rct.batch_source_id
 ;

@@ -18,7 +18,8 @@ SELECT fcp.user_concurrent_program_name program,
    --'%REVENUE%RECOGNITION%%%'
    --'%INVOICE%ON%HOLD%'
    AND fcp.user_concurrent_program_name LIKE 
-   'XXPA:Project COGS Monthly Report(SHE)_NEW'
+   'XXINV%COUNT TAG WITH BARCODE'
+   --'XXPA:Project COGS Monthly Report(SHE)_NEW'
    --'XXOM:SO Balance Report'
    --'Create Accounting%Cost Management'
    --'XXAP:AP Payble Summary Report(HEA/HBS)'

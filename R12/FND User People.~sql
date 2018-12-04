@@ -4,58 +4,69 @@ HEA   81                NULL
 SHE   1104              27047
 */
 
-SELECT pap.person_id,
-       pap.party_id,
-       fu.user_name,
-       fu.creation_date,
-       fu.person_party_id,
-       fu.employee_id,
-       hp.party_type,
-       hp.party_number,
-       hp.party_name,
-       hp.email_address,
-       fu.person_party_id,
-       pap.full_name,
-       pap.sex,
-       fu.email_address,
-       pap.email_address,
-       fu.*,
-       pap.*
-  FROM apps.fnd_user         fu,
-       apps.per_all_people_f pap,
-       apps.hz_parties       hp
+SELECT FU.USER_ID,
+       PAP.PERSON_ID,
+       PAP.PARTY_ID,
+       FU.USER_NAME,
+       FU.CREATION_DATE,
+       FU.PERSON_PARTY_ID,
+       FU.EMPLOYEE_ID,
+       HP.PARTY_TYPE,
+       HP.PARTY_NUMBER,
+       HP.PARTY_NAME,
+       HP.EMAIL_ADDRESS,
+       FU.PERSON_PARTY_ID,
+       PAP.FULL_NAME,
+       PAP.SEX,
+       FU.EMAIL_ADDRESS,
+       PAP.EMAIL_ADDRESS,
+       FU.*,
+       PAP.*
+  FROM APPS.FND_USER FU, APPS.PER_ALL_PEOPLE_F PAP, APPS.HZ_PARTIES HP
  WHERE 1 = 1
       --AND fu.person_party_id
-      --AND hp.
-   AND pap.party_id = hp.party_id
-   --AND pap.party_id = 9851
-   AND fu.user_name IN --('70264934')--('10171749')--('71229010', '21097003')--
-       ('71432413')
-       --('22006270')
-       
-       --('HAND_LY', 'HAND_HKM')
-      --AND fu.user_id = 1959--4370--1567--1200--1194--1148--2989--1590--3374--4270--1147--1244--1794--1244--1147
-   AND fu.employee_id = pap.person_id
---AND pap.effective_end_date > SYSDATE
-;
-SELECT * from apps.fnd_user fu where 1=1 AND fu.user_id = 22006270;
-
-SELECT pap.person_id,
-       pap.party_id,
-       pap.last_name,
-       pap.first_name,
-       pap.full_name,
-       pap.*
-  FROM per_all_people_f pap
+      --AND nvl(nvl(hp.EMAIL_ADDRESS,FU.EMAIL_ADDRESS), PAP.EMAIL_ADDRESS) LIKE '%am.hd%'--'%AM.HD%'----'%rodchanon%'
+   AND PAP.PARTY_ID = HP.PARTY_ID
+      --AND pap.party_id = 9851
+   --AND FU.USER_NAME IN 
+      --('70236270')
+       --('70271660', '70308768', '70236270')
+      --('22006270')
+      
+      --('HAND_LY', 'HAND_HKM')
+      --AND fu.user_id = 2989--1959--4370--1567--1200--1194--1148--2989--1590--3374--4270--1147--1244--1794--1244--1147
+ --AND fu.encrypted_foundation_password = 'INVALID' 
+  AND FU.EMPLOYEE_ID = PAP.PERSON_ID
+   AND PAP.EFFECTIVE_END_DATE > SYSDATE;
+   
+   
+SELECT *
+  FROM APPS.FND_USER FU
  WHERE 1 = 1
-   AND pap.person_id = 9851--81
-   AND pap.effective_end_date > SYSDATE
+   --AND FU.USER_ID = 22006270
+--AND length(fu.encrypted_foundation_password) < 10
+--AND fu.encrypted_foundation_password = 'INVALID'
+ORDER BY last_update_date DESC
+;
+
+SELECT PAP.PERSON_ID,
+       PAP.PARTY_ID,
+       PAP.LAST_NAME,
+       PAP.FIRST_NAME,
+       PAP.FULL_NAME,
+       pap.email_address,
+       PAP.*
+  FROM PER_ALL_PEOPLE_F PAP
+ WHERE 1 = 1
+ AND pap.email_address LIKE UPPER('%am.hd%')
+   --AND PAP.PERSON_ID = 9851 --81
+   --AND PAP.EFFECTIVE_END_DATE > SYSDATE
 --AND pap.party_id = 27299
 ;
-SELECT * FROM fnd_user;
+SELECT * FROM FND_USER;
 
-UPDATE fnd_user fu
-   SET fu.employee_id     = 1306, --HEA 81 SHE 1306
-       fu.person_party_id = 27249 --HEA NULL  SHE 27249
+UPDATE FND_USER FU
+   SET FU.EMPLOYEE_ID     = 1306, --HEA 81 SHE 1306
+       FU.PERSON_PARTY_ID = 27249 --HEA NULL  SHE 27249
  WHERE 1 = 1
-   AND fu.user_name = 'HAND_HKM';
+   AND FU.USER_NAME = 'HAND_HKM';
