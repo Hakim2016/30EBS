@@ -1,0 +1,17 @@
+SELECT /*t.attribute8
+      ,t.**/
+      t.secondary_inventory 子库
+      ,t.item_num 物料编码
+      ,t.item_des 物料描述
+      ,t.item_categaty 物料描述
+      ,t.uom 单位
+      ,t.quantity 数量
+      ,t.amount 金额
+      ,nvl(t.attribute5
+          ,'库龄超过两年') 入库时间
+      ,t.*
+  FROM cux_hnet_hl_zhangmb_skye t
+ WHERE 1 = 1
+   AND t.attribute8 = 9141354--9141347--9180981--9141322--9141320
+   --AND t.item_id = 1770847
+ ORDER BY t.item_id;

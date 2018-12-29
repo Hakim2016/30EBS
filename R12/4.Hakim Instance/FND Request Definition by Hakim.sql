@@ -14,7 +14,8 @@ SELECT fcp.user_concurrent_program_name program,
    AND fcp.executable_id = fef.executable_id
    --AND fcp.concurrent_program_name = 'XXARBTOG4'--'XXPAJIPATP'--'XXPAB001'--'XXPAJIPATP'--'XXPAFGTXN'--'CUXHNETGLACN'--'INCTCM'--'XXPAB003'
    AND upper(fcp.user_concurrent_program_name) LIKE 
-   '%新能源%'
+   '%HNET%龄%'
+   --'%新能源%'
    --'%REVENUE%RECOGNITION%%%'
    --'%INVOICE%ON%HOLD%'
    --AND fcp.user_concurrent_program_name LIKE 

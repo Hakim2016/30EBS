@@ -1,0 +1,11 @@
+SELECT * FROM zx_regimes_b zrb WHERE 1 = 1;
+
+SELECT * FROM zx.zx_taxes_b# zt WHERE 1 = 1;
+SELECT *
+  FROM zx_taxes_b zt
+ WHERE 1 = 1
+   AND zt.effective_to IS NULL;
+
+
+SELECT * from ZX_STATUS_B
+zs where 1=1 ;

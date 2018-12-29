@@ -18,7 +18,7 @@ SELECT src.user_defined_flag src_usr,
        mtl_txn_source_types  src
  WHERE 1 = 1
    AND mttc.transaction_source_type_id = src.transaction_source_type_id
-AND mttc.transaction_type_name = 'Case Scrap'
+
 ;
 --1.transaction_type_id refer to mtl_transaction_types
 SELECT *
@@ -28,9 +28,6 @@ SELECT *
    AND upper(mttc.transaction_type_name) LIKE upper('%issue%')
  ORDER BY mttc.creation_date --mtt.transaction_type_id
 ;
-
-SELECT * from mtl_transaction_types mttc where 1=1 
-AND mttc.TRANSACTION_TYPE_NAME IN ('Case Scrap','Shipping') FOR UPDATE;
 
 --2.transaction_action_id refer to lookup 'MTL_TRANSACTION_ACTION'
 SELECT *

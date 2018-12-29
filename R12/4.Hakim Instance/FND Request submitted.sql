@@ -79,7 +79,8 @@ SELECT v.request_id rqst_id,
       --AND v.phase_code IN ('R', 'P')
    AND v.user_concurrent_program_name 
    LIKE 
-   'XXPA%Movement%Monthly%Balance%Report'
+   'CUX:HNETªı¡‰±®±Ì_EXCEL'
+   --'XXPA%Movement%Monthly%Balance%Report'
    --'XXPA%FG Monthly Report'
    --'%Monthly Balance Report%'
    --'XXPA:Project Revenue and Cost of Sales Recognition Request'
