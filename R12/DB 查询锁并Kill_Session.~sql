@@ -6,9 +6,8 @@ SELECT b.sid,
   FROM v$access  a,
        v$session b
  WHERE a.sid = b.sid
-   AND upper(a.object) LIKE '%ZX_LINES_SUMMARY%'--'%MTL_DESCR_ELEMENT_VALUES%'
-   --AND a.type = 'TABLE'
-   ;
+   AND upper(a.object) LIKE '%MTL_DESCR_ELEMENT_VALUES%'
+   AND a.type = 'TABLE';
 
 SELECT b.sid,
        b.username,

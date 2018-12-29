@@ -17,9 +17,14 @@ SELECT fcp.user_concurrent_program_name program,
    --'%ÐÂÄÜÔ´%'
    --'%REVENUE%RECOGNITION%%%'
    --'%INVOICE%ON%HOLD%'
+<<<<<<< HEAD
    AND upper(fcp.user_concurrent_program_name) LIKE 
    '%%Áä%'
    --'%CUX%AGE%'
+=======
+   AND fcp.user_concurrent_program_name LIKE 
+   'XXINV%COUNT TAG WITH BARCODE'
+>>>>>>> 9c17a0dc28a8b35ca3d3965443d285a7aa745591
    --'XXPA:Project COGS Monthly Report(SHE)_NEW'
    --'XXOM:SO Balance Report'
    --'Create Accounting%Cost Management'
