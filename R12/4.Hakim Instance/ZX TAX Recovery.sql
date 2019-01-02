@@ -6,7 +6,7 @@ SELECT t.responsibility_id, tl.responsibility_name, tl.language, t.*
    AND tl.language = 'US'
       --AND t.responsibility_key LIKE --'%HBS%SCM_SUPER_USER%'
       --'COST%MANAGEMENT%'
-   AND tl.responsibility_name LIKE 'ALL' --'Cost Management%SLA'
+   AND tl.responsibility_name LIKE '%HAKIM%' --'Cost Management%SLA'
 ;
 --HEA SCM SUPER USER
 
@@ -18,8 +18,8 @@ SELECT * FROM fnd_user fu WHERE fu.user_name = 'HAKIM';
 --SHE 84      50778       20005              TH1  85  TH2 86
 /*
 BEGIN
-  fnd_global.apps_initialize(user_id      => 9221,
-                             resp_id      => 50947,
+  fnd_global.apps_initialize(user_id      => 101473,--HAKIM
+                             resp_id      => 66729,--HAKIM Super user
                              resp_appl_id => 235);
   mo_global.init('M');
   --FND_PROFILE.PUT('MFG_ORGANIZATION_ID', 86);
@@ -52,7 +52,8 @@ SELECT DISTINCT ratetleo.tax_rate_code,
        hz_geography_types_vl regimes_hzgeotypes,
        zx_regimes_vl         regimetleo
  WHERE regimetleo.tax_regime_code = ratetleo.tax_regime_code
- AND regimes_hzgeographies.geography_name = 'China'
+ AND ratetleo.tax_regime_code LIKE '%CN_%'
+ --AND regimes_hzgeographies.geography_name = 'China'
       --AND upper(ratetleo.tax_regime_code) LIKE 'CN-Tax'--:1
       --AND upper(ratetleo.tax_rate_code) LIKE :2
       --AND upper(ratetleo.tax) LIKE :3
