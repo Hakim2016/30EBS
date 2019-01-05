@@ -1,127 +1,117 @@
 --AP invoice v1.0
 
 --AP with Project/Task
-SELECT 
-aph.attribute9,
-aph.creation_date,
-       aph.last_update_date,
-       aph.payment_method_code,
-       aph.invoice_type_lookup_code invoice_type,
-       aph.invoice_id,
-       aph.invoice_num,
-       aph.invoice_amount,
-       aph.amount_paid,
-       aph.pay_curr_invoice_amount,
-       aph.project_id,
-       ppa.segment1                 proj_num,
-       pt.task_number,
-       aph.voucher_num,
-       aph.*
-  FROM ap_invoices_all aph,
-       pa_projects_all ppa,
-       pa_tasks        pt
+SELECT APH.ATTRIBUTE9,
+       APH.CREATION_DATE,
+       APH.LAST_UPDATE_DATE,
+       APH.PAYMENT_METHOD_CODE,
+       APH.INVOICE_TYPE_LOOKUP_CODE INVOICE_TYPE,
+       APH.INVOICE_ID,
+       APH.INVOICE_NUM,
+       APH.INVOICE_AMOUNT,
+       APH.AMOUNT_PAID,
+       APH.PAY_CURR_INVOICE_AMOUNT,
+       APH.PROJECT_ID,
+       PPA.SEGMENT1                 PROJ_NUM,
+       PT.TASK_NUMBER,
+       APH.VOUCHER_NUM,
+       APH.*
+  FROM AP_INVOICES_ALL APH, PA_PROJECTS_ALL PPA, PA_TASKS PT
  WHERE 1 = 1
-   AND aph.task_id = pt.task_id(+)
-   --AND aph.org_id = 82 --101 --141--82--101--82 --84--SHE--82 --HEA
-   AND aph.project_id = ppa.project_id(+) --left join
-   AND aph.invoice_num IN --= 'TOEQ001597'--'210-702-004' --'SG00043803*8' --'107/5350';--454220
+   AND APH.TASK_ID = PT.TASK_ID(+)
+      --AND aph.org_id = 82 --101 --141--82--101--82 --84--SHE--82 --HEA
+   AND APH.PROJECT_ID = PPA.PROJECT_ID(+) --left join
+   AND APH.INVOICE_NUM IN --= 'TOEQ001597'--'210-702-004' --'SG00043803*8' --'107/5350';--454220
       --('SPE-18000129')
-       (
-       'IV2018-02426'
-       --'SG00050348*7'
-)
---AND aph.invoice_num LIKE 'HKM%'
-AND aph.creation_date >= to_date('2018-03-01', 'yyyy-mm-dd')
+       ('IV2018-02426'
+        --'SG00050348*7'
+        )
+      --AND aph.invoice_num LIKE 'HKM%'
+   AND APH.CREATION_DATE >= TO_DATE('2018-03-01', 'yyyy-mm-dd')
 --AND aph.invoice_type_lookup_code = 'PREPAYMENT'
- ORDER BY aph.invoice_id DESC
+ ORDER BY APH.INVOICE_ID DESC
 
 ;
 
 --ar haeder/ line
-SELECT aph.invoice_id,
-       apl.creation_date,
-       apl.last_update_date,
-       apl.last_updated_by,
-       apl.description,
-       apl.amount line_amt,
-       aph.invoice_num,
-       apl.line_type_lookup_code,
-       aph.attribute_category,
-       aph.attribute8,
-       aph.*,
-       apl.*
-  FROM ap_invoices_all      aph,
-       ap_invoice_lines_all apl
+SELECT APH.INVOICE_ID,
+       APL.CREATION_DATE,
+       APL.LAST_UPDATE_DATE,
+       APL.LAST_UPDATED_BY,
+       APL.DESCRIPTION,
+       APL.AMOUNT LINE_AMT,
+       APH.INVOICE_NUM,
+       APL.LINE_TYPE_LOOKUP_CODE,
+       APH.ATTRIBUTE_CATEGORY,
+       APH.ATTRIBUTE8,
+       APH.*,
+       APL.*
+  FROM AP_INVOICES_ALL APH, AP_INVOICE_LINES_ALL APL
  WHERE 1 = 1
-   AND aph.invoice_id = apl.invoice_id
-   --AND aph.org_id = 82 --101 --82
-      AND aph.invoice_num IN --LIKE 'USD%YUL%'
-      ('IV2018-02426')
-      --('GE18060191','GE18060212','GE18060218','GE18060219','GE18060228','GE18070008','GE18070010','GE18070021','GE18070062','GE18070082','GE18070086','GE18070089','GE18070090','GE18070101','GE18070103','GE18070104','GE18070105','GE18070108','GE18070114','GE18070122','GE18070126','GE18070129','GE18070130','GE18070131','GE18070132','GE18070133','GE18070134','GE18070135','GE18070136','GE18070137','GE18070138','GE18070139','GE18070140','GE18070141','GE18070143','GE18070144','GE18070145','GE18070146','GE18070147','GE18070148','GE18070149','GE18070150','GE18070151','GE18070152','GE18070154','GE18070155','GE18070156','GE18070157','GE18070158','GE18070159','GE18070160','GE18070161','GE18070165','GE18070169','GE18070172','GE18070174','GE18070178','GE18070179')
-      --('SPE-18000129') --('GE18060191')--('GE18070129')
-      --AND apl.amount <> 0
-      --AND apl.line_number = 19
-   --AND aph.creation_date >= SYSDATE - 160
-   --AND aph.project_id IS NOT NULL
-   --AND aph.po_header_id IS NULL
- ORDER BY aph.invoice_num,
-          apl.amount;
-          
-SELECT * FROM ap_invoices_all aph
-WHERE 1=1
-AND aph.invoice_num LIKE '%VI2018%02426%';
+   AND APH.INVOICE_ID = APL.INVOICE_ID
+      --AND aph.org_id = 82 --101 --82
+   AND APH.INVOICE_NUM IN --LIKE 'USD%YUL%'
+       ('IV2018-02426')
+--('GE18060191','GE18060212','GE18060218','GE18060219','GE18060228','GE18070008','GE18070010','GE18070021','GE18070062','GE18070082','GE18070086','GE18070089','GE18070090','GE18070101','GE18070103','GE18070104','GE18070105','GE18070108','GE18070114','GE18070122','GE18070126','GE18070129','GE18070130','GE18070131','GE18070132','GE18070133','GE18070134','GE18070135','GE18070136','GE18070137','GE18070138','GE18070139','GE18070140','GE18070141','GE18070143','GE18070144','GE18070145','GE18070146','GE18070147','GE18070148','GE18070149','GE18070150','GE18070151','GE18070152','GE18070154','GE18070155','GE18070156','GE18070157','GE18070158','GE18070159','GE18070160','GE18070161','GE18070165','GE18070169','GE18070172','GE18070174','GE18070178','GE18070179')
+--('SPE-18000129') --('GE18060191')--('GE18070129')
+--AND apl.amount <> 0
+--AND apl.line_number = 19
+--AND aph.creation_date >= SYSDATE - 160
+--AND aph.project_id IS NOT NULL
+--AND aph.po_header_id IS NULL
+ ORDER BY APH.INVOICE_NUM, APL.AMOUNT;
+
+SELECT *
+  FROM AP_INVOICES_ALL APH
+ WHERE 1 = 1
+   AND APH.INVOICE_NUM LIKE '%VI2018%02426%';
 
 --SELECT * FROM  ap_invoice_distributions_all apd WHERE 1=1 AND apd.invoice_id = 2057357;
 --ar haeder/ line/ distribution
-SELECT aph.invoice_id,
-       apl.creation_date,
-       apl.last_update_date,
-       apl.last_updated_by,
-       apl.description,
-       apl.amount line_amt,
-       apd.amount,
-       apd.base_amount, --本位币金额 functional amount
-       aph.invoice_num,
-       apl.line_type_lookup_code,
-       aph.attribute_category,
-       aph.attribute8,
-       aph.*,
-       apl.*
-  FROM ap_invoices_all              aph,
-       ap_invoice_lines_all         apl,
-       ap_invoice_distributions_all apd
+SELECT APH.INVOICE_ID,
+       APL.CREATION_DATE,
+       APL.LAST_UPDATE_DATE,
+       APL.LAST_UPDATED_BY,
+       APL.DESCRIPTION,
+       APL.AMOUNT LINE_AMT,
+       APD.AMOUNT,
+       APD.BASE_AMOUNT, --本位币金额 functional amount
+       APH.INVOICE_NUM,
+       APL.LINE_TYPE_LOOKUP_CODE,
+       APH.ATTRIBUTE_CATEGORY,
+       APH.ATTRIBUTE8,
+       APH.*,
+       APL.*
+  FROM AP_INVOICES_ALL              APH,
+       AP_INVOICE_LINES_ALL         APL,
+       AP_INVOICE_DISTRIBUTIONS_ALL APD
  WHERE 1 = 1
-   AND apd.invoice_id = aph.invoice_id
-   AND apd.invoice_line_number = apl.line_number
-   AND aph.invoice_id = apl.invoice_id
-   AND aph.org_id = 101 --82
-   AND aph.invoice_num IN --LIKE 'USD%YUL%'
+   AND APD.INVOICE_ID = APH.INVOICE_ID
+   AND APD.INVOICE_LINE_NUMBER = APL.LINE_NUMBER
+   AND APH.INVOICE_ID = APL.INVOICE_ID
+   AND APH.ORG_ID = 101 --82
+   AND APH.INVOICE_NUM IN --LIKE 'USD%YUL%'
       --('GE18060191','GE18060212','GE18060218','GE18060219','GE18060228','GE18070008','GE18070010','GE18070021','GE18070062','GE18070082','GE18070086','GE18070089','GE18070090','GE18070101','GE18070103','GE18070104','GE18070105','GE18070108','GE18070114','GE18070122','GE18070126','GE18070129','GE18070130','GE18070131','GE18070132','GE18070133','GE18070134','GE18070135','GE18070136','GE18070137','GE18070138','GE18070139','GE18070140','GE18070141','GE18070143','GE18070144','GE18070145','GE18070146','GE18070147','GE18070148','GE18070149','GE18070150','GE18070151','GE18070152','GE18070154','GE18070155','GE18070156','GE18070157','GE18070158','GE18070159','GE18070160','GE18070161','GE18070165','GE18070169','GE18070172','GE18070174','GE18070178','GE18070179')
        ('SPE-18000129') --('GE18060191')--('GE18070129')
       --AND apl.amount <> 0
-   AND apl.line_number = 19
- ORDER BY aph.invoice_num,
-          apl.amount;
+   AND APL.LINE_NUMBER = 19
+ ORDER BY APH.INVOICE_NUM, APL.AMOUNT;
 
 SELECT *
-  FROM xla.xla_transaction_entities xte
+  FROM XLA.XLA_TRANSACTION_ENTITIES XTE
  WHERE 1 = 1
-   AND xte.application_id = 200 --AP
-   AND xte.source_id_int_1 = 1950245;
+   AND XTE.APPLICATION_ID = 200 --AP
+   AND XTE.SOURCE_ID_INT_1 = 1950245;
 
-SELECT xal.entered_dr,
-       xal.entered_cr,
-       xte.*,
-       xah.*,
-       xal.*
-  FROM xla.xla_transaction_entities xte,
-       xla_ae_headers               xah,
-       xla_ae_lines                 xal
+SELECT XAL.ENTERED_DR, XAL.ENTERED_CR, XTE.*, XAH.*, XAL.*
+  FROM XLA.XLA_TRANSACTION_ENTITIES XTE,
+       XLA_AE_HEADERS               XAH,
+       XLA_AE_LINES                 XAL
  WHERE 1 = 1
-   AND xah.entity_id = xte.entity_id
-   AND xah.ae_header_id = xal.ae_header_id
-   AND xte.application_id = 200 --AP
-   AND xte.source_id_int_1 = 1950245;
+   AND XAH.ENTITY_ID = XTE.ENTITY_ID
+   AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+   AND XTE.APPLICATION_ID = 200 --AP
+   AND XTE.SOURCE_ID_INT_1 = 1950245;
 
 /*BEGIN
   fnd_global.apps_initialize(user_id      => 4270,
@@ -131,75 +121,75 @@ SELECT xal.entered_dr,
   
 END;*/
 
-SELECT aph.invoice_num,
-       xah.event_id,
-       xal.ae_line_num,
-       xte.entity_code,
-       apd.invoice_distribution_id  inv_dis_id,
-       xdl.source_distribution_type src_dis_t,
-       apd.line_type_lookup_code    dis_l_t,
-       apd.posted_flag,
-       xah.gl_transfer_date,
-       apd.amount,
-       xal.entered_dr,
-       xal.entered_cr,
-       xal.accounted_dr,
-       xal.accounted_cr,
+SELECT APH.INVOICE_NUM,
+       XAH.EVENT_ID,
+       XAL.AE_LINE_NUM,
+       XTE.ENTITY_CODE,
+       APD.INVOICE_DISTRIBUTION_ID  INV_DIS_ID,
+       XDL.SOURCE_DISTRIBUTION_TYPE SRC_DIS_T,
+       APD.LINE_TYPE_LOOKUP_CODE    DIS_L_T,
+       APD.POSTED_FLAG,
+       XAH.GL_TRANSFER_DATE,
+       APD.AMOUNT,
+       XAL.ENTERED_DR,
+       XAL.ENTERED_CR,
+       XAL.ACCOUNTED_DR,
+       XAL.ACCOUNTED_CR,
        --apd.amount_to_post,
-       xah.*,
-       xal.*,
-       xdl.source_distribution_id_num_1,
-       apl.line_number,
-       apd.*,
-       aph.*,
-       apl.*
-  FROM ap_invoices_all              aph,
-       ap_invoice_lines_all         apl,
-       ap_invoice_distributions_all apd,
-       xla_distribution_links       xdl,
-       xla_ae_headers               xah,
-       xla_ae_lines                 xal,
-       xla.xla_transaction_entities xte
+       XAH.*,
+       XAL.*,
+       XDL.SOURCE_DISTRIBUTION_ID_NUM_1,
+       APL.LINE_NUMBER,
+       APD.*,
+       APH.*,
+       APL.*
+  FROM AP_INVOICES_ALL              APH,
+       AP_INVOICE_LINES_ALL         APL,
+       AP_INVOICE_DISTRIBUTIONS_ALL APD,
+       XLA_DISTRIBUTION_LINKS       XDL,
+       XLA_AE_HEADERS               XAH,
+       XLA_AE_LINES                 XAL,
+       XLA.XLA_TRANSACTION_ENTITIES XTE
  WHERE 1 = 1
-   AND aph.invoice_id = apl.invoice_id
-   AND aph.invoice_id = apd.invoice_id
-   AND apl.line_number = apd.invoice_line_number
-   AND apd.invoice_distribution_id = xdl.source_distribution_id_num_1
-   AND xah.ae_header_id = xal.ae_header_id
-   AND xah.ae_header_id = xdl.ae_header_id
-   AND xal.ae_line_num = xdl.ae_line_num
-   AND xah.entity_id = xte.entity_id
-   AND xah.ledger_id = xte.ledger_id
-   AND xte.entity_code = 'AP_INVOICES'
-   AND xdl.source_distribution_type = 'AP_INV_DIST'
-   AND xdl.application_id = 200 --SQLAP
-   AND xah.application_id = 200 --SQLAP
-   AND xal.application_id = 200 --SQLAP
-   AND xte.application_id = 200 --SQLAP
-   AND aph.invoice_num = '210-702-004' --'18010016'--'SG00043803*7'
-   AND aph.org_id = 82 --HEA
+   AND APH.INVOICE_ID = APL.INVOICE_ID
+   AND APH.INVOICE_ID = APD.INVOICE_ID
+   AND APL.LINE_NUMBER = APD.INVOICE_LINE_NUMBER
+   AND APD.INVOICE_DISTRIBUTION_ID = XDL.SOURCE_DISTRIBUTION_ID_NUM_1
+   AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+   AND XAH.AE_HEADER_ID = XDL.AE_HEADER_ID
+   AND XAL.AE_LINE_NUM = XDL.AE_LINE_NUM
+   AND XAH.ENTITY_ID = XTE.ENTITY_ID
+   AND XAH.LEDGER_ID = XTE.LEDGER_ID
+   AND XTE.ENTITY_CODE = 'AP_INVOICES'
+   AND XDL.SOURCE_DISTRIBUTION_TYPE = 'AP_INV_DIST'
+   AND XDL.APPLICATION_ID = 200 --SQLAP
+   AND XAH.APPLICATION_ID = 200 --SQLAP
+   AND XAL.APPLICATION_ID = 200 --SQLAP
+   AND XTE.APPLICATION_ID = 200 --SQLAP
+   AND APH.INVOICE_NUM = '210-702-004' --'18010016'--'SG00043803*7'
+   AND APH.ORG_ID = 82 --HEA
 --AND apl.line_number = 1
 --AND apd.invoice_distribution_id = 4737175
 ;
 
-SELECT apd.invoice_distribution_id,
-       apl.line_number,
-       apd.amount,
-       apd.amount_to_post,
-       apd.line_type_lookup_code,
-       apd.posted_flag,
-       apd.*,
-       aph.*,
-       apl.*
-  FROM ap_invoices_all              aph,
-       ap_invoice_lines_all         apl,
-       ap_invoice_distributions_all apd
+SELECT APD.INVOICE_DISTRIBUTION_ID,
+       APL.LINE_NUMBER,
+       APD.AMOUNT,
+       APD.AMOUNT_TO_POST,
+       APD.LINE_TYPE_LOOKUP_CODE,
+       APD.POSTED_FLAG,
+       APD.*,
+       APH.*,
+       APL.*
+  FROM AP_INVOICES_ALL              APH,
+       AP_INVOICE_LINES_ALL         APL,
+       AP_INVOICE_DISTRIBUTIONS_ALL APD
 
  WHERE 1 = 1
-   AND aph.invoice_id = apl.invoice_id
-   AND aph.invoice_id = apd.invoice_id
-   AND apl.line_number = apd.invoice_line_number
-   AND aph.invoice_num = '10051165' --'210-702-004' --'18010016'--'SG00043803*7'
+   AND APH.INVOICE_ID = APL.INVOICE_ID
+   AND APH.INVOICE_ID = APD.INVOICE_ID
+   AND APL.LINE_NUMBER = APD.INVOICE_LINE_NUMBER
+   AND APH.INVOICE_NUM = '10051165' --'210-702-004' --'18010016'--'SG00043803*7'
 --AND aph.org_id = 82 --HEA
 --AND apl.line_number = 11
 --AND apd.amount <> 0
@@ -209,22 +199,21 @@ SELECT apd.invoice_distribution_id,
  WHERE 1=1
  AND aph.invoice_id = 1882328*/
 
-SELECT * FROM xla_transaction_entities xte,
-            xla_ae_headers           xah,
-            xla_ae_lines             xal
+SELECT *
+  FROM XLA_TRANSACTION_ENTITIES XTE, XLA_AE_HEADERS XAH, XLA_AE_LINES XAL
  WHERE 1 = 1
-   AND xte.ledger_id = xah.ledger_id
-   AND xte.entity_id = xah.entity_id;
+   AND XTE.LEDGER_ID = XAH.LEDGER_ID
+   AND XTE.ENTITY_ID = XAH.ENTITY_ID;
 
 SELECT *
-  FROM fnd_application fa
+  FROM FND_APPLICATION FA
  WHERE 1 = 1
-   AND fa.application_id = 200;
+   AND FA.APPLICATION_ID = 200;
+
+SELECT * FROM AP_INTERFACE_CONTROLS;
 
 SELECT *
-  FROM ap_interface_controls;
-  
-SELECT * FROM zx_lines_summary_v xzl
-WHERE 1=1
---AND xzl.TRX_ID = 2131508
-AND xzl.TRX_NUMBER = 'IV2018-02426';
+  FROM ZX_LINES_SUMMARY_V XZL
+ WHERE 1 = 1
+      --AND xzl.TRX_ID = 2131508
+   AND XZL.TRX_NUMBER = 'IV2018-02426';

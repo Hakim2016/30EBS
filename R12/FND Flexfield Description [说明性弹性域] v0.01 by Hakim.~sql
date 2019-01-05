@@ -16,7 +16,7 @@ SELECT dfv.title,
    AND dfv.descriptive_flexfield_name = dfcv.descriptive_flexfield_name
    AND dfcv.descriptive_flexfield_name = dfcu.descriptive_flexfield_name
    AND dfcv.descriptive_flex_context_code = dfcu.descriptive_flex_context_code
-      --and dfv.TITLE like 'Supplier Contacts'--'Transaction Information'
+      and dfv.TITLE like 'Transaction Information'
       --说明性弹性域标题
       --'HEA Tax Invoice Header Flexfield' --CUX form fail to find the description flexfield
       --'HEA Tax Invoice Header%'

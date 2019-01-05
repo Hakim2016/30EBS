@@ -78,7 +78,6 @@ SELECT v.request_id rqst_id,
       --AND v.program LIKE --'Create Accounting%'
       --AND v.status_code IN ('E','G')
       --AND v.phase_code IN ('R', 'P')
-<<<<<<< HEAD
    AND v.user_concurrent_program_name 
    LIKE 
    --'CUX:HNET»õÁä±¨±í%'
@@ -89,7 +88,6 @@ SELECT v.request_id rqst_id,
    --'XXPA:Project COGS Monthly Report%'
    --'%XXPA:Project Cost Data Outbound%'
    --'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)'
-=======
   /* AND v.user_concurrent_program_name 
    LIKE */
    --'PRC%'
@@ -97,7 +95,6 @@ SELECT v.request_id rqst_id,
    --'XXPA:Project COGS Monthly Report%'
    --'%XXPA:Project Cost Data Outbound%'
    --'XXPA:Project EQ Cost of Sales Recognition Request%'
->>>>>>> 9c17a0dc28a8b35ca3d3965443d285a7aa745591
    --'XXPA%Movement%Monthly%Balance%Report'
    --'XXPA%FG Monthly Report'
    --'%Monthly Balance Report%'
@@ -164,14 +161,14 @@ SELECT v.request_id rqst_id,
 --'Projects Cost Collection Manager'
 --'Cost Collection Manager'
 --######conplatibility of <XXPA:Project Status Update(BA)> start
-AND v.user_concurrent_program_name IN (
+/*AND v.user_concurrent_program_name IN (
 'XXPA:Project Status Update(BA)',
 --'XXPA:Generate Expenditure Batch For Cost Structure',
 'XXPA:Project Revenue and Cost of Sales Recognition Request',
 --'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)',
 --
 'XXPA:Project Status Update(Installation)'
-)
+)*/
 --######conplatibility of <XXPA:Project Status Update(BA)> end
 --'XXPA:Project Status Update(BA)'
 --'XXAR: Delivery Interface outbound GSCM to R3'

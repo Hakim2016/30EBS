@@ -80,13 +80,17 @@ SELECT v.request_id rqst_id,
       --AND v.phase_code IN ('R', 'P')
    AND v.user_concurrent_program_name 
    LIKE 
-<<<<<<< HEAD
-   'CUX:HNET货龄报表%'
-   --'CUX:HNET货龄报表_EXCEL_dayByday'
+   --'CUX:HNET货龄报表%'
+   'CUX:HNET货龄报表_EXCEL_dayByday'
    --'%龄%dayByday%'
-=======
-   'PRC%'
->>>>>>> 9c17a0dc28a8b35ca3d3965443d285a7aa745591
+   --'%产成品%报表%'
+   --'XXAR:HEA/HBS Credit Note Application Print'
+   --'XXPA:Project COGS Monthly Report%'
+   --'%XXPA:Project Cost Data Outbound%'
+   --'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)'
+  /* AND v.user_concurrent_program_name 
+   LIKE */
+   --'PRC%'
    --'XXAR:HEA/HBS Credit Note Application Print'
    --'XXPA:Project COGS Monthly Report%'
    --'%XXPA:Project Cost Data Outbound%'

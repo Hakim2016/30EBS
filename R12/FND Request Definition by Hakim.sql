@@ -1,3 +1,4 @@
+/*ALTER SESSION SET nls_language = american;*/
 --Request Definition
 SELECT fcp.user_concurrent_program_name program,
        fcp.concurrent_program_name      short_name,
@@ -17,14 +18,11 @@ SELECT fcp.user_concurrent_program_name program,
    --'%ÐÂÄÜÔ´%'
    --'%REVENUE%RECOGNITION%%%'
    --'%INVOICE%ON%HOLD%'
-<<<<<<< HEAD
-   AND upper(fcp.user_concurrent_program_name) LIKE 
-   '%%Áä%'
-   --'%CUX%AGE%'
-=======
+   /*AND upper(fcp.user_concurrent_program_name) LIKE 
+   '%%Áä%'*/
    AND fcp.user_concurrent_program_name LIKE 
-   'XXINV%COUNT TAG WITH BARCODE'
->>>>>>> 9c17a0dc28a8b35ca3d3965443d285a7aa745591
+   'Update Subledger%'
+   --'XXINV%COUNT TAG WITH BARCODE'
    --'XXPA:Project COGS Monthly Report(SHE)_NEW'
    --'XXOM:SO Balance Report'
    --'Create Accounting%Cost Management'
@@ -43,6 +41,7 @@ SELECT fcp.user_concurrent_program_name program,
       IN('CMCCCM','CMCPCM')*/
    --AND fcp.user_concurrent_program_name = 'XXOM:SO Balance Report'
    ;
+SELECT USERENV('LANG') FROM dual;
 
 /*
 XXPAUPDATESTATUS2
