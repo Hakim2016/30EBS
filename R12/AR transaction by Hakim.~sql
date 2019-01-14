@@ -4,6 +4,7 @@
 SELECT RCT.ORG_ID,
        RCT.TRX_NUMBER,
        RCTT.NAME,
+       --rct.status_trx,
        RCTT.TYPE,
        RCT.LAST_UPDATE_DATE,
        RCT.ATTRIBUTE10,
@@ -14,10 +15,18 @@ SELECT RCT.ORG_ID,
    AND RCTT.CUST_TRX_TYPE_ID = RCT.CUST_TRX_TYPE_ID
       --AND rct.customer_trx_id = 4890563--4865153
       --AND rctt.type IN ('CM', 'DM')
-   AND RCT.ORG_ID = 84 --101 --84
+   --AND RCT.ORG_ID = 82--84 --101 --84
       --AND rctt.name = ''
       --AND rct.trx_number IN ('JPE-18000315','600000000010')--('HKM2018092101') --('TFO000011')--('CTE1_454:TE_2004') --('JPE-18000050')--('10000017753')
-   AND RCT.TRX_NUMBER LIKE 'TFO000049'--'TFO000049' --'%6%10'
+   AND RCT.TRX_NUMBER --LIKE 'TFO000049'--'TFO000049' --'%6%10'
+  IN ('SPE-18000024',
+'SPE-18000098',
+'SPE-18000100',
+'SPE-18000105',--
+'SPE-18000110',
+'SPE-18000111',
+'SPE-18000143',
+'SPE-18000152')
 --AND rct.creation_date >= to_date('20180301','yyyymmdd')
 --AND rct.creation_date <= to_date('20180315','yyyymmdd')
 --AND rct.customer_trx_id = 4022542
@@ -26,7 +35,8 @@ SELECT RCT.ORG_ID,
 SELECT *
   FROM RA_CUST_TRX_TYPES_ALL RCTT
  WHERE 1 = 1
-   AND RCTT.ORG_ID = 101
+   AND RCTT.ORG_ID = 84--101
+   AND rctt.name = 'Invoice Only -V'
 --AND rctt.cust_trx_type_id = 1350
 ;
 

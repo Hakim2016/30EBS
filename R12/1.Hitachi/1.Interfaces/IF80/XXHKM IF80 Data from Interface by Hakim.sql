@@ -74,12 +74,14 @@ SELECT intf.actual_month act_mon,
    AND ppa.project_id = pt.project_id
    AND pt.top_task_id = top.task_id
    AND pt.task_id = intf.task_id
-   AND intf.org_id = 82--141--82--84 --84--SHE --82--HEA
-      AND intf.eq_er_category = 'ER'--'PARTS'--'EQ'
-   AND intf.mfg_num IN 
+   AND intf.org_id = 84--141--82--84 --84--SHE --82--HEA
+      AND intf.eq_er_category = 'EQ'--'PARTS'--'EQ'
+   /*AND intf.mfg_num IN 
 (
-'SAE0191-SG'
-)
+--'SAE0191-SG'
+--'TAC0473-TH'
+--'TFA1131-TH'
+)*/
    
       --AND pt.task_number LIKE '%.D.11'
       --AND (pt.task_number NOT LIKE '%.EQ' AND pt.task_number NOT LIKE '%.ER')
@@ -87,14 +89,17 @@ SELECT intf.actual_month act_mon,
       --AND nvl(intf.subcon, 0) <> 0
       --AND ppa.segment1 = '11000144'--'213100127'
       --AND intf.additional_flag = '1'--'N'
-      --AND intf.creation_date <= to_date('2018-11-12', 'yyyy-mm-dd')
+      AND intf.creation_date >= to_date('2018-10-01', 'yyyy-mm-dd')
+      
+      AND intf.actual_month >= to_date('2018-10-01', 'yyyy-mm-dd')
       --AND intf.subcon <> 0
    AND intf.group_id = (SELECT MAX(t2.group_id)
                           FROM xxpa_cost_gcpm_int t2
                          WHERE 1 = 1
                            AND t2.mfg_num = intf.mfg_num
                            AND t2.actual_month = intf.actual_month
-                            --AND t2.creation_date <= to_date('2018-11-12', 'yyyy-mm-dd')
+                            AND t2.creation_date >= to_date('2018-10-01', 'yyyy-mm-dd')
+      AND t2.actual_month >= to_date('2018-10-01', 'yyyy-mm-dd')
                            AND t2.task_id = intf.task_id)
       
   /* AND EXISTS
@@ -242,8 +247,9 @@ WHERE 1 = 1
 
 /*BEGIN
   fnd_global.apps_initialize(user_id      => 4270,
-                             resp_id      => 50676,
-                             resp_appl_id => 660);
+                             resp_id      => 50778,
+                             resp_appl_id => 20005);
   mo_global.init('M');
   
-END;*/
+END;
+*/

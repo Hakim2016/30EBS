@@ -64,7 +64,7 @@ SELECT t.seq,
            AND xlk.lookup_type = 'XLA_ACCOUNTING_CLASS') accouting_class,
        --t.acct_class,
        t.flag,
-       xxhkm_common_utl.get_acc_cate(t.chart_of_accounts_id /*50352*/, t.code_combination_id) acc_cate,
+       --xxhkm_common_utl.get_acc_cate(t.chart_of_accounts_id /*50352*/, t.code_combination_id) acc_cate,
        substr(t.concatenated_segments,
               instr(t.concatenated_segments, '.', 1, 2) + 1,
               instr(t.concatenated_segments, '.', 1, 3) - instr(t.concatenated_segments, '.', 1, 2) - 1) acc,
@@ -85,6 +85,7 @@ SELECT t.seq,
               instr(t.account_desc, '.', 1, 5) - instr(t.account_desc, '.', 1, 4) - 1) seg3,
        --t.concatenated_segments,
        --t.account_desc,
+       t.entered_dr,t.entered_cr,
        t.dr                       dr,
        t.cr                       cr,
        t.acct_rule,
@@ -116,7 +117,7 @@ SELECT t.seq,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
                 xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -125,7 +126,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -143,9 +144,18 @@ SELECT t.seq,
            AND xe.entity_id = xte.entity_id
            AND xe.application_id = xte.application_id
            AND xah.entity_id = xte.entity_id
-           AND xte.application_id = 707 --275 --PA
-           AND xte.source_id_int_1 = 4654211
-              
+           AND xte.application_id = 707--222--707 --275 --PA
+           AND xte.source_id_int_1 --= 4654211
+           IN (/*48624778--mmt.transaction_id
+              ,4408821--rt.transaction_id
+              */
+              5141793,65753332,
+              75370664,75371468
+              )
+              AND xte.entity_id NOT IN (2147758
+
+)
+              AND xet.language = 'US'
               --IN (4654211)
               --AND xte.entity_code = 'EXPENDITURES'
               --improve efficient
@@ -153,7 +163,7 @@ SELECT t.seq,
            AND xal.ae_line_num = xdl.ae_line_num
            AND xdl.application_id = xte.application_id
               ----
-           AND xdl.source_distribution_type = 'RCV_RECEIVING_SUB_LEDGER'
+           --AND xdl.source_distribution_type = 'RCV_RECEIVING_SUB_LEDGER'
               --event class/ event type
            AND xet.language = userenv('LANG')
            AND xect.application_id = xe.application_id --707
@@ -164,8 +174,8 @@ SELECT t.seq,
            AND xect.language = userenv('LANG')
            AND xet.event_type_code = xe.event_type_code
            AND xte.ledger_id = 2021
-           AND xte.entity_id = 29928866
-        
+           --AND xte.entity_id = 32810504--29928866
+        /*
         UNION ALL
         
         ----20.delivery to inventory
@@ -184,8 +194,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -194,7 +204,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -252,8 +262,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -262,7 +272,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 NULL source_distribution_type --xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -319,8 +329,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -329,7 +339,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -385,8 +395,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -395,7 +405,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -452,8 +462,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -462,7 +472,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -519,8 +529,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -529,7 +539,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -586,8 +596,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -596,7 +606,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -653,8 +663,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -663,7 +673,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 NULL source_distribution_type --xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -720,8 +730,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -730,7 +740,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -787,8 +797,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -797,7 +807,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -854,8 +864,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -864,7 +874,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -921,8 +931,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -931,7 +941,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -988,8 +998,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -998,7 +1008,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -1055,8 +1065,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -1065,7 +1075,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -1122,8 +1132,8 @@ SELECT t.seq,
                 xal.accounting_class_code acct_class,
                 decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
                 gcc.concatenated_segments,
-                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
-                xal.accounted_dr dr,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id \*50352*\, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
                 xal.accounted_cr cr,
                 xal.ae_line_num,
                 xal.description,
@@ -1132,7 +1142,7 @@ SELECT t.seq,
                 xte.transaction_number,
                 xah.accounting_date,
                 gcc.chart_of_accounts_id,
-                xal.code_combination_id,
+                xal.code_combination_id,xal.ae_header_id,
                 xdl.source_distribution_type
           FROM xla.xla_transaction_entities xte,
                 xla_events                   xe,
@@ -1171,7 +1181,7 @@ SELECT t.seq,
            AND xte.ledger_id = 2023
            AND xte.entity_id IN (29945022, 29945023, 29945024) --29944984 
            AND xte.source_id_int_1 = 20771589 --wip trx id
-        
+        */
         ) t
  WHERE 1 = 1
    AND t.seq NOT IN (4, 5, 6, 7, 13, 15)

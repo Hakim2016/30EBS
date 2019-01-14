@@ -1,0 +1,44 @@
+SELECT (SELECT cql.created_by
+          FROM cst_quantity_layers cql
+         WHERE 1 = 1
+           AND cql.layer_id = v.layer_id) created_by,
+       transaction_costed_date,
+       transaction_date,
+       primary_quantity,
+       actual_cost,
+       new_quantity,
+       new_cost,
+       prior_costed_quantity,
+       prior_cost,
+       transaction_type,
+       cost_group_id,
+       inventory_item_id,
+       organization_id,
+       transaction_id,
+       change,
+       actual_material,
+       actual_material_overhead,
+       actual_resource,
+       actual_outside_processing,
+       actual_overhead,
+       new_material,
+       new_material_overhead,
+       new_resource,
+       new_outside_processing,
+       new_overhead,
+       prior_material,
+       prior_material_overhead,
+       prior_resource,
+       prior_outside_processing,
+       prior_overhead
+  FROM cst_cg_cost_history_v v
+ WHERE organization_id = 83
+   AND inventory_item_id = 49014
+   AND cost_group_id = 1001
+   AND (transaction_date >= to_date('2018/08/01 00:00:00', 'YYYY/MM/DD HH24:MI:SS'))
+   AND (cost_group_id = 1001)
+   AND (inventory_item_id = 49014)
+   AND (organization_id = 83)
+ ORDER BY transaction_costed_date DESC,
+          transaction_date        DESC,
+          transaction_id          DESC

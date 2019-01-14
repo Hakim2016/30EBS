@@ -45,8 +45,9 @@ SELECT xah.ae_header_id,
    AND xet.event_type_code = xah.event_type_code
    AND xah.event_id = xe.event_id
    AND xe.process_status_code = 'P'
-   AND xah.ledger_id = 2021 --g_ledger_id
-   AND xah.ae_header_id = 24601670
+   AND xah.ledger_id = 2041 --g_ledger_id
+   AND xte.entity_id = 28080659--27219514
+   --AND xah.ae_header_id = 24601670
    AND xte.entity_code <> 'RECEIPTS' ---exclude receipt. --how to indentify cost transaction
    /*AND NOT EXISTS (SELECT 1 -- added by Jaron.li@2014-12-18 begin
           FROM rcv_transactions         rt,

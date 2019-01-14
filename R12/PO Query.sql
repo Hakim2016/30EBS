@@ -1,3 +1,4 @@
+
 SELECT pol.line_num,
        poh.org_id,
        pv.vendor_id,
@@ -25,13 +26,14 @@ SELECT pol.line_num,
    AND fu.user_id = poh.created_by
       --AND fu.user_name LIKE 'HAND%'
    AND poh.po_header_id = pol.po_header_id
-      --AND poh.segment1 = '10062173'--'10000023'
-   AND poh.org_id = 101 --84 --101
+   --AND poh.po_header_id = 3050339
+      AND poh.segment1 = '10073394'--'10062173'--'10000023'
+   AND poh.org_id = 82--101 --84 --101
       --AND poh.cancel_flag = 'N'
-   AND poh.approved_flag = 'Y'
+   --AND poh.approved_flag = 'Y'
       --AND poh.
       --AND poh.creation_date >= to_date('20170101', 'yyyymmdd')
-   AND poh.segment1 = '10000415' --'10026376' --'10000341' --'10051165'
+   --AND poh.segment1 = '10000415' --'10026376' --'10000341' --'10051165'
 --AND pol.unit_price = 27014
 ;
 --82/84

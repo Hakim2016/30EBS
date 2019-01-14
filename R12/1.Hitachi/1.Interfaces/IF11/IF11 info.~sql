@@ -6,7 +6,11 @@ xxpjm_proj_generation_pkg.main
 XXPJM_PROJ_GENERATION_INT
 */
 
-SELECT intf.creation_date,intf.*
-  FROM xxpjm_proj_generation_int intf
+SELECT intf.creation_date,intf.created_by,intf.*
+  FROM apps.xxpjm_proj_generation_int intf
  WHERE 1 = 1
-   AND intf.so_number = '53020534';
+   AND intf.so_number = '53020232'--'53020261'--'11001301'--'53020534'
+   AND intf.manufacturing_number = 'JBK0157-HK'--'TBL0044-TH'--'SAC0861-SG'
+   ;
+   
+

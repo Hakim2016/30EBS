@@ -72,7 +72,7 @@ SELECT v.request_id rqst_id,
    AND pap.effective_end_date > SYSDATE
    AND fr.responsibility_id = v.responsibility_id
       --AND v.request_id --= 16839045--16282868--16253168--16221488--13165995--16098690--15981725--15956670
-      --=17493023--17524251--17523985
+      --=17659658--17493023--17524251--17523985
       --IN (17374943, 17374944, 17375642,17375545,17294974)
       --AND v.program_short_name LIKE 'XX%'--= 'XXPAB008'--'XXINVB014'--'XXPAUPDATESTATUS'
       --AND v.program LIKE --'Create Accounting%'
@@ -80,9 +80,19 @@ SELECT v.request_id rqst_id,
       --AND v.phase_code IN ('R', 'P')
    AND v.user_concurrent_program_name 
    LIKE 
-   'PRC%'
+   'XXINV:Stock Master Report'
+   --'%Stock%Report%'
+   --'Cost Manager'
+   --'Actual Cost Worker'
+   --'%%Auto%PO%Receive%to%Stock%After%'
+   --'%XXINV:Subinventory Transfer%'
+   --'Transfer Journal%'
+   --'XXPO:Auto PO Receive to Stock After Inspection'
+   --'XXPO:Auto PO Receive to Stock After Inspection'
+   --'PRC%'
    --'XXAR:HEA/HBS Credit Note Application Print'
    --'XXPA:Project COGS Monthly Report%'
+   --'XXFND:Interface Manager'
    --'%XXPA:Project Cost Data Outbound%'
    --'XXPA:Project EQ Cost of Sales Recognition Request%'
    --'XXPA%Movement%Monthly%Balance%Report'
@@ -170,7 +180,7 @@ SELECT v.request_id rqst_id,
 --AND v.request_date > TRUNC(SYSDATE)
 --AND v.request_date <> v.requested_start_date
 --AND trunc(v.request_date) = to_date('2018-07-13','yyyy-mm-dd')
---AND v.argument_text LIKE '%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
+--AND v.argument_text LIKE '%2018%'--'%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
 --AND v.requestor = 'HAND_HKM'--'HAND_LCR'--'70264934'--'HAND_HKM'
 --AND v.request_id = 17225733--17204202-->= 16727489
  ORDER BY --v.

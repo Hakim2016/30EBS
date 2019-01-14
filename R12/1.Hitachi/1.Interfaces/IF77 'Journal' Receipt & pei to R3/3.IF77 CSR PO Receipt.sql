@@ -66,6 +66,6 @@ SELECT pa.segment1 so_number,
          WHERE j.source_code = 'PO RECIPT'
            AND j.source_id = rt.transaction_id)
       
-   AND rt.creation_date >= nvl(p_start_date, rt.creation_date)
-   AND odd.set_of_books_id = nvl(g_ledger_id, odd.set_of_books_id)
+   --AND rt.creation_date >= nvl(p_start_date, rt.creation_date)
+   AND odd.set_of_books_id = nvl(/*g_ledger_id*/2041, odd.set_of_books_id)
  ORDER BY rt.transaction_id;

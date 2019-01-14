@@ -1,11 +1,10 @@
 SELECT xxfnd_fnd_web_sec.decrypt('APPS', fu.encrypted_user_password),
        fu.*
   FROM fnd_user fu
- WHERE fu.user_name = '70236270'--'70265069'--'71364171'--'70610664'--'HAND_HKM'--'70271678'
- 
- ;
- 
- 
+ WHERE fu.user_name = '70236270' --'70265069'--'71364171'--'70610664'--'HAND_HKM'--'70271678'
+
+;
+
 /* 
 CREATE OR REPLACE PACKAGE xxfnd_fnd_web_sec AUTHID CURRENT_USER AS
   --Jianhua.Huang 2005.10.14
@@ -25,3 +24,8 @@ CREATE OR REPLACE PACKAGE BODY xxfnd_fnd_web_sec AS
 
 END;
 */
+
+SELECT *
+  FROM fnd_objects fo
+ WHERE 1 = 1
+   AND fo.obj_name LIKE upper('xxfnd_fnd_web_sec');

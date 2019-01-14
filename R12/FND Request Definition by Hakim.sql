@@ -18,7 +18,11 @@ SELECT fcp.user_concurrent_program_name program,
    --'%REVENUE%RECOGNITION%%%'
    --'%INVOICE%ON%HOLD%'
    AND fcp.user_concurrent_program_name LIKE 
-   'XXINV%COUNT TAG WITH BARCODE'
+   '%Project%Cost%Analysis%'
+   --'XXPO:Auto PO Receive to Stock After Inspection'
+   --'XXPO:Auto PO Receive to Stock After Inspection'
+   --'%Locator Barcode%Print%'
+   --'XXINV%COUNT TAG WITH BARCODE'
    --'XXPA:Project COGS Monthly Report(SHE)_NEW'
    --'XXOM:SO Balance Report'
    --'Create Accounting%Cost Management'
