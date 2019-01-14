@@ -36,8 +36,8 @@ SELECT APH.ATTRIBUTE9,
 --ar haeder/ line
 SELECT APH.INVOICE_ID,
        APH.ORG_ID,
-       aph.APPROVAL_STATUS,
-       aph.POSTING_STATUS,
+       --aph.APPROVAL_STATUS,
+       --aph.POSTING_STATUS,
        APL.CREATION_DATE,
        APL.LAST_UPDATE_DATE,
        APL.LAST_UPDATED_BY,
@@ -65,8 +65,32 @@ AND aph.org_id = 788--82 --101 --82
 --AND aph.project_id IS NOT NULL
 --AND aph.po_header_id IS NULL
 
-AND exists 
+AND exists (
+
+SELECT /*xe.event_status_code,
+       xe.process_status_code,
+       xe.transaction_date,
+       xte.**/1
+  FROM xla.xla_transaction_entities xte,
+       xla.xla_events               xe
+ WHERE 1 = 1
+      --AND xe.event_id
+   AND xe.entity_id = xte.entity_id
+   AND xte.ledger_id = 1--2021
+   AND xte.source_id_int_1 = aph.INVOICE_ID--54897273 --54896869--54868663
+      AND xte.transaction_number = APH.INVOICE_NUM--LIKE 'HKM18060401%'--54834283
+   AND xte.application_id = 200--AP --200--707
+   AND xe.event_status_code = 'P'
+   AND xe.process_status_code = 'P'
+   AND xe.transaction_date >= to_date('2018-01-01', 'yyyy-mm-dd')
+   AND xe.transaction_date <= to_date('2018-01-31', 'yyyy-mm-dd')
+   --AND xte.entity_id >= 29967072
+--AND xte.entity_code = 'RCV_ACCOUNTING_EVENTS'
+
+)
  ORDER BY APL.INVOICE_ID DESC, APH.INVOICE_NUM, APL.AMOUNT;
+ 
+ SELECT * FROM gl_ledgers;
 
 SELECT *
   FROM AP_INVOICES_ALL APH
