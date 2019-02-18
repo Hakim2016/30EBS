@@ -35,6 +35,7 @@ SELECT aph.attribute9,
 
 ;
 
+<<<<<<< HEAD
 --ap haeder/ line with PO
 SELECT aph.invoice_id,
        --aph.po_header_id,
@@ -59,6 +60,25 @@ SELECT aph.invoice_id,
        apl.*
   FROM ap_invoices_all      aph,
        ap_invoice_lines_all apl
+=======
+--ar haeder/ line
+SELECT APH.INVOICE_ID,
+       APH.ORG_ID,
+       --aph.APPROVAL_STATUS,
+       --aph.POSTING_STATUS,
+       APL.CREATION_DATE,
+       APL.LAST_UPDATE_DATE,
+       APL.LAST_UPDATED_BY,
+       APL.DESCRIPTION,
+       APL.AMOUNT LINE_AMT,
+       APH.INVOICE_NUM,
+       APL.LINE_TYPE_LOOKUP_CODE,
+       APH.ATTRIBUTE_CATEGORY,
+       APH.ATTRIBUTE8,
+       APH.*,
+       APL.*
+  FROM AP_INVOICES_ALL APH, AP_INVOICE_LINES_ALL APL
+>>>>>>> 7456d989d5d45d5f30fb2dd0197b51d3155c8228
  WHERE 1 = 1
    AND aph.invoice_id = apl.invoice_id
    AND aph.org_id = 82 --101 --82
@@ -110,8 +130,38 @@ SELECT aph.invoice_id,
 --AND aph.creation_date >= SYSDATE - 160
 --AND aph.project_id IS NOT NULL
 --AND aph.po_header_id IS NULL
+<<<<<<< HEAD
  ORDER BY aph.invoice_num,
           apl.amount;
+=======
+
+AND exists (
+
+SELECT /*xe.event_status_code,
+       xe.process_status_code,
+       xe.transaction_date,
+       xte.**/1
+  FROM xla.xla_transaction_entities xte,
+       xla.xla_events               xe
+ WHERE 1 = 1
+      --AND xe.event_id
+   AND xe.entity_id = xte.entity_id
+   AND xte.ledger_id = 1--2021
+   AND xte.source_id_int_1 = aph.INVOICE_ID--54897273 --54896869--54868663
+      AND xte.transaction_number = APH.INVOICE_NUM--LIKE 'HKM18060401%'--54834283
+   AND xte.application_id = 200--AP --200--707
+   AND xe.event_status_code = 'P'
+   AND xe.process_status_code = 'P'
+   AND xe.transaction_date >= to_date('2018-01-01', 'yyyy-mm-dd')
+   AND xe.transaction_date <= to_date('2018-01-31', 'yyyy-mm-dd')
+   --AND xte.entity_id >= 29967072
+--AND xte.entity_code = 'RCV_ACCOUNTING_EVENTS'
+
+)
+ ORDER BY APL.INVOICE_ID DESC, APH.INVOICE_NUM, APL.AMOUNT;
+ 
+ SELECT * FROM gl_ledgers;
+>>>>>>> 7456d989d5d45d5f30fb2dd0197b51d3155c8228
 
 SELECT *
   FROM ap_invoices_all aph

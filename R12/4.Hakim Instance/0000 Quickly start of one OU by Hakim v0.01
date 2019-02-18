@@ -1,0 +1,9 @@
+--How to quickly ubderstand the structure of an OU(Company)
+--The taxes it is using
+--Cost type (FIFO, Average Cost, Standard)
+
+
+--Financial info
+SELECT * FROM gl_ledgers gl
+WHERE 1=1
+ORDER BY gl.ledger_id DESC;

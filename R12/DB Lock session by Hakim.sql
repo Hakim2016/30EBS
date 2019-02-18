@@ -22,7 +22,7 @@
    AND lo.session_id = sess.sid
    AND sa.address = sess.prev_sql_addr
    AND lo.PROCESS = sn.PROCESS
-   AND ao.object_name LIKE '%ZX_LINES_SUMMARY%'--'XXPA_WIP_COST_SOUCHI_DTL_TMP'--'XLA%'
+   AND ao.object_name LIKE 'AP%'--'%ZX_LINES_SUMMARY%'--'XXPA_WIP_COST_SOUCHI_DTL_TMP'--'XLA%'
    ;
 
 SELECT *
@@ -30,3 +30,4 @@ SELECT *
  WHERE 1 = 1 --AND 
 ;
 --alter system kill session '1926,14341';
+alter system kill session '29,61780';
