@@ -1,6 +1,7 @@
 --IF62
 SELECT intf.creation_date,
        intf.interface_file_name,
+       intf.BUDAT gl_date,
        intf.blart, --trx type
        --intf.zterm               payment_term,
        --intf.zlsch,
@@ -20,7 +21,7 @@ SELECT intf.creation_date,
        intf.*
   FROM xxgl_accounting_hfg_int intf
  WHERE 1 = 1
-      --AND intf.hkont LIKE '1161400990'--'11454%'--SAP accounting there exists account mapping
+      AND intf.hkont LIKE '1161400990'--'11454%'--SAP accounting there exists account mapping
       --1161400990 Raw Material in SAP
       --AND intf.blart = 'Y8' --'KR'--'Y6'--'Y3'--AR--'Y6'--Y6_for_AP
       AND intf.ledger_id = 2021--2041
@@ -38,22 +39,22 @@ SELECT intf.creation_date,
            AND xte.transaction_number = 'JPE-17000322'--'50532595'--'SPE-18000075'
            --and xah.ae_header_id = 22822729--29058160
         )*/
-       AND intf.XBLNR --LIKE '%75371468'--'%5235833%' --= 48629279--48624778
-       IN (/*'PO_5085765',
+       /*AND intf.XBLNR --LIKE '%75371468'--'%5235833%' --= 48629279--48624778
+       IN (\*'PO_5085765',
 'PO_5235833',--PO_5235833 PO_5235833 PO+rcv.trx_id
 'PO_5236949',
 'INV_64512074',--INV+mmt.trx_id
 'INV_69864747',
-'INV_70045973'*/
+'INV_70045973'*\
 'INV_75370664',
 'INV_75371468'
-)
+)*/
        --= 'JPE-17000322'--'SPE-18000075'--'10000017446'
       --IN (48624778, 48629281)
       --IN (50532595)
       --IN ('2003/2363/2364MAY18')--('58422148APR18')--('SPR-15000019','SPR-17000417')
       --AND trunc(intf.creation_date) >= to_date('2018-01-02', 'yyyy-mm-dd')
-      --AND intf.BUDAT LIKE '201811%'
+      AND intf.BUDAT LIKE '201901%'--gl date
       --AND intf.creation_date >= SYSDATE - 35--to_date('2018-08-01 12:00:00','yyyy-mm-dd hh24:mi:ss')
       --AND intf.request_id = 15904416
       --AND intf.interface_file_name LIKE '201808021B0701ENGLJL0009%'

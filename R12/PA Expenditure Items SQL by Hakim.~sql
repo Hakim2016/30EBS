@@ -60,30 +60,19 @@ SELECT pei.expenditure_item_id   pei_id,
    AND pei.task_id = pt.task_id
    AND pt.top_task_id = top.task_id
    AND pei.vendor_id = pv.vendor_id(+)
-   AND pei.expenditure_type  
-   --LIKE 'PUR Overhead Transfer'--'%FAC%Wooden%Case%'
-   IN (
-'DES Overhead',
-'FAC - DES Overhead',
-'FAC - Prod. Subcon',
-'FAC - Store. Subcon',
-'FAC - Wooden Case',
-'PUR Overhead',
-'PUR Overhead Transfer',
-'Prod. Direct Labour',
-'Prod. Overhead',
-'Prod. Subcon Transfer',
-'Products Costs')
+   AND pei.burden_cost = -250000--10.15--314.56--324.71
+   /*AND pei.expenditure_type  
+   LIKE 'Inst21_Labour'*/--'DES Overhead'--'PUR Overhead Transfer'--'%FAC%Wooden%Case%'
+   --IN ('FAC - Wooden Case')
    --AND pei.expenditure_item_id --= 15168527--15284278--15315822
        --IN (15168527, 15221846)
 --AND pei.inventory_item_id = 3939072--15315822
 --AND pei.task_id = 5725843
---AND top.task_number IN ('LB4037-PL1')--('SAC0826-SG')--('SBH0216-PH')--('TAE0736-TH')--('SLS0230-SG','LN0732-L2') --'TAD0021-TH'--mfg
-AND pt.task_number = 'LV1504.EQ'--'LB4037-PL1.EQ'--'TAD0021-TH.D.11'
---AND ppa.segment1 = '11001297'--'215110107'--'11001262'--'10101506'--'215110107'--'21000400'--'118010001'--'10101647' --'10202892'--'21000197'--'10101506' --'21000197' --proj_num
+AND top.task_number IN ('TBK0017-TH', 'TBK0018-TH')--('TAC0473-TH')--('SAC0826-SG')--('SBH0216-PH')--('TAE0736-TH')--('SLS0230-SG','LN0732-L2') --'TAD0021-TH'--mfg
+--AND pt.task_number = 'TAD0021-TH.D.11'
+AND ppa.segment1 = '21000590'--'21000414'--'203042'--'11001297'--'215110107'--'11001262'--'10101506'--'215110107'--'21000400'--'118010001'--'10101647' --'10202892'--'21000197'--'10101506' --'21000197' --proj_num
 AND ppa.org_id = 84 --84 --SHE --82 --HEA
-AND pei.expenditure_item_date >= to_date('2013-05-01', 'yyyy-mm-dd')
-AND pei.expenditure_item_date < to_date('2013-06-01', 'yyyy-mm-dd')
+--AND pei.expenditure_item_date >= to_date('2018-03-01', 'yyyy-mm-dd')
 --AND pei.creation_date >= to_date('2017-04-01', 'yyyy-mm-dd')
 --AND pei.creation_date <= to_date('2017-05-01', 'yyyy-mm-dd')
 --AND pei.orig_transaction_reference --= '52992559'

@@ -52,6 +52,8 @@ SELECT v.request_id rqst_id,
            AND fa.application_id = v.responsibility_application_id) app_name,
        v.responsibility_id,
        fr.responsibility_key,
+       fcr.outfile_name,
+       fcr.output_file_type,--change Output_file_type to 'PS'
        fnd_webfile.get_url(3, --log 输出类型 --3 log
                            v.request_id, --请求ID
                            'APPLSYSPUB/PUB',
@@ -65,25 +67,35 @@ SELECT v.request_id rqst_id,
   FROM apps.fnd_conc_req_summary_v v,
        apps.fnd_responsibility     fr,
        apps.fnd_user               fu,
-       apps.per_all_people_f       pap
+       apps.per_all_people_f       pap,
+       apps.fnd_concurrent_requests fcr
  WHERE 1 = 1
+ AND v.REQUEST_ID = fcr.request_id
    AND fu.user_id = v.requested_by
    AND fu.employee_id = pap.person_id(+)
    AND pap.effective_end_date > SYSDATE
    AND fr.responsibility_id = v.responsibility_id
-      --AND v.request_id --= 16839045--16282868--16253168--16221488--13165995--16098690--15981725--15956670
+      --AND v.request_id = 18192510--18188486--18073759--16839045--16282868--16253168--16221488--13165995--16098690--15981725--15956670
       --=17659658--17493023--17524251--17523985
       --IN (17374943, 17374944, 17375642,17375545,17294974)
       --AND v.program_short_name LIKE 'XX%'--= 'XXPAB008'--'XXINVB014'--'XXPAUPDATESTATUS'
       --AND v.program LIKE --'Create Accounting%'
       --AND v.status_code IN ('E','G')
       --AND v.phase_code IN ('R', 'P')
-   AND v.user_concurrent_program_name 
+   AND v.user_concurrent_program_name
+   /*IN
+   (
+   --'XXPA: Cost Card Detail Report(HEA/HBS)','XXPA:Cost Card Report(HEA/HBS)'
+   --'Open Account Balances Listing'
+   )*/
+    
    LIKE 
+   '%ost%llect%'
+   --'%Project Cost Data Outbound'
    --'XXINV:Stock Master Report'
    --'%Stock%Report%'
    --'Cost Manager'
-   'Actual Cost Worker'
+   --'Actual Cost Worker'
    --'%%Auto%PO%Receive%to%Stock%After%'
    --'%XXINV:Subinventory Transfer%'
    --'Transfer Journal%'
@@ -180,7 +192,7 @@ SELECT v.request_id rqst_id,
 --AND v.request_date > TRUNC(SYSDATE)
 --AND v.request_date <> v.requested_start_date
 --AND trunc(v.request_date) = to_date('2018-07-13','yyyy-mm-dd')
---AND v.argument_text LIKE '%2018%'--'%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
+AND v.argument_text LIKE '%83,%'--'%2018%'--'%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
 --AND v.requestor = 'HAND_HKM'--'HAND_LCR'--'70264934'--'HAND_HKM'
 --AND v.request_id = 17225733--17204202-->= 16727489
  ORDER BY --v.

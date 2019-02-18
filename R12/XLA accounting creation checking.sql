@@ -13,9 +13,14 @@ SELECT xte.entity_id,
    AND xe.entity_id = xte.entity_id
    AND xte.ledger_id = 2021--2041 --2041
       AND xte.source_id_int_1 --= 5235833--54897273 --54896869--54868663
-      IN (5235833,5085765--4408821--4408820--rt.transaction_id
-         ,64512074,69864747,70045973--48624778--mmt.transaction_id
-       )
+      IN (
+      4665293--55060454,
+      ,55060711
+      ,4665292
+      ,4665296
+      ,55060755
+      ,55060862,55060858
+      )
    /*AND xte.transaction_number --LIKE 'HKM18060401%'--54834283
       --IN ('SINI003038126', 'H358K057*4', '3194', '00157509', 'AHJ0376350', '35860*3')
        IN (48624778--mmt.transaction_id
@@ -23,9 +28,9 @@ SELECT xte.entity_id,
        \*, 48629281*\)*/
       --IN('DP-18000143')
    AND xte.application_id = 707 --222--707--200 --707 --200--707
---AND xte.entity_id =27219514-->= 29967072
+AND xte.entity_id >= 30046267--=27219514-->= 29967072
 --AND xte.entity_code = 'RCV_ACCOUNTING_EVENTS'
- ORDER BY xte.transaction_number;
+ ORDER BY xte.transaction_number DESC;
 
 --rcv transaction
 SELECT *

@@ -174,6 +174,74 @@ SELECT t.seq,
            AND xect.language = userenv('LANG')
            AND xet.event_type_code = xe.event_type_code
            AND xte.ledger_id = 2021
+           
+           
+           UNION ALL
+        ----30.AP invoice
+        SELECT 3                           seq, --xdl.source_distribution_type,
+                xah.je_category_name        je_cate, --Subledger Journal Entry
+                xe.event_id,
+                xect.name                   event_class,
+                xet.name                    event_type,
+                xah.product_rule_code       acct_rule,
+                xah.gl_transfer_status_code,
+                xah.gl_transfer_date,
+                xte.source_id_int_1,
+                xah.ledger_id,
+                --xah.description,
+                --xal.description,
+                xal.accounting_class_code acct_class,
+                decode(xal.accounted_dr, NULL, 'CR', 'DR') flag,
+                gcc.concatenated_segments,
+                xla_oa_functions_pkg.get_ccid_description(gcc.chart_of_accounts_id /*50352*/, xal.code_combination_id) account_desc, --账户说明, --账户说明
+                xal.entered_dr,xal.entered_cr,xal.accounted_dr dr,
+                xal.accounted_cr cr,
+                xal.ae_line_num,
+                xal.description,
+                xte.entity_code,
+                xte.entity_id,
+                xte.transaction_number,
+                xah.accounting_date,
+                gcc.chart_of_accounts_id,
+                xal.code_combination_id,xal.ae_header_id,
+                NULL source_distribution_type --xdl.source_distribution_type
+          FROM xla.xla_transaction_entities xte,
+                xla_events                   xe,
+                xla_ae_headers               xah,
+                xla_ae_lines                 xal,
+                --xla_distribution_links       xdl, --improve efficient
+                gl_code_combinations_kfv gcc,
+                --event class/event type
+                xla_event_classes_tl xect,
+                xla_event_types_tl   xet
+        
+         WHERE 1 = 1
+           AND xah.ae_header_id = xal.ae_header_id
+           AND gcc.code_combination_id = xal.code_combination_id
+           AND xe.entity_id = xte.entity_id
+           AND xe.application_id = xte.application_id
+           AND xah.entity_id = xte.entity_id
+           AND xte.application_id = 200 --222--707
+              --AND xte.source_id_int_1 = 54834283
+           AND xte.transaction_number = 'SG00050348*8'--'18080082'--'HKM18060401'
+              
+              --AND xte.entity_code = 'MTL_ACCOUNTING_EVENTS'
+              --improve efficient
+              --AND xah.ae_header_id = xdl.ae_header_id
+              --AND xal.ae_line_num = xdl.ae_line_num
+              --AND xdl.application_id = xte.application_id
+              ----
+              --AND xdl.source_distribution_type = 'MTL_TRANSACTION_ACCOUNTS'
+              --event class/ event type
+           AND xet.language = userenv('LANG')
+           AND xect.application_id = xe.application_id --707
+           AND xet.application_id = xe.application_id --707
+           AND xect.entity_code = xet.entity_code
+           AND xet.entity_code = xte.entity_code
+           AND xect.event_class_code = xet.event_class_code
+           AND xect.language = userenv('LANG')
+           AND xet.event_type_code = xe.event_type_code
+           AND xte.ledger_id = 2021
            --AND xte.entity_id = 32810504--29928866
         /*
         UNION ALL

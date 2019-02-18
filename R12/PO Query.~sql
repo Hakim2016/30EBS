@@ -1,15 +1,33 @@
-SELECT pol.line_num,
-       poh.org_id,
+
+SELECT pol.line_num l_num,
+       --pol.creation_date,
+       pol.last_update_date,
+       /*
+       (SELECT fu.user_name
+          FROM fnd_user fu
+         WHERE 1 = 1
+           AND fu.user_id = pol.created_by) created_by,*/
+       (SELECT fu.user_name
+          FROM fnd_user fu
+         WHERE 1 = 1
+           AND fu.user_id = pol.last_updated_by) update_by,
+       poh.org_id,/*
        pv.vendor_id,
-       pv.vendor_name,
-       fu.user_name,
+       pv.vendor_name,*/
+       --fu.user_name,
        poh.segment1 po_num,
-       pol.item_id,
+       poh.currency_code curr,
+       --pol.item_id,
        (SELECT msi.segment1
           FROM mtl_system_items_b msi
          WHERE 1 = 1
            AND msi.inventory_item_id = pol.item_id
            AND rownum = 1) item,
+       (SELECT msi.description
+          FROM mtl_system_items_b msi
+         WHERE 1 = 1
+           AND msi.inventory_item_id = pol.item_id
+           AND rownum = 1) description,
        pol.unit_price * pol.quantity line_amt,
        pol.unit_price,
        pol.quantity,
@@ -25,16 +43,16 @@ SELECT pol.line_num,
    AND fu.user_id = poh.created_by
       --AND fu.user_name LIKE 'HAND%'
    AND poh.po_header_id = pol.po_header_id
-   AND poh.po_header_id = 3050339
-      --AND poh.segment1 = '10062173'--'10000023'
-   --AND poh.org_id = 101 --84 --101
-      --AND poh.cancel_flag = 'N'
-   --AND poh.approved_flag = 'Y'
-      --AND poh.
-      --AND poh.creation_date >= to_date('20170101', 'yyyymmdd')
-   --AND poh.segment1 = '10000415' --'10026376' --'10000341' --'10051165'
+      --AND poh.po_header_id = 3050339
+   AND poh.segment1 = '10070207'--'10071699' --'10073394'--'10062173'--'10000023'
+   AND poh.org_id = 82 --101 --84 --101
+--AND poh.cancel_flag = 'N'
+--AND poh.approved_flag = 'Y'
+--AND poh.
+--AND poh.creation_date >= to_date('20170101', 'yyyymmdd')
+--AND poh.segment1 = '10000415' --'10026376' --'10000341' --'10051165'
 --AND pol.unit_price = 27014
-;
+ ORDER BY pol.line_num;
 --82/84
 
 --with project info
@@ -70,7 +88,7 @@ SELECT poh.org_id,
        pa_projects_all          ppa,
        pa_tasks                 pt
  WHERE 1 = 1
-   AND pod.code_combination_id gcc.code_combination_id
+   AND pod.code_combination_id = gcc.code_combination_id
    AND ppa.project_id = pod.project_id
    AND pt.task_id = pod.task_id
    AND pod.po_line_id = pol.po_line_id(+)
@@ -80,13 +98,56 @@ SELECT poh.org_id,
       --AND fu.user_name LIKE 'HAND%'
    AND poh.po_header_id = pol.po_header_id
       --AND poh.segment1 = '10062173'--'10000023'
-   AND poh.org_id = 82 --101
+   AND poh.org_id = 101--82 --101
       --AND poh.cancel_flag = 'N'
-   AND poh.approved_flag = 'Y'
-   AND poh.creation_date >= to_date('20180101', 'yyyymmdd')
-      --AND poh.segment1 = '10000341' --'10051165'
+   --AND poh.approved_flag = 'Y'
+   --AND poh.creation_date >= to_date('20180101', 'yyyymmdd')
+      AND poh.segment1 IN--= '10000341' --'10051165'
+      ('10000032',
+'10000096',
+'10000313',
+'10000389',
+'10000402',
+'10000428',
+'10000429',
+'10000430',
+'10000436',
+'10000443',
+'10000452',
+'10000462',
+'10000463',
+'10000465',
+'10000483',
+'10000484',
+'10000488',
+'10000495',
+'10000506',
+'10000509',
+'10000510',
+'10000511',
+'10000522',
+'10000527',
+'10000529',
+'10000531',
+'10000539',
+'10000556',
+'10000563',
+'10000567',
+'10000576',
+'10000577',
+'10000580',
+'10000581',
+'10000582',
+'10000583',
+'10000584',
+'10000589',
+'10000595',
+'10000596',
+'10000639'
+)
       --AND pol.unit_price = 27014
-   AND pol.item_id IS NULL;
+   --AND pol.item_id IS NULL
+   ;
 
 SELECT *
   FROM po_distributions_all pod
@@ -191,7 +252,7 @@ SELECT poh.segment1,
    AND rt.transaction_type = 'RECEIVE'
    AND pol.po_line_id IN -- 1714454 --2946500 --1064733
        (2903914
-       --2875818
+        --2875818
         --,2946503,2965259,2903914,2946504,2965238,2965277,2946501,2946502,2946500,2946505
         );
 

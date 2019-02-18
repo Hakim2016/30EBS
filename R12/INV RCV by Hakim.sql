@@ -27,30 +27,18 @@ SELECT rt.transaction_id,
 --AND pt.task_number = 'JBL0262-IN.EQ'
 ;
 
-SELECT rt.transaction_id,
+SELECT rt.transaction_id trx_id,
        --rt.creation_date,
-       rt.transaction_type trx_type,
+       rt.transaction_type      trx_typ,
        rt.transaction_date,
-       rt.po_unit_price rt_po_price,
-       pol.unit_price pol_price,
-      /*rt.po_unit_price* (SELECT gdr.conversion_rate --gdr.conversion_rate
-  FROM gl_daily_rates gdr
- WHERE gdr.from_currency = 'JPY'--'USD' --p_from_currency
-   AND gdr.to_currency = 'SGD' --p_to_currency
-   AND gdr.status_code != 'D'
-      AND gdr.conversion_type = 'Corporate'--p_conversion_type
-   AND gdr.conversion_date = trunc(rt.transaction_date)
-   --to_date('30-SEP-2018', 'DD-MM-YYYY') --trunc(p_conversion_date);
-) gsd_price,*/
-      /* (SELECT gdr.conversion_rate --gdr.conversion_rate
-  FROM gl_daily_rates gdr
- WHERE gdr.from_currency = 'JPY'--'USD' --p_from_currency
-   AND gdr.to_currency = 'SGD' --p_to_currency
-   AND gdr.status_code != 'D'
-      AND gdr.conversion_type = 'Corporate'--p_conversion_type
-   AND gdr.conversion_date = trunc(rt.transaction_date)
-   --to_date('30-SEP-2018', 'DD-MM-YYYY') --trunc(p_conversion_date);
-) exchange_rate,*/
+       rt.po_unit_price         rt_po_price,
+       pol.unit_price           pol_price,
+       rt.currency_code         curr,
+       gdr.conversion_rate      rate,
+       rt.po_unit_price * rt.quantity rt_entr_amt,
+       rt.po_unit_price * rt.quantity * gdr.conversion_rate rt_func_amt,
+       pol.unit_price * rt.quantity po_entr_amt,
+       pol.unit_price * rt.quantity * gdr.conversion_rate po_func_amt,
        poh.segment1,
        rt.destination_type_code,
        rt.quantity,
@@ -67,17 +55,24 @@ SELECT rt.transaction_id,
        rt.*
   FROM rcv_transactions rt,
        po_headers_all   poh,
-       po_lines_all     pol
+       po_lines_all     pol,
+       gl_daily_rates   gdr
  WHERE 1 = 1
+   AND gdr.from_currency = rt.currency_code --'JPY' --p_from_currency
+   AND gdr.to_currency = 'SGD' --p_to_currency
+   AND gdr.status_code != 'D'
+   AND gdr.conversion_type = 'Corporate' --p_conversion_type
+   AND gdr.conversion_date = trunc(rt.transaction_date)
       --AND rt.organization_id = 83--121
    AND rt.po_header_id = poh.po_header_id
       --AND rt.transaction_id IN (4654211, 4654212)
-   AND poh.segment1 = '10070207'--'10071699'--'10070815'--'10073394'--'10070815' --'10073394'----'10070815'--'10070231'--'10000415'
+   AND poh.segment1 = '10070207' --'10071699'--'10070815'--'10073394'--'10070815' --'10073394'----'10070815'--'10070231'--'10000415'
    AND rt.po_line_id = pol.po_line_id
    AND poh.org_id = 82
-   --AND pol.line_num = 39
+--AND pol.line_num = 39
 --AND pt.task_number = 'JBL0262-IN.EQ'
  ORDER BY rt.transaction_id;
+ 
 SELECT *
   FROM rcv_vrc_txs_v v
  WHERE 1 = 1

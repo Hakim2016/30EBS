@@ -1,15 +1,17 @@
 -- R12
 
 SELECT RL.RESPONSIBILITY_NAME,
+ur.RESPONSIBILITY_ID,
        UR.START_DATE,
        UR.END_DATE,
-       UR.USER_ID,
+       RL.LANGUAGE,
+       --UR.USER_ID,
        UR.APPLICATION_ID,
        UR.RESPONSIBILITY_ID FND_RESP
   FROM FND_RESPONSIBILITY UR, FND_RESPONSIBILITY_TL RL
  WHERE RL.RESPONSIBILITY_ID = UR.RESPONSIBILITY_ID
-   AND RL.LANGUAGE = 'US' --'ZHS'
---AND    rl.responsibility_name = '160_库存超级用户'
+   --ND RL.LANGUAGE = 'US' --'ZHS'
+AND    rl.responsibility_name LIKE '%HAKIM%'--= '160_库存超级用户'
 --AND    ur.user_id = 1273
 ;
 

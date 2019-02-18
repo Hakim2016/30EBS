@@ -25,7 +25,8 @@ SELECT fu.user_name,
    AND pap.person_type_id = ppt.person_type_id(+)
    AND pap.person_id = pa.person_id
    AND pa.organization_id = hou.organization_id(+)
-      AND fu.user_name = '70236338'--'70015928'
+      --AND fu.user_name = '70236338'--'70015928'
+      AND pap.full_name LIKE '%SIEW%'--'%BAY%'--'%SIEW%'--'%GILBERT%'
    AND trunc(SYSDATE) BETWEEN pap.effective_start_date AND pap.effective_end_date
    AND trunc(SYSDATE) BETWEEN pa.effective_start_date AND pa.effective_end_date
  ORDER BY pa.organization_id,

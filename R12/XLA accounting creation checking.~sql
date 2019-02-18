@@ -1,6 +1,6 @@
 SELECT xte.entity_id,
        xe.event_status_code,
-       xe.process_status_code,
+       xe.process_status_code,xte.entity_code,
        xte.transaction_number,
        xe.transaction_date,
        xte.source_id_int_1,
@@ -13,8 +13,8 @@ SELECT xte.entity_id,
    AND xe.entity_id = xte.entity_id
    AND xte.ledger_id = 2021--2041 --2041
       AND xte.source_id_int_1 --= 5235833--54897273 --54896869--54868663
-      IN (48624778--mmt.transaction_id
-       ,4408821--4408820--rt.transaction_id
+      IN (5235833,5085765--4408821--4408820--rt.transaction_id
+         ,64512074,69864747,70045973--48624778--mmt.transaction_id
        )
    /*AND xte.transaction_number --LIKE 'HKM18060401%'--54834283
       --IN ('SINI003038126', 'H358K057*4', '3194', '00157509', 'AHJ0376350', '35860*3')

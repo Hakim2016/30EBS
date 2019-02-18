@@ -1,3 +1,4 @@
+/*ALTER SESSION SET nls_language = american;*/
 --Request Definition
 SELECT fcp.user_concurrent_program_name program,
        fcp.concurrent_program_name      short_name,
@@ -17,8 +18,11 @@ SELECT fcp.user_concurrent_program_name program,
    --'%–¬ƒ‹‘¥%'
    --'%REVENUE%RECOGNITION%%%'
    --'%INVOICE%ON%HOLD%'
+   /*AND upper(fcp.user_concurrent_program_name) LIKE 
+   '%%¡‰%'*/
    AND fcp.user_concurrent_program_name LIKE 
-   '%Project%Cost%Analysis%'
+   'Open Account Balances Listing'
+   --'%Cost%Card%'
    --'XXPO:Auto PO Receive to Stock After Inspection'
    --'XXPO:Auto PO Receive to Stock After Inspection'
    --'%Locator Barcode%Print%'
@@ -41,6 +45,7 @@ SELECT fcp.user_concurrent_program_name program,
       IN('CMCCCM','CMCPCM')*/
    --AND fcp.user_concurrent_program_name = 'XXOM:SO Balance Report'
    ;
+SELECT USERENV('LANG') FROM dual;
 
 /*
 XXPAUPDATESTATUS2

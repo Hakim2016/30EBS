@@ -105,3 +105,52 @@ SELECT code_combination_id,
  WHERE accounting_line_type = 'Receiving Inspection'
    AND to_char(transaction_date, 'yyyymm') = '201606'
  GROUP BY code_combination_id;
+
+--20190102
+SELECT organization_id,
+       accounting_line_type,
+       reference_account,
+       SUM(nvl(base_transaction_value, 0))
+  FROM mtl_transaction_accounts
+ WHERE reference_account = 1009
+   AND to_char(transaction_date, 'yyyymm') = '201606'
+ GROUP BY organization_id,
+          accounting_line_type,
+          reference_account;
+
+SELECT accounting_line_type,
+       SUM(nvl(accounted_dr, 0)),
+       SUM(nvl(accounted_cr, 0))
+  FROM rcv_receiving_sub_ledger
+ WHERE code_combination_id = 1009
+   AND to_char(transaction_date, 'yyyymm') = '201606'
+ GROUP BY accounting_line_type;
+
+SELECT gl_sl_link_table,
+       SUM(nvl(accounted_dr, 0)),
+       SUM(nvl(accounted_cr, 0))
+  FROM gl_je_lines
+ WHERE to_char(effective_date, 'yyyymm') = '201606'
+   AND code_combination_id = 1009
+ GROUP BY gl_sl_link_table;
+
+SELECT DISTINCT je_category,
+                je_source
+  FROM gl_je_headers
+ WHERE je_header_id IN (SELECT je_header_id
+                          FROM gl_je_lines
+                         WHERE 1=1 
+                         AND to_char(effective_date, 'yyyymm') = '201606'
+                           AND code_combination_id = 1009);
+
+--
+SELECT organization_id,
+       accounting_line_type,
+       reference_account,
+       SUM(nvl(base_transaction_value, 0))
+  FROM wip_transaction_accounts
+ WHERE reference_account = 1009
+   AND to_char(transaction_date, 'yyyymm') = '201606'
+ GROUP BY organization_id,
+          accounting_line_type,
+          reference_account;

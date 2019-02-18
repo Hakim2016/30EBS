@@ -40,9 +40,17 @@ SELECT aph.invoice_id,
        --aph.po_header_id,
        apl.creation_date,
        apl.last_update_date,
-       apl.last_updated_by,
+       --apl.last_updated_by,
        aph.invoice_num,
+       
+       (SELECT msi.segment1
+          FROM mtl_system_items_b msi
+         WHERE 1 = 1
+           AND msi.inventory_item_id = apl.inventory_item_id
+           AND rownum = 1) item,
        apl.description,
+       apl.line_number apl_num,
+       apl.quantity_invoiced qty_apl,
        apl.amount line_amt,
        apl.line_type_lookup_code,
        aph.attribute_category,
@@ -54,6 +62,7 @@ SELECT aph.invoice_id,
  WHERE 1 = 1
    AND aph.invoice_id = apl.invoice_id
    AND aph.org_id = 82 --101 --82
+      --AND poh.segment1 = '10070207'
       /*AND APH.INVOICE_NUM IN --LIKE 'USD%YUL%'
       ('SG00050348*8')*/
       --('GE18060191','GE18060212','GE18060218','GE18060219','GE18060228','GE18070008','GE18070010','GE18070021','GE18070062','GE18070082','GE18070086','GE18070089','GE18070090','GE18070101','GE18070103','GE18070104','GE18070105','GE18070108','GE18070114','GE18070122','GE18070126','GE18070129','GE18070130','GE18070131','GE18070132','GE18070133','GE18070134','GE18070135','GE18070136','GE18070137','GE18070138','GE18070139','GE18070140','GE18070141','GE18070143','GE18070144','GE18070145','GE18070146','GE18070147','GE18070148','GE18070149','GE18070150','GE18070151','GE18070152','GE18070154','GE18070155','GE18070156','GE18070157','GE18070158','GE18070159','GE18070160','GE18070161','GE18070165','GE18070169','GE18070172','GE18070174','GE18070178','GE18070179')
@@ -63,13 +72,15 @@ SELECT aph.invoice_id,
       --AND aph.creation_date >= SYSDATE - 160
       --AND aph.project_id IS NOT NULL
       --AND aph.po_header_id IS NULL
-   AND EXISTS (SELECT '1'--, poh.org_id 
+   AND EXISTS (SELECT '1' --, poh.org_id 
           FROM po_headers_all poh
          WHERE 1 = 1
            AND poh.org_id = aph.org_id
            AND poh.po_header_id = apl.po_header_id
            AND poh.segment1 = '10070207')
- ORDER BY aph.invoice_num,
+ ORDER BY aph.creation_date,
+          aph.invoice_num,
+          apl.line_number,
           apl.amount;
 
 --ap haeder/ line

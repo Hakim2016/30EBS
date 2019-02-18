@@ -1,0 +1,51 @@
+-- Create table
+create table CUX_HNET_HL_ZHANGMB_SKYE
+(
+  group_id            NUMBER not null,
+  unique_id           NUMBER not null,
+  orgnaztion_id       NUMBER not null,
+  item_id             NUMBER not null,
+  item_num            VARCHAR2(240) not null,
+  item_des            VARCHAR2(240),
+  item_categaty       VARCHAR2(240),
+  uom                 VARCHAR2(30),
+  quantity            NUMBER,
+  amount              NUMBER,
+  inv_age             VARCHAR2(100),
+  inv_date            DATE,
+  creation_date       DATE,
+  created_by          NUMBER,
+  attribute1          VARCHAR2(240),
+  attribute2          VARCHAR2(240),
+  attribute3          VARCHAR2(240),
+  attribute4          VARCHAR2(240),
+  attribute5          VARCHAR2(240),
+  attribute6          VARCHAR2(240),
+  attribute7          VARCHAR2(240),
+  attribute8          VARCHAR2(240),
+  attribute9          VARCHAR2(240),
+  attribute10         VARCHAR2(240),
+  attribute11         VARCHAR2(240),
+  attribute12         VARCHAR2(240),
+  attribute13         VARCHAR2(240),
+  attribute14         VARCHAR2(240),
+  attribute15         VARCHAR2(240),
+  total_quantity      NUMBER,
+  total_amount        NUMBER,
+  secondary_inventory VARCHAR2(50)
+)
+tablespace APPS_TS_TX_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 128K
+    next 128K
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+CREATE SEQUENCE cux_hnet_hl_zhangmb_skye_s start with 1 increment by 1 nomaxvalue cache 10;
+
+CREATE SEQUENCE cux_hnet_hl_zmb_group_skye_s start with 1 increment by 1 nomaxvalue cache 10;

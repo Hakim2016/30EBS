@@ -2,11 +2,15 @@
 SELECT intf.creation_date,
        intf.interface_file_name,
        intf.blart, --trx type
-       intf.zterm               payment_term,
-       intf.zlsch,
+       --intf.zterm               payment_term,
+       --intf.zlsch,
        intf.xblnr, --trx num
        intf.waers               curr,
        intf.kursf               rate,
+       intf.dr_cr_flag drcr,
+       intf.hkont hfg_acc,
+       intf.zz0001 gscm_subacc,
+       --intf.yygaddinfo,
        intf.wrbtr               etr_amt,
        intf.dmbtr               loc_amt,
        intf.ledger_id,
@@ -34,13 +38,15 @@ SELECT intf.creation_date,
            AND xte.transaction_number = 'JPE-17000322'--'50532595'--'SPE-18000075'
            --and xah.ae_header_id = 22822729--29058160
         )*/
-       AND intf.XBLNR --LIKE '%5235833%' --= 48629279--48624778
-       IN ('PO_5085765',
+       AND intf.XBLNR --LIKE '%75371468'--'%5235833%' --= 48629279--48624778
+       IN (/*'PO_5085765',
 'PO_5235833',--PO_5235833 PO_5235833 PO+rcv.trx_id
 'PO_5236949',
 'INV_64512074',--INV+mmt.trx_id
 'INV_69864747',
-'INV_70045973'
+'INV_70045973'*/
+'INV_75370664',
+'INV_75371468'
 )
        --= 'JPE-17000322'--'SPE-18000075'--'10000017446'
       --IN (48624778, 48629281)
@@ -58,7 +64,11 @@ SELECT intf.creation_date,
       --AND intf.xblnr = 'SG00050348*7'
       --AND to_char(NVL(intf.dmbtr,intf.WRBTR))LIKE '68.%'
    --AND rownum = 1
- ORDER BY intf.group_id DESC
+ ORDER BY intf.group_id DESC,
+ intf.source_header_id,
+ --intf.source_line_id,
+ intf.dr_cr_flag DESC
+ 
 
 ;
 

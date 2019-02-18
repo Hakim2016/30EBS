@@ -145,17 +145,22 @@ SELECT t.seq,
            AND xe.application_id = xte.application_id
            AND xah.entity_id = xte.entity_id
            AND xte.application_id = 707--222--707 --275 --PA
-           /*AND xte.source_id_int_1 --= 4654211
-           IN (48624778--mmt.transaction_id
+           AND xte.source_id_int_1 --= 4654211
+           IN (/*48624778--mmt.transaction_id
               ,4408821--rt.transaction_id
-              )*/
-              AND xte.entity_id IN (34818854,
-37341370,
-34818875,
-37533094,
-37533189
+              *//*
+              5141793,65753332,
+              75370664,75371468*/
+              --74861031
+              74862556,
+              74862557,
+              74868428,
+              74868429
+              )
+              AND xte.entity_id NOT IN (2147758
 
 )
+AND xte.entity_id >= 38661196
               AND xet.language = 'US'
               --IN (4654211)
               --AND xte.entity_code = 'EXPENDITURES'

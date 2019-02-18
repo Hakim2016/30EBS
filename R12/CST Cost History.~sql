@@ -1,4 +1,8 @@
-SELECT transaction_costed_date,
+SELECT (SELECT cql.created_by
+          FROM cst_quantity_layers cql
+         WHERE 1 = 1
+           AND cql.layer_id = v.layer_id) created_by,
+       transaction_costed_date,
        transaction_date,
        primary_quantity,
        actual_cost,
@@ -31,7 +35,7 @@ SELECT transaction_costed_date,
  WHERE organization_id = 83
    AND inventory_item_id = 49014
    AND cost_group_id = 1001
-   AND (transaction_date >= to_date('2018/09/29 00:00:00', 'YYYY/MM/DD HH24:MI:SS'))
+   AND (transaction_date >= to_date('2018/08/01 00:00:00', 'YYYY/MM/DD HH24:MI:SS'))
    AND (cost_group_id = 1001)
    AND (inventory_item_id = 49014)
    AND (organization_id = 83)

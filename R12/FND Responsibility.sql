@@ -9,7 +9,7 @@ SELECT RL.RESPONSIBILITY_NAME,
   FROM FND_RESPONSIBILITY UR, FND_RESPONSIBILITY_TL RL
  WHERE RL.RESPONSIBILITY_ID = UR.RESPONSIBILITY_ID
    AND RL.LANGUAGE = 'US' --'ZHS'
-   AND    rl.responsibility_name LIKE '%User%Manage%'--= '160_库存超级用户'
+   AND    rl.responsibility_name LIKE '%ALL%'--'%User%Manage%'--= '160_库存超级用户'
 --AND    ur.user_id = 1273
 ;
 

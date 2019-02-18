@@ -2,7 +2,8 @@
 SELECT biv.*
   FROM bne_integrators_b biv
  WHERE 1 = 1
-   AND biv.integrator_code LIKE 'ITMFRCST%' FOR UPDATE;
+   AND biv.integrator_code LIKE '%HDSP%'--'ITMFRCST%' FOR UPDATE
+   ;
 
 SELECT *
   FROM bne_interfaces_b inf
@@ -200,24 +201,31 @@ WHERE 1=1
 AND d.param_defn_code LIKE '%ITMFRCST%';
    
    
-SELECT * FROM BNE.BNE_PARAM_LISTS_TL JJ WHERE JJ.APPLICATION_ID=20009
-DELETE FROM BNE.BNE_PARAM_LISTS_TL JJ WHERE JJ.APPLICATION_ID=20009
+SELECT * FROM BNE.BNE_PARAM_LISTS_TL JJ WHERE JJ.APPLICATION_ID=20009;
+DELETE FROM BNE.BNE_PARAM_LISTS_TL JJ WHERE JJ.APPLICATION_ID=20009;
 
 --integrator
 SELECT *
   FROM bne_integrators_tl bil
  WHERE 1 = 1
-   AND bil.creation_date > SYSDATE - 50;
+ AND bil.INTEGRATOR_CODE LIKE 'HDSP%'
+   --AND bil.creation_date > SYSDATE - 50
+   ;
 
 --content
 SELECT * FROM bne_contents_tl bcl
 WHERE 1=1
-AND bcl.creation_date > SYSDATE - 50;
+AND bcl.content_code LIKE 'HDSP%'
+--AND bcl.creation_date > SYSDATE - 50
+
+;
 
 --layout
 SELECT * FROM bne_layouts_tl bll
 WHERE 1=1
-AND bll.creation_date > SYSDATE - 50;
+AND bll.LAYOUT_CODE LIKE 'HDSP%'
+--AND bll.creation_date > SYSDATE - 50
+;
 
 --interface_cols
 SELECT * FROM bne_interface_cols_tl bicl
@@ -246,7 +254,10 @@ AND bml.creation_date > SYSDATE - 50;
 --bne_mappings_tl
 SELECT * FROM bne_mappings_tl bml
 WHERE 1=1
-AND bml.creation_date > SYSDATE - 50;
+--AND bml.mapping_code LIKE 'HDSP%'
+--AND bml.creation_date > SYSDATE - 50
+
+;
 
 SELECT * FROM BNE_INTERFACE_COLS_B
 

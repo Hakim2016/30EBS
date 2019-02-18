@@ -1,0 +1,35 @@
+--INV Item costed checking
+SELECT mmt.costed_flag,
+mmt.organization_id,
+       msi.segment1,
+       --mmt.,
+       mmt.transaction_date,
+       mmt.*
+  FROM mtl_material_transactions mmt,
+       mtl_system_items_b        msi
+ WHERE 1 = 1
+   AND mmt.inventory_item_id = msi.inventory_item_id
+   AND mmt.organization_id = msi.organization_id
+   AND mmt.transaction_id --= 55055866 --8915869
+ IN (5097)
+   --IN (55055866,55055888)
+;
+
+--check the parameter (cutoff date) of inventory
+SELECT 
+mp.cost_cutoff_date
+,mp.*
+  FROM mtl_parameters mp
+ WHERE 1 = 1
+   --AND mp.organization_id = 83
+   ;
+
+--check the stuck data in mmt
+SELECT *
+  FROM mtl_material_transactions mmt
+ WHERE 1 = 1
+   AND mmt.costed_flag = 'E';
+   
+--How to solve the stuck data
+
+SELECT TRANSACTION_ID, ORGANIZATION_ID, LAYER_ID, COST_ELEMENT_ID, LEVEL_TYPE, TRANSACTION_ACTION_ID FROM MTL_CST_ACTUAL_COST_DETAILS hca WHERE 1=1 AND hca.transaction_id = 5097;

@@ -58,7 +58,7 @@ FROM gl_balances          ba,
    --AND gcc.segment4 = '0000'
    --AND gcc.segment5 = '0'
    AND ba.ledger_id = 2021
-   AND ba.period_name IN ('OCT-18','NOV-18','DEC-18')--'JUN-16'--'OCT-17'--'DEC-18'--'NOV-18'
+   AND ba.period_name IN ('JAN-19')--'JUN-16'--'OCT-17'--'DEC-18'--'NOV-18'
    GROUP BY ba.period_name
    
    ;
