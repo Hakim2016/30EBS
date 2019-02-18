@@ -20,7 +20,7 @@ SELECT BNI.USER_NAME,
        BCV.CONTENT_CODE,
        'bne:page=BneCreateDoc&' || --
        'bne:language=US&' || --
-       'bne:viewer=BNE:EXCEL2003%25&' || --
+       'bne:viewer=BNE:EXCEL2007&' || --'bne:viewer=BNE:EXCEL2003%25&' || --
        'bne:reporting=N&' || --
        'bne:integrator=' || BNI.INTEGRATOR_CODE || '&' || --
        'bne:layout=' || BLV.LAYOUT_CODE || '&' || --
@@ -33,7 +33,7 @@ SELECT BNI.USER_NAME,
    AND BLV.INTEGRATOR_CODE = BNI.INTEGRATOR_CODE
    AND BCV.INTEGRATOR_APP_ID = BNI.APPLICATION_ID
    AND BCV.INTEGRATOR_CODE = BNI.INTEGRATOR_CODE
-   --AND BNI.INTEGRATOR_CODE LIKE 'HDSP%'
+   AND BNI.INTEGRATOR_CODE LIKE 'HDSP%'
  ORDER BY BNI.INTEGRATOR_CODE;
 
 SELECT *

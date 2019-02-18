@@ -50,8 +50,6 @@ SELECT prh.created_by,
    --AND prh.segment1 = '1200043980'
    ORDER BY prh.created_by DESC 
    ;
-   
-   SELECT * from PO_REQEXPRESS_HEADERS_all rth where 1=1 AND rth.org_id = 7905;
 
 SELECT *
   FROM po_headers_rfqqt_v xx

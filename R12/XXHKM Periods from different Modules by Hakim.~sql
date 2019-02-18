@@ -181,14 +181,13 @@ SELECT mp.organization_id "Organization ID",
 
 /*有期间的模块：GL、AP、AR、FA、INV、PO、PA、AGIS
 对应标准路径
-GL：    总账-设置-打开/关闭 or 采购管理->设置->财务系统->会计->打开和关闭期间
+GL：    总账-设置-打开/关闭
 AP：    应付-会计科目-控制应付款期间
 AR：    应收-控制-会计科目-打开/关闭期间
 FA：    资产-折旧-运行折旧
 INV：  库存-会计关闭周期-库存会计期
        Inventory->Accounting Close Cycle
-PO：   Setup/Financials/Accounting/Control Purchasing Periods
-
+PO：   采购管理->设置->财务系统->会计->打开和关闭期间
 PA：    PA->Setup->System->PA Periods/GL Periods
 AGIS：设置-期间-打开/关闭
 

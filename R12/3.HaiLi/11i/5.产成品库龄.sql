@@ -7,12 +7,13 @@ SELECT t.secondary_inventory 子库
       ,t.quantity 数量
       ,t.amount 金额
       ,nvl(t.attribute5
-          ,'库龄超过两年') 入库时间
+          ,'库龄超过四年') 入库时间
+          ,trunc(SYSDATE) - trunc(to_date(t.attribute5,'yyyy-mm-dd hh24:mi:ss')) days
       ,t.*
   FROM cux_hnet_inv_huoling_skye t
  WHERE 1 = 1
   -- AND t.quantity <> 0
       --AND t.ITEM_ID = 1768747
    --AND t.group_id = 207
-AND t.attribute8 = 9183281--9180926--request id
+AND t.attribute8 = 9184721--9184597--9183281--9180926--request id
  ORDER BY t.group_id DESC;

@@ -18,17 +18,11 @@ SELECT vdr.set_of_books_id,
 
  ORDER BY vdr.vendor_id DESC;
 
-SELECT vdr.vendor_type_lookup_code typ, vdr.*
-  FROM ap_suppliers vdr
- WHERE 1 = 1
-   AND vdr.last_updated_by = 1014703
- ORDER BY vdr.vendor_id DESC;
-
-SELECT *
-  FROM hz_parties hp
- WHERE 1 = 1
-   AND hp.last_updated_by = 1014703
- ORDER BY hp.party_id DESC;
+SELECT 
+vdr.VENDOR_TYPE_LOOKUP_CODE typ,
+vdr.* FROM ap_suppliers vdr WHERE 1 = 1 
+AND vdr.LAST_UPDATEd_by = 1014703
+ORDER BY vdr.vendor_id DESC ;
 
 SELECT *
   FROM ap_supplier_sites_all ss

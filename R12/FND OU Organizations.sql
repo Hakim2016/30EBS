@@ -1,9 +1,41 @@
-SELECT * FROM ORG_ORGANIZATION_DEFINITIONS OOD;
+--Business Group
+SELECT v.organization_id,
+       v.business_group_id,
+       v.name,
+       v.location_code,
+       v.type,
+       v.organization_type,
+       
+       v.*
+  FROM hr_organization_units_v v
+ WHERE 1 = 1
+   AND v.organization_id = v.business_group_id
+   ORDER BY v.organization_id;
+
+SELECT * FROM org_organization_definitions ood;
+
+--HOU
+SELECT *
+  FROM hr_operating_units hou
+ WHERE 1 = 1
+ ORDER BY hou.business_group_id;
+
+SELECT v.organization_id,
+       v.business_group_id,
+       v.name,
+       v.type,
+       v.organization_type,
+       
+       v.*
+  FROM hr_organization_units_v v
+ WHERE 1 = 1
+ ORDER BY v.organization_id DESC;
 
 SELECT *
-  FROM HR_OPERATING_UNITS HOU
+  FROM hz_parties hp
  WHERE 1 = 1
- ORDER BY HOU.BUSINESS_GROUP_ID;
+      --AND hp.party_name LIKE '%HAKIM%'
+   AND hp.last_updated_by = 1014703;
 
 --Vision China
 /*
@@ -11,6 +43,6 @@ organization_id 4555
 */
 
 SELECT *
-  FROM RA_CUSTOMER_TRX_ALL RCT
+  FROM ra_customer_trx_all rct
  WHERE 1 = 1
-   AND RCT.ORG_ID = 4555;
+   AND rct.org_id = 4555;

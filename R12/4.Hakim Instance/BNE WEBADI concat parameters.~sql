@@ -12,27 +12,37 @@ bne:page=BneCreateDoc&bne:language=US&bne:viewer=BNE:EXCEL2003%25&bne:reporting=
 'bne:noreview=Y'
 */
 
-SELECT bni.user_name,
+SELECT BNI.USER_NAME,
        -- bni.application_id,
-       bni.integrator_code, --集成器code ,bni.user_name --集成器名称        
-       blv.layout_code, --布局代码        
+       BNI.INTEGRATOR_CODE, --集成器code ,bni.user_name --集成器名称        
+       BLV.LAYOUT_CODE, --布局代码        
        --blv.user_name, --布局用户名称 
-       bcv.content_code,
+       BCV.CONTENT_CODE,
        'bne:page=BneCreateDoc&' || --
        'bne:language=US&' || --
        'bne:viewer=BNE:EXCEL2003%25&' || --
        'bne:reporting=N&' || --
-       'bne:integrator=' || bni.integrator_code || '&' || --
-       'bne:layout=' || blv.layout_code || '&' || --
-       'bne:content=' || bcv.content_code || '&' || --
-       'bne:noreview=Y' function_parameters
-  FROM bne_integrators_vl bni,
-       bne_layouts_vl     blv,
-       bne_contents_vl    bcv
+       'bne:integrator=' || BNI.INTEGRATOR_CODE || '&' || --
+       'bne:layout=' || BLV.LAYOUT_CODE || '&' || --
+       'bne:content=' || BCV.CONTENT_CODE || '&' || --
+       'bne:noreview=Y' FUNCTION_PARAMETERS
+  FROM BNE_INTEGRATORS_VL BNI, BNE_LAYOUTS_VL BLV, BNE_CONTENTS_VL BCV
  WHERE 1 = 1 --bni.user_name LIKE 'XX%'
-   --AND bni.integrator_code IN ('GENERAL_25_INTG', 'GENERAL_1_INTG', 'GENERAL_22_INTG')
-   AND blv.integrator_app_id = bni.application_id
-   AND blv.integrator_code = bni.integrator_code
-   AND bcv.integrator_app_id = bni.application_id
-   AND bcv.integrator_code = bni.integrator_code
-   ORDER BY bni.integrator_code;
+      --AND bni.integrator_code IN ('GENERAL_25_INTG', 'GENERAL_1_INTG', 'GENERAL_22_INTG')
+   AND BLV.INTEGRATOR_APP_ID = BNI.APPLICATION_ID
+   AND BLV.INTEGRATOR_CODE = BNI.INTEGRATOR_CODE
+   AND BCV.INTEGRATOR_APP_ID = BNI.APPLICATION_ID
+   AND BCV.INTEGRATOR_CODE = BNI.INTEGRATOR_CODE
+   AND BNI.INTEGRATOR_CODE LIKE 'HDSP%'
+ ORDER BY BNI.INTEGRATOR_CODE;
+
+SELECT *
+  FROM BNE_INTEGRATORS_VL BNI
+ WHERE 1 = 1
+   AND BNI.INTEGRATOR_CODE LIKE 'HDSP%';
+   
+SELECT * from BNE_LAYOUTS_VL bnl where 1=1 
+AND bnl.LAYOUT_CODE LIKE 'HDSP%';
+
+SELECT * from BNE_CONTENTS_VL BCV where 1=1 
+AND bcv.CONTENT_CODE LIKE 'HDSP%';

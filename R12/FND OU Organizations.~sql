@@ -1,0 +1,36 @@
+SELECT * FROM org_organization_definitions ood
+;
+
+--HOU
+SELECT *
+  FROM hr_operating_units hou
+ WHERE 1 = 1
+ ORDER BY hou.business_group_id;
+
+SELECT 
+v.organization_id,
+v.business_group_id,
+v.name,
+v.type,
+v.organization_type,
+
+v.* from HR_ORGANIZATION_UNITS_V v where 1=1 
+ORDER BY v.organization_id DESC;
+
+
+SELECT *
+  FROM hz_parties hp
+ WHERE 1 = 1
+   --AND hp.party_name LIKE '%HAKIM%'
+   AND hp.LAST_UPDATED_BY = 1014703;
+
+
+--Vision China
+/*
+organization_id 4555
+*/
+
+SELECT *
+  FROM ra_customer_trx_all rct
+ WHERE 1 = 1
+   AND rct.org_id = 4555;

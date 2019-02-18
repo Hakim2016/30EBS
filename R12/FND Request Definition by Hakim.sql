@@ -17,14 +17,13 @@ SELECT fcp.user_concurrent_program_name program,
    --'%新能源%'
    --'%REVENUE%RECOGNITION%%%'
    --'%INVOICE%ON%HOLD%'
-<<<<<<< HEAD
-   AND upper(fcp.user_concurrent_program_name) LIKE 
-   '%%龄%'
+   /*AND upper(fcp.user_concurrent_program_name) LIKE 
+   '%%龄%'*/
    --'%CUX%AGE%'
-=======
    AND fcp.user_concurrent_program_name LIKE 
-   'XXINV%COUNT TAG WITH BARCODE'
->>>>>>> 9c17a0dc28a8b35ca3d3965443d285a7aa745591
+   'HDSP:供应商信息表'
+   --'Open Account Balances Listing'
+   --'XXINV%COUNT TAG WITH BARCODE'
    --'XXPA:Project COGS Monthly Report(SHE)_NEW'
    --'XXOM:SO Balance Report'
    --'Create Accounting%Cost Management'

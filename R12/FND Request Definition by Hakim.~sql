@@ -17,9 +17,12 @@ SELECT fcp.user_concurrent_program_name program,
    --'%–¬ƒ‹‘¥%'
    --'%REVENUE%RECOGNITION%%%'
    --'%INVOICE%ON%HOLD%'
-   AND upper(fcp.user_concurrent_program_name) LIKE 
-   '%%¡‰%'
+   /*AND upper(fcp.user_concurrent_program_name) LIKE 
+   '%%¡‰%'*/
    --'%CUX%AGE%'
+   AND fcp.user_concurrent_program_name LIKE 
+   'Open Account Balances Listing'
+   --'XXINV%COUNT TAG WITH BARCODE'
    --'XXPA:Project COGS Monthly Report(SHE)_NEW'
    --'XXOM:SO Balance Report'
    --'Create Accounting%Cost Management'
