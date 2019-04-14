@@ -21,8 +21,13 @@ SELECT intf.request_id,
 --* 
   FROM xxar_cust_to_hfg_int intf
  WHERE 1 = 1
-   AND intf.customer_number IN 
-   ('FB00000592','FB00000593')
+ --AND intf.name2 LIKE '%NIRLON%'
+   AND intf.customer_number 
+   LIKE 'HL%27'
+    /*IN
+     ('HL00000027')*/
+   --('HL00000027')
+   --('FB00000592','FB00000593')
    --('HL00000020')
    --('FB00000586')
    --('FB00000582')

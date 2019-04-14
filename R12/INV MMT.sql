@@ -3,7 +3,10 @@ SELECT mmt.costed_flag, msi.segment1, mmt.*
  WHERE 1 = 1
    AND mmt.inventory_item_id = msi.inventory_item_id
    AND mmt.organization_id = msi.organization_id
-   AND mmt.transaction_id = 8915869;
+   AND mmt.transaction_id = 8915869
+   AND mmt.organization_id = 83
+   ORDER BY mmt.transaction_id DESC
+   ;
 
 SELECT src.user_defined_flag            src_usr,
        src.transaction_source_type_name trx_src,

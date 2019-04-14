@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 --客户是全局共享的，但对应的客户地址是OU屏蔽的
 SELECT sits.org_id,
        sits.vendor_site_code 地点名称,
@@ -56,6 +57,27 @@ SELECT *
  WHERE 1 = 1
    AND hp.last_updated_by = 1014703
  ORDER BY hp.party_id DESC;
+=======
+SELECT vdr.set_of_books_id,
+       vdr.segment1,
+       sits.vendor_site_code,
+       --vdr.customer_num,
+       vdr.vendor_id,
+       vdr.segment1,
+       vdr.vat_registration_num,
+       vdr.*
+  FROM ap_suppliers          vdr,
+       ap_supplier_sites_all sits
+ WHERE 1 = 1
+   AND vdr.vendor_id = sits.vendor_id
+   AND sits.ORG_ID = 1129--HNET
+      --AND --vdr.vendor_name --= '25183'
+   --AND vdr.segment1 IN ('FB00003549','GS00200893','GT00200893') --('GS00200893','GT00200893')
+--AND vdr.vat_registration_num IN ('0135561014284','0015511407039')
+
+--'0135561014284'
+;
+>>>>>>> 461b3011e905a742257846dea4bb4850f49959c9
 
 SELECT *
   FROM ap_supplier_sites_all ss

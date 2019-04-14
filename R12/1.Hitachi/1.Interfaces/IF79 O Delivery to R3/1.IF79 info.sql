@@ -22,12 +22,12 @@ SELECT intf.revise_flag,
       --AND intf.ledger_id = 2041 --HBS
       --AND intf.creation_date > trunc(SYSDATE)
       --AND intf.so_number IN ('53020155')
-   AND intf.so_number IN --('12004014')
-       ('E3020003') --('E3020044')--('E3020400')--, 'E3020422')
---AND intf.hbs_sg_mfg_number IN 
---('ST03339-PH')
+   /*AND intf.so_number IN --('12004014')
+       ('E3020117')--('E3020117') --('E3020044')--('E3020400')--, 'E3020422')
+AND intf.hbs_sg_mfg_number IN 
+('JHA0068-AE')*/
 --AND intf.revise_flag = 2
- ORDER BY intf.creation_date,
+ ORDER BY intf.creation_date desc,
           intf.so_number,
           intf.hbs_sg_mfg_number;
           

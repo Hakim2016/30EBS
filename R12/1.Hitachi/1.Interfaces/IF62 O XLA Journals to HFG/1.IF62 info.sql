@@ -6,3 +6,5 @@ XXGL_ACCOUNTING_HFG_INT
 XXGLAD1
 XXGLB003
 */
+
+--Find the account mapping table

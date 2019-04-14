@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 --ALTER SESSION SET nls_language = american;
 --ALTER SESSION SET nls_language = 'SIMPLIFIED CHINESE';
+=======
+/*ALTER SESSION SET nls_language = american;*/
+>>>>>>> 461b3011e905a742257846dea4bb4850f49959c9
 --Request Definition
 SELECT fcp.user_concurrent_program_name program,
        fcp.concurrent_program_name      short_name,
@@ -44,12 +48,25 @@ SELECT fcp.user_concurrent_program_name program,
    --'%REVENUE%RECOGNITION%%%'
    --'%INVOICE%ON%HOLD%'
    /*AND upper(fcp.user_concurrent_program_name) LIKE 
+<<<<<<< HEAD
    --'%CUX%AGE%'
    AND fcp.user_concurrent_program_name LIKE 
    'HDSP:供应商信息表'
    --'Open Account Balances Listing'
    AND fcp.user_concurrent_program_name LIKE 
    'Update Subledger%'
+=======
+   '%%龄%'*/
+   AND fcp.user_concurrent_program_name LIKE 
+<<<<<<< HEAD
+   '%Project%Cost%Analysis%'
+   --'XXPO:Auto PO Receive to Stock After Inspection'
+   --'XXPO:Auto PO Receive to Stock After Inspection'
+   --'%Locator Barcode%Print%'
+=======
+   'Update Subledger%'
+>>>>>>> 8a4c01b7249ff4ad0cc8ff82c8688e4c5df0565f
+>>>>>>> 461b3011e905a742257846dea4bb4850f49959c9
    --'XXINV%COUNT TAG WITH BARCODE'
    --'XXPA:Project COGS Monthly Report(SHE)_NEW'
    --'XXOM:SO Balance Report'

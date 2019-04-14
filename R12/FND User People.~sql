@@ -26,6 +26,7 @@ SELECT FU.USER_ID,
  WHERE 1 = 1
       --AND fu.person_party_id
       --AND nvl(nvl(hp.EMAIL_ADDRESS,FU.EMAIL_ADDRESS), PAP.EMAIL_ADDRESS) LIKE '%am.hd%'--'%AM.HD%'----'%rodchanon%'
+<<<<<<< HEAD
    AND PAP.PARTY_ID = HP.PARTY_ID(+)
       --AND pap.party_id = 9851
    AND FU.USER_NAME IN 
@@ -37,12 +38,37 @@ SELECT FU.USER_ID,
   /* AND SYSDATE BETWEEN nvl(PAP.EFFECTIVE_END_DATE, SYSDATE)
    AND */
    ;
+=======
+   AND PAP.PARTY_ID = HP.PARTY_ID
+   --AND HP.PARTY_NAME LIKE '%Soo Foo%'
+      --AND pap.party_id = 9851
+   --AND FU.USER_NAME IN ('71229010')
+      --('70236270')
+       --('70271660', '70308768', '70236270')
+      --('22006270')
+      
+      --('HAND_LY', 'HAND_HKM')
+      AND fu.user_id --= 1130--4129--2989--1959--4370--1567--1200--1194--1148--2989--1590--3374--4270--1147--1244--1794--1244--1147
+ IN (1144,
+1147,
+1148,
+1149,
+1478,
+1794,
+3575,
+4270
+)
+ 
+ --AND fu.encrypted_foundation_password = 'INVALID' 
+  AND FU.EMPLOYEE_ID = PAP.PERSON_ID
+   AND PAP.EFFECTIVE_END_DATE > SYSDATE;
+>>>>>>> 461b3011e905a742257846dea4bb4850f49959c9
    
    
 SELECT *
   FROM APPS.FND_USER FU
  WHERE 1 = 1
-   --AND FU.USER_ID = 22006270
+   AND FU.USER_ID = 1130--4129--22006270
 --AND length(fu.encrypted_foundation_password) < 10
 --AND fu.encrypted_foundation_password = 'INVALID'
 ORDER BY --last_update_date DESC

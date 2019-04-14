@@ -10,12 +10,14 @@ XXAP: Journal Interface outbound to R3
 */
 SELECT intf.price,
        intf.creation_date,
+       intf.source_id,
        intf.*
   FROM xxap_journal_to_r3_data_int intf
  WHERE 1 = 1
       --AND intf.po_number = '10066959'--'10000073'
       --AND intf.hbs_sg_mfg_number = 'SAC0792-SG'--'JAJ0028-IN'
-   AND intf.so_number = 'E3020442'--'E3020044'
+   AND intf.so_number = 'E3020204'--'E3020442'--'E3020044'
+   AND intf.source_code <> 'PA'
    --AND intf.creation_date > SYSDATE - 60
 /*   AND NOT EXISTS (SELECT 'Y'
           FROM xxap_journal_to_r3_data_int t2

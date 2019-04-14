@@ -1,4 +1,4 @@
-SELECT intf.actual_month act_mon,
+SELECT intf.group_id,intf.actual_month act_mon,
        intf.company_name ou,
        intf.eq_er_category eqer,
        intf.additional_flag add_f,
@@ -64,6 +64,7 @@ SELECT intf.actual_month act_mon,
        intf.packing_freight,
        intf.*
   FROM --XXPA_COST_GCPM_INT_180622 intf,
+       --XXPA_COST_GCPM_INT_190128 intf,
        xxpa_cost_gcpm_int   intf,
        pa_tasks             pt,
        pa_tasks             top,
@@ -74,12 +75,19 @@ SELECT intf.actual_month act_mon,
    AND ppa.project_id = pt.project_id
    AND pt.top_task_id = top.task_id
    AND pt.task_id = intf.task_id
-   AND intf.org_id = 82--141--82--84 --84--SHE --82--HEA
-      AND intf.eq_er_category = 'ER'--'PARTS'--'EQ'
-   AND intf.mfg_num IN 
+   AND intf.org_id = 82--84--141--82--84 --84--SHE --82--HEA
+      AND intf.eq_er_category = 'EQ'--'ER'--'EQ'--'PARTS'--'EQ'
+   /*AND intf.mfg_num IN 
 (
-'SAE0191-SG'
-)
+'TBK0017-TH',
+'TBK0018-TH'
+--'SAG0495-SG'
+--'SAC0748-SG'
+--'SAG0495-SG'
+--'SAE0191-SG'
+--'TAC0473-TH'
+--'TFA1131-TH'
+)*/
    
       --AND pt.task_number LIKE '%.D.11'
       --AND (pt.task_number NOT LIKE '%.EQ' AND pt.task_number NOT LIKE '%.ER')
@@ -87,15 +95,21 @@ SELECT intf.actual_month act_mon,
       --AND nvl(intf.subcon, 0) <> 0
       --AND ppa.segment1 = '11000144'--'213100127'
       --AND intf.additional_flag = '1'--'N'
-      --AND intf.creation_date <= to_date('2018-11-12', 'yyyy-mm-dd')
+      --AND intf.creation_date >= to_date('2018-10-01', 'yyyy-mm-dd')
+      
+      --AND intf.actual_month >= to_date('2018-10-01', 'yyyy-mm-dd')
       --AND intf.subcon <> 0
-   AND intf.group_id = (SELECT MAX(t2.group_id)
-                          FROM xxpa_cost_gcpm_int t2
+      AND intf.group_id = 2065 --<> 2085
+   /*AND intf.group_id = (SELECT MAX(t2.group_id)
+                          FROM 
+                          --XXPA_COST_GCPM_INT_190128 t2
+                          xxpa_cost_gcpm_int t2
                          WHERE 1 = 1
                            AND t2.mfg_num = intf.mfg_num
                            AND t2.actual_month = intf.actual_month
-                            --AND t2.creation_date <= to_date('2018-11-12', 'yyyy-mm-dd')
-                           AND t2.task_id = intf.task_id)
+                            --AND t2.creation_date >= to_date('2018-10-01', 'yyyy-mm-dd')
+      --AND t2.actual_month >= to_date('2018-10-01', 'yyyy-mm-dd')
+                           AND t2.task_id = intf.task_id)*/
       
   /* AND EXISTS
  (SELECT 'Y'
@@ -108,8 +122,10 @@ SELECT intf.actual_month act_mon,
            AND ott.name IN ('SHE_Oversea_Assembly Parts', 'SHE_Oversea_Equipments', 'SHE_Oversea_Spare Parts')
         
         )*/
- ORDER BY intf.mfg_num DESC,
-          intf.actual_month      DESC;
+ ORDER BY intf.group_id DESC
+ 
+ /*intf.mfg_num DESC,
+          intf.actual_month      DESC*/;
 
 --SELECT * FROM XXPA_COST_GCPM_INT_180622;
 
@@ -246,4 +262,5 @@ WHERE 1 = 1
                              resp_appl_id => 660);
   mo_global.init('M');
   
-END;*/
+END;
+*/

@@ -177,7 +177,9 @@ SELECT xdl.ae_header_id,
    AND xah.ledger_id = xte.ledger_id
    AND xah.entity_id = xte.entity_id
    AND xdl.source_distribution_id_num_1 = rctd.cust_trx_line_gl_dist_id
-   AND rctd.creation_date > SYSDATE - 100;
+   AND xte.transaction_number = 'DP-18000143'
+   --AND rctd.creation_date > SYSDATE - 100
+   ;
 
 -- Material Transaction
 SELECT mmt.transaction_id,

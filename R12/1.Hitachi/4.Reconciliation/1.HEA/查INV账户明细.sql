@@ -17,7 +17,7 @@ SELECT --xah.period_name,
    AND gcc.code_combination_id = xal.code_combination_id
    AND gcc.segment3 = '1145400000'
    --AND concatenated_segments LIKE '%1145400030.111103070%'
-   AND xal.accounting_date BETWEEN to_date('2015-12-01', 'YYYY-MM-DD') AND to_date('2015-12-03', 'YYYY-MM-DD') + 0.99999
+   AND xal.accounting_date BETWEEN to_date('2018-12-01', 'YYYY-MM-DD') AND to_date('2018-12-31', 'YYYY-MM-DD') + 0.99999
    AND xah.ae_header_id = xal.ae_header_id
       --AND xah.period_name = 'MAY-14'
    AND xah.ledger_id = 2021

@@ -51,7 +51,11 @@ SELECT fcp.user_concurrent_program_name program,
    'HDSP:供应商信息表'
    --'Open Account Balances Listing'
    AND fcp.user_concurrent_program_name LIKE 
-   'Update Subledger%'
+   'Open Account Balances Listing'
+   --'%Cost%Card%'
+   --'XXPO:Auto PO Receive to Stock After Inspection'
+   --'XXPO:Auto PO Receive to Stock After Inspection'
+   --'%Locator Barcode%Print%'
    --'XXINV%COUNT TAG WITH BARCODE'
    --'XXPA:Project COGS Monthly Report(SHE)_NEW'
    --'XXOM:SO Balance Report'

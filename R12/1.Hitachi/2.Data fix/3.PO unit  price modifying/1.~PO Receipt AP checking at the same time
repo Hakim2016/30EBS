@@ -1,0 +1,208 @@
+--PO Price modifying error with currency exhange
+--PO Number '10070207'
+--PO line Item
+
+--1.PO
+SELECT pol.line_num l_n,
+       --pol.creation_date,
+       pol.last_update_date,
+       /*
+       (SELECT fu.user_name
+          FROM fnd_user fu
+         WHERE 1 = 1
+           AND fu.user_id = pol.created_by) created_by,*/
+       (SELECT fu.user_name
+          FROM fnd_user fu
+         WHERE 1 = 1
+           AND fu.user_id = pol.last_updated_by) update_by,
+       poh.org_id, /*
+                            pv.vendor_id,
+                            pv.vendor_name,*/
+       --fu.user_name,
+       poh.segment1      po_num,
+       poh.currency_code curr,
+       --pol.item_id,
+       (SELECT msi.segment1
+          FROM mtl_system_items_b msi
+         WHERE 1 = 1
+           AND msi.inventory_item_id = pol.item_id
+           AND rownum = 1) item,
+       /*(SELECT msi.description
+          FROM mtl_system_items_b msi
+         WHERE 1 = 1
+           AND msi.inventory_item_id = pol.item_id
+           AND rownum = 1) description,*/
+       pol.unit_price * pol.quantity line_amt,
+       pol.unit_price,
+       pol.unit_price * gdr.conversion_rate sgd_price,
+       pol.quantity,
+       poh.*,
+       pol.*
+  FROM po_headers_all poh,
+       po_lines_all   pol,
+       po_vendors     pv,
+       fnd_user       fu,
+       gl_daily_rates   gdr
+ WHERE 1 = 1
+ AND gdr.from_currency = poh.currency_code--rt.currency_code --'JPY' --p_from_currency
+   AND gdr.to_currency = 'SGD' --p_to_currency
+   AND gdr.status_code != 'D'
+   AND gdr.conversion_type = 'Corporate' --p_conversion_type
+   AND gdr.conversion_date = TRUNC(poh.rate_date)
+   AND poh.vendor_id = pv.vendor_id
+   AND fu.user_id = poh.created_by
+   AND poh.po_header_id = pol.po_header_id
+   AND poh.segment1 IN ('10070207')
+   AND poh.org_id = 82
+ ORDER BY pol.line_num;
+
+--2.Receiving
+SELECT rt.transaction_id trx_id,
+       --rt.creation_date,
+       rt.transaction_type trx_typ,
+       rt.transaction_date trx_date,
+       rt.currency_code c,
+       pol.unit_price /*pol_price*/ po价,
+       rt.po_unit_price /*rt_po_price */rt价,
+       'SGD' c,
+       pol.unit_price * gdr.conversion_rate /*pol_sgd_price*/po价,
+       rt.po_unit_price* gdr.conversion_rate /*rt_sgd_price*/rt价,
+       gdr.conversion_rate rate,
+       'JPY' c,
+       pol.unit_price * rt.quantity /*po_entr_amt*/p总价,
+       rt.po_unit_price * rt.quantity /*rt_entr_amt*/r总价,
+       'SGD' c,
+       pol.unit_price * rt.quantity * gdr.conversion_rate /*po_func_amt*/p总价,
+       rt.po_unit_price * rt.quantity * gdr.conversion_rate /*rt_func_amt*/r总价,
+       poh.segment1 po,
+       rt.quantity qty,
+       rt.destination_type_code,
+       rt.quantity_billed,
+       rt.amount_billed,
+       pol.line_num,
+       --rt.amount,
+       rt.subinventory,
+       rt.locator_id,
+       /*ppa.segment1,
+       pt.task_number,*/
+       rt.project_id,
+       rt.task_id,
+       rt.*
+  FROM rcv_transactions rt,
+       po_headers_all   poh,
+       po_lines_all     pol,
+       gl_daily_rates   gdr
+ WHERE 1 = 1
+   AND gdr.from_currency = rt.currency_code --'JPY' --p_from_currency
+   AND gdr.to_currency = 'SGD' --p_to_currency
+   AND gdr.status_code != 'D'
+   AND gdr.conversion_type = 'Corporate' --p_conversion_type
+   AND gdr.conversion_date = trunc(rt.transaction_date)
+      --AND rt.organization_id = 83--121
+   AND rt.po_header_id = poh.po_header_id
+   AND poh.segment1 IN ('10070207')
+   AND rt.po_line_id = pol.po_line_id
+   AND poh.org_id = 82
+--AND pol.line_num = 39
+ ORDER BY rt.transaction_id;
+
+--3.MMT
+SELECT mmt.transaction_date,
+       mmt.source_line_id,
+       --mmt.creation_date,
+       mmt.organization_id              orgs_id,
+       msi.segment1,
+       --mtt.transaction_type_name        trx_type,
+       --mts.transaction_source_type_name trx_src_type,
+       mmt.primary_quantity             qty,
+       mmt.actual_cost,
+       mmt.prior_cost,
+       mmt.new_cost,
+       --mmt.source_code,
+       --mmt.transaction_source_id,
+       --mmt.source_line_id,
+       --inv_project.get_locator(mmt.locator_id, mmt.organization_id) locator, --
+       --mmt.costed_flag,
+       --mmt.pm_cost_collected prj_costed,
+       mmt.source_code,
+       mmt.project_id,
+       mmt.task_id,
+       mmt.*
+  FROM mtl_material_transactions  mmt,
+       mtl_system_items_b         msi--,
+       --apps.mtl_transaction_types mtt,
+       --mtl_txn_source_types       mts
+ WHERE 1 = 1
+ /*AND mmt.*/
+   --AND mts.transaction_source_type_id = mmt.transaction_source_type_id
+   --AND mmt.transaction_type_id = mtt.transaction_type_id
+      --AND mtt.transaction_type_name IN ('Sales Order Pick')
+   AND mmt.inventory_item_id = msi.inventory_item_id
+   AND mmt.organization_id = msi.organization_id
+      --AND mmt.source_line_id = 
+      --AND mmt.costed_flag = 'N'
+      --AND mmt.organization_id = 83--121--86
+      --AND mmt.inventory_item_id = 3939072
+      --AND mmt.transaction_id = 65753332
+      --AND mmt.rcv_transaction_id 
+      AND EXISTS
+   (SELECT RT.Transaction_Id
+          FROM rcv_transactions rt,
+               po_lines_all     pol,
+               po_headers_all   poh
+         WHERE 1 = 1
+           AND rt.po_line_id = pol.po_line_id
+           AND poH.po_header_id = pol.po_header_id
+           AND rt.transaction_id = mmt.rcv_transaction_id--mmt.source_line_id
+           AND RT.ORGANIZATION_ID = MMT.ORGANIZATION_ID
+           AND poh.segment1 = '10070207'
+           AND poh.org_id = 82
+        --AND POL.LINE_NUM = 3
+        )
+--AND mmt.source_line_id 
+--AND mmt.created_by = 4270
+--AND msi.segment1 = '1000EX-EN'
+ ORDER BY mmt.transaction_id DESC;
+
+--4.AP
+SELECT aph.invoice_id,
+       --aph.po_header_id,
+       apl.creation_date,
+       apl.last_update_date,
+       --apl.last_updated_by,
+       aph.invoice_num,
+       
+       (SELECT msi.segment1
+          FROM mtl_system_items_b msi
+         WHERE 1 = 1
+           AND msi.inventory_item_id = apl.inventory_item_id
+           AND rownum = 1) item,
+       apl.description,
+       apl.line_number apl_num,
+       aph.exchange_rate_type curr,
+       aph.invoice_currency_code c,
+       apl.unit_price,
+       apl.quantity_invoiced qty_apl,
+       apl.amount line_amt,
+       apl.line_type_lookup_code,
+       aph.attribute_category,
+       aph.attribute8,
+       aph.*,
+       apl.*
+  FROM ap_invoices_all      aph,
+       ap_invoice_lines_all apl
+ WHERE 1 = 1
+   AND aph.invoice_id = apl.invoice_id
+   AND aph.org_id = 82 --101 --82
+      /*AND APH.INVOICE_NUM IN --LIKE 'USD%YUL%'
+      ('SG00050348*8')*/
+   AND EXISTS (SELECT '1' --, poh.org_id 
+          FROM po_headers_all poh
+         WHERE 1 = 1
+           AND poh.org_id = aph.org_id
+           AND poh.po_header_id = apl.po_header_id
+           AND poh.segment1 IN ('10070207'))
+ ORDER BY aph.creation_date,
+          aph.invoice_num,
+          apl.line_number,
+          apl.amount;

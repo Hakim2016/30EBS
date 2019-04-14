@@ -8,7 +8,9 @@ XXGL_ASSETS_TO_HFG_INT
 */
 --xxgl_assets_to_hfg_pkg;--.hfg_main
 
-SELECT intf.company_code,
+SELECT intf.request_id,
+       intf.transaction_id,
+       intf.company_code,
        intf.main_asset_number,
        intf.asset_subnumber,
        intf.document_date,
@@ -33,7 +35,8 @@ SELECT intf.company_code,
        intf.asset_subnumber_to_2,
        intf.amt_posted_local_currency_5,
        intf.percentage_rate,
-       intf.quantity/*,
+       intf.quantity,
+       intf.* /*,
        
        
        intf.request_id,
@@ -45,15 +48,15 @@ SELECT intf.company_code,
        intf.**/
   FROM xxgl_assets_to_hfg_int intf
  WHERE 1 = 1
-      --AND intf.creation_date > SYSDATE - 360
-      --AND INTF.MAIN_ASSET_NUMBER IN ('101601200038','101601100193')
-      --AND intf.
-   AND intf.main_asset_number IN (SELECT t.main_asset_number
-                                    FROM xxgl_assets_to_hfg_int t
-                                   WHERE 1 = 1
-                                   GROUP BY t.main_asset_number
-                                  HAVING COUNT(*) >= 2)
- ORDER BY intf.request_id;
+--AND intf.creation_date > SYSDATE - 360
+--AND INTF.MAIN_ASSET_NUMBER IN ('101601200038','101601100193')
+--AND intf.
+/*AND intf.main_asset_number IN (SELECT t.main_asset_number
+  FROM xxgl_assets_to_hfg_int t
+ WHERE 1 = 1
+ GROUP BY t.main_asset_number
+HAVING COUNT(*) >= 2)*/
+ ORDER BY intf.request_id DESC;
 
 SELECT rt.transaction_id,
        rt.transaction_type,
