@@ -18,7 +18,7 @@ SELECT ffvv.flex_value,
 
   FROM fnd_flex_value_sets ffvs,
        fnd_flex_values_vl  ffvv
- WHERE ffvs.flex_value_set_name = 'HEA_ACCOUNT' --'XXHEA_PAYMENT METHOD'
+ WHERE ffvs.flex_value_set_name = '%HKM%%'--'HEA_ACCOUNT' --'XXHEA_PAYMENT METHOD'
    AND ffvv.flex_value_set_id = ffvs.flex_value_set_id
 --AND ffvv.flex_value_meaning = p_payment_method
 --AND ROWNUM = 1

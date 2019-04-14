@@ -7,11 +7,11 @@ SELECT t.responsibility_id,tl.responsibility_name,tl.language, t.*
  AND tl.language = 'US'
    --AND t.responsibility_key LIKE --'%HBS%SCM_SUPER_USER%'
    --'COST%MANAGEMENT%'
-   AND tl.responsibility_name LIKE 'Cost Management%SLA'
+   AND tl.responsibility_name LIKE 'HAKIM SUPER%'
    ;
    --HEA SCM SUPER USER
 
-select * from fnd_user fu where fu.user_name = 'HAND_HKM';
+select * from fnd_user fu where fu.user_name = 'HAKIM';
 --org_id      Resp_id     Resp_app_id        Organization_id
 --HBS 101     51249       660                HB1  121
 --HEA 82      50676       660                SG1  83
@@ -19,8 +19,8 @@ select * from fnd_user fu where fu.user_name = 'HAND_HKM';
 --SHE 84      50778       20005              TH1  85  TH2 86
 
 BEGIN
-  fnd_global.apps_initialize(user_id      => 4270,
-                             resp_id      => 50676,
+  fnd_global.apps_initialize(user_id      => 1014703,
+                             resp_id      => 66729,
                              resp_appl_id => 660);
   mo_global.init('M');
   --FND_PROFILE.PUT('MFG_ORGANIZATION_ID', 86);

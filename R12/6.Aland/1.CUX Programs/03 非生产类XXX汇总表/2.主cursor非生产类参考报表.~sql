@@ -1,0 +1,93 @@
+/*CURSOR csr_htmls IS*/
+    SELECT mmt.transaction_id,
+           subinv.secondary_inventory_name,
+           subinv.description sub_inv_desc,
+           msi.organization_id,
+           msi.inventory_item_id,
+           mmt.transaction_date,
+           mcb.concatenated_segments item_categ, --物料类别
+           msi.segment1 item_code, --物料编码
+           msi.description item_desc, --物料名称
+           msi.attribute4 product_specific, --规格型号
+           msi.primary_unit_of_measure, --主单位
+           mmt_lot.lot_number, --批次
+           msi.lot_control_code, --批次控制 1=不控制，2=完全控制
+           mmt.primary_quantity detail_qty,
+           NULL detail_amount,
+           (SELECT flv.description
+              FROM fnd_flex_values_vl  flv,
+                   fnd_flex_value_sets flvs
+             WHERE flv.flex_value_set_id = flvs.flex_value_set_id
+               AND flvs.flex_value_set_name = 'ALAND_COA_DEPT'
+               AND flv.summary_flag = 'N'
+               AND flv.enabled_flag = 'Y'
+               AND flv.flex_value = mmt.attribute3) department, --领用部门
+           NULL dummy
+      FROM mtl_system_items_vl         msi,
+           mtl_material_transactions   mmt,
+           mtl_transaction_lot_numbers mmt_lot,
+           mtl_secondary_inventories   subinv,
+           mtl_item_categories         mic,
+           mtl_categories_b_kfv        mcb,
+           mfg_lookups                 ml,
+           mtl_transaction_types       mtt
+     WHERE 1 = 1
+       AND mmt.organization_id = msi.organization_id
+       AND mmt.inventory_item_id = msi.inventory_item_id
+       AND mmt_lot.transaction_id(+) = mmt.transaction_id
+       AND mtt.transaction_type_id = mmt.transaction_type_id
+       AND mtt.transaction_type_name = 'Account alias issue'  --账户别名出库
+       --客供材料1
+       AND (
+             (g_cust_flag = '1' 
+              AND  EXISTS (
+                   SELECT 1
+                   FROM mtl_material_transactions   m,
+                        mtl_transaction_lot_numbers lot
+                   where m.TRANSACTION_ID = lot.TRANSACTION_ID
+                   and   m.TRANSACTION_TYPE_ID = 41 --Account alias receipt
+                   and   m.TRANSACTION_SOURCE_ID  =  18 --客供料入库
+                   --根据物料事务处理类型不同对应不同的含义
+                   and   mmt.INVENTORY_ITEM_ID = m.INVENTORY_ITEM_ID
+                   and   mmt_lot.LOT_NUMBER = lot.LOT_NUMBER
+              ))
+         --自购材料2
+         OR (g_cust_flag = '2' 
+              AND NOT EXISTS (
+                   SELECT 1
+                   FROM mtl_material_transactions   m,
+                        mtl_transaction_lot_numbers lot
+                   where m.TRANSACTION_ID = lot.TRANSACTION_ID
+                   and   m.TRANSACTION_TYPE_ID = 41 --Account alias receipt
+                   and   m.TRANSACTION_SOURCE_ID = 18 --客供料入库
+                   and   mmt.INVENTORY_ITEM_ID = m.INVENTORY_ITEM_ID
+                   and   mmt_lot.LOT_NUMBER = lot.LOT_NUMBER
+              ))
+          --所有材料3
+          OR g_cust_flag = '3'
+          )
+       AND mic.organization_id = msi.organization_id
+       AND mic.inventory_item_id = msi.inventory_item_id
+       AND mcb.category_id = mic.category_id
+       AND ml.lookup_type = 'MTL_TRANSACTION_ACTION'
+       AND ml.lookup_code = mmt.transaction_action_id
+       AND subinv.organization_id = msi.organization_id
+       AND subinv.secondary_inventory_name = mmt.subinventory_code
+          -- parameter         
+       AND ((mmt.attribute3 = nvl(g_department,
+                                  mmt.attribute3)) OR (mmt.attribute3 IS NULL AND g_department IS NULL))
+       AND ((g_incl_factory_flag = 'Y') OR (g_incl_factory_flag = 'N' AND subinv.secondary_inventory_name NOT LIKE 'F%'))
+       AND mic.category_set_id = 1
+       AND mcb.concatenated_segments BETWEEN nvl(g_item_categ_from,
+                                                 mcb.concatenated_segments) AND
+           nvl(g_item_categ_to,
+               mcb.concatenated_segments)
+       AND msi.segment1 BETWEEN nvl(g_item_code_from,
+                                    msi.segment1) AND nvl(g_item_code_to,
+                                                          msi.segment1)
+       AND mmt.transaction_date BETWEEN g_start_date AND g_end_date
+       AND (mmt.SUBINVENTORY_CODE = g_subinv or g_subinv is null) --子库存参数
+       AND msi.organization_id = g_organization_id
+     ORDER BY msi.inventory_item_id,
+              subinv.secondary_inventory_name,
+              mmt_lot.lot_number;

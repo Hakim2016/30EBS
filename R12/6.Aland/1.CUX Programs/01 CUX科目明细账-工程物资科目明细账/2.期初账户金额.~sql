@@ -1,0 +1,15 @@
+--获取期初借贷金额 
+SELECT gcc.segment3,gb.period_name,
+       SUM(gb.begin_balance_dr_beq) 期初借方,
+       SUM(gb.begin_balance_cr_beq) 期初贷方,
+       SUM(gb.begin_balance_dr_beq) - SUM(gb.begin_balance_cr_beq) 期初余额
+--INTO l_begin_dr, l_begin_cr
+  FROM gl_balances gb, gl_code_combinations gcc
+ WHERE gb.code_combination_id = gcc.code_combination_id
+   AND gb.ledger_id = 2021 --g_ledger_id
+   AND gcc.segment3 = '1605020101' --g_account
+   AND gb.period_name = '2018-08' --g_period_name
+   AND gb.currency_code = 'CNY' --g_base_currency
+      --AND gcc.CHART_OF_ACCOUNTS_ID = g_coa_id
+   AND gcc.detail_posting_allowed_flag = 'Y'
+ GROUP BY gcc.segment3,gb.period_name;

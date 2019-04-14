@@ -34,11 +34,11 @@ mmt.organization_id              orgs_id,
    --AND mmt.costed_flag = 'N'
       --AND mmt.transaction_id = 54868663--60911685--8915869
       --AND mmt.last_update_date >= trunc(SYSDATE) - 1 --SYSDATE - 2
-   AND mmt.organization_id = 83--121--86
+   --AND mmt.organization_id = 83--121--86
    --AND mmt.inventory_item_id = 3939072
    AND mmt.transaction_id -->=
    --= 38434933--54899211--54898548--54897910--56683536
-IN(38434933, 38434935)
+IN(4178665)
    --=5097
    --= 54896869--54895834
       --33834547 --2017
@@ -143,13 +143,15 @@ SELECT mts.transaction_source_type_id   trx_src_id,
 
 --xla
 SELECT xte.source_id_int_1,
-       xte.*
+xte.application_id
+       ,xte.*
   FROM xla.xla_transaction_entities xte
  WHERE 1 = 1
-      --AND xte.source_id_int_1 = 43901381
-   AND xte.application_id = 707
-   AND xte.security_id_int_1 = 83
-   AND xte.creation_date > SYSDATE - 2;
+      AND xte.source_id_int_1 = 4178665--43901381
+   --AND xte.application_id = 707
+   --AND xte.security_id_int_1 = 83
+   --AND xte.creation_date > SYSDATE - 2
+   ;
 
 SELECT xte.source_id_int_1,
        xte.*

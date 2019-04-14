@@ -26,18 +26,17 @@ SELECT FU.USER_ID,
  WHERE 1 = 1
       --AND fu.person_party_id
       --AND nvl(nvl(hp.EMAIL_ADDRESS,FU.EMAIL_ADDRESS), PAP.EMAIL_ADDRESS) LIKE '%am.hd%'--'%AM.HD%'----'%rodchanon%'
-   AND PAP.PARTY_ID = HP.PARTY_ID
+   AND PAP.PARTY_ID = HP.PARTY_ID(+)
       --AND pap.party_id = 9851
-   --AND FU.USER_NAME IN 
-      --('70236270')
-       --('70271660', '70308768', '70236270')
-      --('22006270')
-      
-      --('HAND_LY', 'HAND_HKM')
-      --AND fu.user_id = 2989--1959--4370--1567--1200--1194--1148--2989--1590--3374--4270--1147--1244--1794--1244--1147
- --AND fu.encrypted_foundation_password = 'INVALID' 
-  AND FU.EMPLOYEE_ID = PAP.PERSON_ID
-   AND PAP.EFFECTIVE_END_DATE > SYSDATE;
+   AND FU.USER_NAME IN 
+      ('120811')
+      --AND fu.encrypted_foundation_password = 'INVALID' 
+ --AND hp.party_name LIKE '%Ñî¾²%'
+  AND FU.EMPLOYEE_ID = PAP.PERSON_ID(+)
+   --AND nvl(PAP.EFFECTIVE_END_DATE, SYSDATE) >= SYSDATE
+  /* AND SYSDATE BETWEEN nvl(PAP.EFFECTIVE_END_DATE, SYSDATE)
+   AND */
+   ;
    
    
 SELECT *

@@ -21,10 +21,10 @@ SELECT fif.application_id,
        vset.flex_value_set_name,
        segs.enabled_flag,
        segs.display_flag
-  FROM fnd_id_flexs              fif,
-       fnd_id_flex_structures_vl struct,
-       fnd_id_flex_segments_vl   segs,
-       fnd_flex_value_sets       vset
+  FROM apps.fnd_id_flexs              fif,
+       apps.fnd_id_flex_structures_vl struct,
+       apps.fnd_id_flex_segments_vl   segs,
+       apps.fnd_flex_value_sets       vset
  WHERE 1 = 1
    AND fif.application_id = struct.application_id
    AND fif.id_flex_code = struct.id_flex_code
@@ -38,7 +38,7 @@ SELECT fif.application_id,
       --struct.id_flex_structure_name "Title" in the lines
        --'%%Qualifiers%'
        --'XXGSCM INV Sales Orders' --key flexfield
-AND fif.id_flex_name like '%Segment%Qualifiers%'--'Sales Orders'--'Accounting Flexfield'--"Flexfield Title"
+AND fif.id_flex_name like '%Segment%'--'%Segment%Qualifiers%'--'Sales Orders'--'%Segment%Qualifiers%'--'Sales Orders'--'Accounting Flexfield'--"Flexfield Title"
 --AND fif.application_table_name IN ('MTL_ITEM_LOCATIONS', 'GL_CODE_COMBINATIONS')
  ORDER BY fif.application_id,
           fif.id_flex_code,

@@ -14,10 +14,11 @@ SELECT RCT.ORG_ID,
    AND RCTT.CUST_TRX_TYPE_ID = RCT.CUST_TRX_TYPE_ID
       --AND rct.customer_trx_id = 4890563--4865153
       --AND rctt.type IN ('CM', 'DM')
-   AND RCT.ORG_ID = 84 --101 --84
+      AND rct.COMPLETE_FLAG = 'N'
+   AND RCT.ORG_ID = 788--7905--84 --101 --84
       --AND rctt.name = ''
       --AND rct.trx_number IN ('JPE-18000315','600000000010')--('HKM2018092101') --('TFO000011')--('CTE1_454:TE_2004') --('JPE-18000050')--('10000017753')
-   AND RCT.TRX_NUMBER LIKE 'TFO000049'--'TFO000049' --'%6%10'
+   --AND RCT.TRX_NUMBER LIKE 'TFO000049'--'TFO000049' --'%6%10'
 --AND rct.creation_date >= to_date('20180301','yyyymmdd')
 --AND rct.creation_date <= to_date('20180315','yyyymmdd')
 --AND rct.customer_trx_id = 4022542

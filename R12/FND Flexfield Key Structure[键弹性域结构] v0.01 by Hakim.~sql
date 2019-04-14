@@ -38,7 +38,7 @@ SELECT fif.application_id,
       --struct.id_flex_structure_name "Title" in the lines
        --'%%Qualifiers%'
        --'XXGSCM INV Sales Orders' --key flexfield
-AND fif.id_flex_name = 'Segment Qualifiers'--'Sales Orders'--'Accounting Flexfield'--"Flexfield Title"
+AND fif.id_flex_name like '%Segment%Qualifiers%'--'Sales Orders'--'Accounting Flexfield'--"Flexfield Title"
 --AND fif.application_table_name IN ('MTL_ITEM_LOCATIONS', 'GL_CODE_COMBINATIONS')
  ORDER BY fif.application_id,
           fif.id_flex_code,

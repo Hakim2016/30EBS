@@ -1,0 +1,90 @@
+--ALTER SESSION SET nls_language = american;
+--ALTER SESSION SET nls_language = 'SIMPLIFIED CHINESE';
+
+--SLA source
+SELECT *
+  FROM xla_sources_fvl xs
+ WHERE 1 = 1
+   AND xs.source_code = 'CUX_PAYMENT_TYPE';
+SELECT *
+  FROM xla_source_params xsp
+ WHERE 1 = 1
+   AND xsp.source_code = 'CUX_PAYMENT_TYPE';
+
+SELECT xs.application_id      app_id,
+       xs.application_name,
+       xs.source_code,
+       xs.name,
+       xs.description,
+       xs.enabled_flag,
+       xs.plsql_function_name,
+       xsp.user_sequence      seq,
+       xsp.ref_source_code
+--*
+  FROM xla_sources_fvl xs, xla_source_params xsp
+ WHERE 1 = 1
+   AND xs.source_code = xsp.source_code
+   AND xs.source_code LIKE 'CUX%' --= 'CUX_PAYMENT_TYPE'
+;
+
+--SLA line definition
+SELECT v.application_id       app_id,
+       v.application_name     app_name,
+       v.event_class_code,
+       v.event_class_name,
+       v.event_type_code,
+       v.event_type_name,
+       v.line_definition_code,
+       v.line_definition_name,
+       v.description,
+       v.*
+  FROM xla_line_definitions_f_v v /*,
+  xla_line_defn_jlt_assgns_f_v asg*/
+ WHERE 1 = 1
+   AND v.line_definition_owner = 'User'
+   AND v.application_id IN (200, 222)
+   AND v.line_definition_code = 'ALAND_ACCRUAL_DEBIT MEMOS_ALL';
+
+--SLA 日记账行定义 行分配
+SELECT asg.event_class_code     事件分类,
+       asg.line_definition_code 行定义代码,
+       asg.accounting_line_name 日记账行类型,
+       asg.accounting_line_code 行类型代码,
+       asg.description_name     行说明,
+       --asg.description_owner 责任人,
+       --asg.description_code,
+       asg.*
+  FROM xla_line_defn_jlt_assgns_f_v asg
+ WHERE 1 = 1
+   AND asg.line_definition_code = 'ALAND_ACCRUAL_INVOICES_ALL' --'ALAND_ACCRUAL_DEBIT MEMOS_ALL'
+   AND asg.accounting_line_code = 'AP_LIAB_INV' --'AP_LIAB_DM'
+;
+
+--与行分配关联的“账户推导规则”
+SELECT v.event_class_code,
+       v.line_definition_code,
+       v.accounting_line_name 日记账行类型,
+       
+       v.*
+  FROM xla_line_defn_jlt_assgns_f_v v
+ WHERE 1 = 1
+   AND v.line_definition_code = 'ALAND_ACCRUAL_INVOICES_ALL' --'ALAND_ACCRUAL_DEBIT MEMOS_ALL'
+   AND v.accounting_line_code = 'AP_LIAB_INV' --'AP_LIAB_DM';
+;
+
+SELECT v.event_class_code 事件分类,
+       v.line_definition_code 行定义代码,
+       v.accounting_line_code 日记账行类型,
+       v.flexfield_segment_code 科目段,
+       v.flexfield_segment_name 段名称,
+       v.segment_rule_name 规则名称,
+       v.segment_rule_code 规则代码,
+       v.segment_rule_owner,
+       v.segment_rule_desc,
+       v.*
+  FROM xla_line_defn_adr_assgns_f_v v
+ WHERE 1 = 1
+   --AND v.line_definition_code LIKE 'ALAND%'--= 'ALAND_ACCRUAL_INVOICES_ALL'
+   --AND v.accounting_line_code = 'AP_LIAB_INV'
+   AND v.segment_rule_type_code = 'C'--自定义账户推导规则
+   ;

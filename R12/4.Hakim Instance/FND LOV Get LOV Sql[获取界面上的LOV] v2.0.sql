@@ -19,7 +19,7 @@ SELECT s.prev_sql_addr,
        v$sqltext_with_newlines swn
  WHERE s.sid = (SELECT t.SID
   FROM v$session t
- WHERE upper(t.module) LIKE UPPER('%HRWSPSF%'))--('%XXARPTAX%'))--409
+ WHERE upper(t.module) LIKE UPPER('%OEXOEORD%'))--('%XXARPTAX%'))--409
    AND s.prev_sql_addr = swn.address
  ORDER BY swn.piece;
 

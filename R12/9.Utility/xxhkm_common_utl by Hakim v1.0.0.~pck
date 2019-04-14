@@ -76,6 +76,7 @@ CREATE OR REPLACE PACKAGE BODY xxhkm_common_utl IS
   -- Discription  : For convienience
   -- Language     : PL/SQL
   -- Version      : 1.0.0
+  --v1.0.2 get the account category don't associate with XXXX_ACCOUNT any more
   -- Modify       :
 
   -- Create       :
@@ -264,9 +265,9 @@ CREATE OR REPLACE PACKAGE BODY xxhkm_common_utl IS
                fnd_flex_values_vl  subaccv,
                fnd_flex_value_sets subaccs
          WHERE 1 = 1
-           AND accs.flex_value_set_name = l_acc_vs_name --'HEA_ACCOUNT'
+           --AND accs.flex_value_set_name = l_acc_vs_name --'HEA_ACCOUNT' --v1.0.2 remove
            AND accs.flex_value_set_id = accv.flex_value_set_id
-           AND subaccs.flex_value_set_name = l_subacc_vs_name --'HEA_SUBACCOUNT'
+           --AND subaccs.flex_value_set_name = l_subacc_vs_name --'HEA_SUBACCOUNT' --v1.0.2 remove
            AND subaccs.flex_value_set_id = subaccv.flex_value_set_id
            AND accv.flex_value = subaccv.parent_flex_value_low
            AND accv.flex_value = l_acc --'1145500000'--'1161500990'

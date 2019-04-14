@@ -1,0 +1,13 @@
+SELECT * from FND_DOC_SEQUENCE_CATEGORIES dsc where 1=1 
+AND 1=1;
+
+SELECT dsa.category_code, dsa.set_of_books_id, dsa.*
+  FROM fnd_doc_sequence_assignments dsa
+ WHERE 1 = 1
+   AND 1 = 1
+ ORDER BY dsa.set_of_books_id DESC;
+
+SELECT *
+  FROM gl_sets_of_books sob
+ WHERE 1 = 1
+ ORDER BY sob.set_of_books_id DESC;

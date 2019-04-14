@@ -51,7 +51,7 @@ SELECT v.request_id rqst_id,
          WHERE 1 = 1
            AND fa.application_id = v.responsibility_application_id) app_name,
        v.responsibility_id,
-       fr.responsibility_key,
+       fr.responsibility_key/*,
        fnd_webfile.get_url(3, --log 输出类型 --3 log
                            v.request_id, --请求ID
                            'APPLSYSPUB/PUB',
@@ -61,7 +61,7 @@ SELECT v.request_id rqst_id,
                            v.request_id, --请求ID
                            'APPLSYSPUB/PUB',
                            'FCWW',
-                           10)
+                           10)*/
   FROM apps.fnd_conc_req_summary_v v,
        apps.fnd_responsibility     fr,
        apps.fnd_user               fu,
@@ -69,18 +69,31 @@ SELECT v.request_id rqst_id,
  WHERE 1 = 1
    AND fu.user_id = v.requested_by
    AND fu.employee_id = pap.person_id(+)
-   AND pap.effective_end_date > SYSDATE
+   --AND pap.effective_end_date > SYSDATE
    AND fr.responsibility_id = v.responsibility_id
-      --AND v.request_id --= 16839045--16282868--16253168--16221488--13165995--16098690--15981725--15956670
-      --=17493023--17524251--17523985
-      --IN (17374943, 17374944, 17375642,17375545,17294974)
+      --AND v.request_id = 3444008--3247893--16839045--16282868--16253168--16221488--13165995--16098690--15981725--15956670
+      --= 3099146--17493023--17524251--17523985
       --AND v.program_short_name LIKE 'XX%'--= 'XXPAB008'--'XXINVB014'--'XXPAUPDATESTATUS'
       --AND v.program LIKE --'Create Accounting%'
       --AND v.status_code IN ('E','G')
       --AND v.phase_code IN ('R', 'P')
    AND v.user_concurrent_program_name 
    LIKE 
-   'Open Account Balances Listing'
+   --'收款自动结算'
+   --'Automatic Clearing for Receipts'
+   'CUX%刷新%'
+   --'CUX:在建工程明细表'
+   --'Build Attribute Mapping'
+   --'%毛利%'
+  -- 'Trial Balance'
+   --'CUX:银行流水明细'
+   --'CUX:科目余额表-主营业务收入余额表'
+   --'%非生产%'
+   --'CUX:非生产材料出库明细表'
+   --'CUX:部门费用报表'
+   --'CUX%固定资产明细表'
+   --'CUX:科目明细账-工程物资科目明细账'
+   --'Open Account Balances Listing'
    --'CUX:HNET货龄报表%'
    --'CUX:HNET货龄报表_EXCEL_dayByday'
    --'%龄%dayByday%'
@@ -160,6 +173,16 @@ SELECT v.request_id rqst_id,
 --'XXGL:Fixed Assets Outbound to HFG'
 --'Projects Cost Collection Manager'
 --'Cost Collection Manager'
+--######conplatibility of <XXPA:Project Status Update(BA)> start
+/*AND v.user_concurrent_program_name IN (
+'XXPA:Project Status Update(BA)',
+--'XXPA:Generate Expenditure Batch For Cost Structure',
+'XXPA:Project Revenue and Cost of Sales Recognition Request',
+--'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)',
+--
+'XXPA:Project Status Update(Installation)'
+)*/
+--######conplatibility of <XXPA:Project Status Update(BA)> end
 --'XXPA:Project Status Update(BA)'
 --'XXAR: Delivery Interface outbound GSCM to R3'
 --'XXPA%Project Revenue and Cost of Sales Recognition Request'
@@ -173,6 +196,7 @@ SELECT v.request_id rqst_id,
 --AND v.argument_text LIKE '%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
 --AND v.requestor = 'HAND_HKM'--'HAND_LCR'--'70264934'--'HAND_HKM'
 --AND v.request_id = 17225733--17204202-->= 16727489
+--AND v.actual_completion_date IS NULL
  ORDER BY --v.
            v.request_id DESC;
 

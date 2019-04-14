@@ -6,7 +6,13 @@ ORDER BY hp.creation_date DESC --hp.PARTY_ID
 ;
 
 --bank brach
-SELECT * from ce_bank_accounts t where 1=1 ORDER BY t.BANK_ACCOUNT_ID DESC;
+SELECT 
+t.BANK_ACCOUNT_NAME,
+t.BANK_ACCOUNT_NUM,
+t.CURRENCY_CODE,
+t.BANK_ACCOUNT_TYPE,
+
+t.* from ce_bank_accounts t where 1=1 ORDER BY t.BANK_ACCOUNT_ID DESC;
 
 
 --bank account

@@ -16,3 +16,6 @@ AND palu.segment_value_lookup_set_name = 'HEA Expen Type Clearing Subacc';
 SELECT * FROM PA_SEGMENT_VALUE_LOOKUPS lkl
 WHERE 1=1
 AND lkl.segment_value_lookup_set_id = 8;
+
+
+SELECT * from fnd_lookups fl where 1=1 AND fl.lookup_type = 'CUX_JJGC_WORKSHOP';

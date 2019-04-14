@@ -10,7 +10,7 @@ SELECT t.responsibility_id, tl.responsibility_name, tl.language, t.*
 ;
 --HEA SCM SUPER USER
 
-SELECT * FROM fnd_user fu WHERE fu.user_name = 'HAND_MT';
+SELECT * FROM fnd_user fu WHERE fu.user_name = 'HAKIM';
 --org_id      Resp_id     Resp_app_id        Organization_id
 --HBS 101     51249       660                HB1  121
 --HEA 82      50676       660                SG1  83

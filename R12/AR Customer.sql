@@ -68,7 +68,7 @@ SELECT hca.account_number,
        hz_parties       hp
  WHERE hp.party_id = hca.party_id
       --AND hca.cust_account_id = 84040
-      AND hp.party_name LIKE '%INDIABULLS REAL ESTATE%'
+      --AND hp.party_name LIKE '%INDIABULLS REAL ESTATE%'
    --AND hca.account_number
    --IN ('FB00000586')
       --LIKE 'FB%'
@@ -80,6 +80,7 @@ SELECT hca.account_number,
 --AND LENGTH(hp.duns_number_c) < 10
 --AND hp.party_name = 'HITACHI BUILDING SYSTEMS CO. LTD'
 --AND ROWNUM < 100
+ORDER BY hca.CUST_ACCOUNT_ID DESC
 ;
 
 SELECT hp_per.party_number,

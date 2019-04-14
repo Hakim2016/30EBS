@@ -1,34 +1,42 @@
 --AP invoice v1.0
 
 --AP with Project/Task
-SELECT aph.attribute9,
-       aph.creation_date,
-       aph.last_update_date,
-       aph.payment_method_code,
-       aph.invoice_type_lookup_code invoice_type,
-       aph.invoice_id,
-       aph.invoice_num,
-       aph.invoice_amount,
-       aph.amount_paid,
-       aph.pay_curr_invoice_amount,
-       aph.project_id,
-       ppa.segment1                 proj_num,
-       pt.task_number,
-       aph.voucher_num,
-       aph.*
+SELECT --aph.attribute9,
+ aph.org_id,
+ aph.creation_date,
+ aph.last_update_date,
+ aph.APPROVAL_STATUS,
+ --aph.payment_method_code,
+ aph.invoice_type_lookup_code invoice_type,
+ aph.invoice_id,
+ aph.invoice_num,
+ aph.invoice_amount,
+ aph.amount_paid,
+ aph.pay_curr_invoice_amount,
+ aph.project_id,
+ ppa.segment1                 proj_num,
+ pt.task_number,
+ aph.voucher_num,
+ aph.*
   FROM ap_invoices_all aph, pa_projects_all ppa, pa_tasks pt
  WHERE 1 = 1
    AND aph.task_id = pt.task_id(+)
       --AND aph.org_id = 82 --101 --141--82--101--82 --84--SHE--82 --HEA
    AND aph.project_id = ppa.project_id(+) --left join
-   AND aph.invoice_num IN --= 'TOEQ001597'--'210-702-004' --'SG00043803*8' --'107/5350';--454220
-      --('SPE-18000129')
-       ('IV2018-02426'
-        --'SG00050348*7'
-        )
-      --AND aph.invoice_num LIKE 'HKM%'
-   AND aph.creation_date >= to_date('2018-03-01', 'yyyy-mm-dd')
---AND aph.invoice_type_lookup_code = 'PREPAYMENT'
+ AND aph.CREATED_BY = 1791
+/*AND aph.invoice_num IN --= 'TOEQ001597'--'210-702-004' --'SG00043803*8' --'107/5350';--454220
+       (
+'09144701',
+'15125775',
+'10587245',
+'CLQC201808004',
+'10573660',
+'10569177',
+'CLQC201808008'        )*/
+--AND aph.invoice_num LIKE 'HKM%'
+--AND aph.invoice_id = 19067
+--AND aph.creation_date >= to_date('2018-03-01', 'yyyy-mm-dd')
+AND aph.invoice_type_lookup_code = 'PREPAYMENT'
  ORDER BY aph.invoice_id DESC
 
 ;
@@ -38,6 +46,7 @@ SELECT
 
  aph.org_id,
  aph.invoice_id,
+ aph.invoice_type_lookup_code typ,
  apl.creation_date,
  apl.last_update_date,
  apl.last_updated_by,
@@ -45,6 +54,7 @@ SELECT
  --apl.amount line_amt,
  aph.invoice_num,
  aph.invoice_amount,
+ --aph.
  --aph.APPROVED_AMOUNT,
  aph.amount_paid,
  apl.line_type_lookup_code,
@@ -52,21 +62,47 @@ SELECT
  aph.attribute8,
  aph.*,
  apl.*
-  FROM ap_invoices_all aph, ap_invoice_lines_all apl
+  FROM apps.ap_invoices_all      aph,
+       apps.ap_invoice_lines_all apl,
+       ap_suppliers              sup
  WHERE 1 = 1
    AND aph.invoice_id = apl.invoice_id
-      AND aph.org_id = 7905--82 --101 --82
-   /*AND aph.invoice_num IN --LIKE 'USD%YUL%'
-       ('HKMUSD001')*/
-AND aph.AMOUNT_PAID <> aph.INVOICE_AMOUNT
---('GE18060191','GE18060212','GE18060218','GE18060219','GE18060228','GE18070008','GE18070010','GE18070021','GE18070062','GE18070082','GE18070086','GE18070089','GE18070090','GE18070101','GE18070103','GE18070104','GE18070105','GE18070108','GE18070114','GE18070122','GE18070126','GE18070129','GE18070130','GE18070131','GE18070132','GE18070133','GE18070134','GE18070135','GE18070136','GE18070137','GE18070138','GE18070139','GE18070140','GE18070141','GE18070143','GE18070144','GE18070145','GE18070146','GE18070147','GE18070148','GE18070149','GE18070150','GE18070151','GE18070152','GE18070154','GE18070155','GE18070156','GE18070157','GE18070158','GE18070159','GE18070160','GE18070161','GE18070165','GE18070169','GE18070172','GE18070174','GE18070178','GE18070179')
---('SPE-18000129') --('GE18060191')--('GE18070129')
---AND apl.amount <> 0
---AND apl.line_number = 19
---AND aph.creation_date >= SYSDATE - 160
---AND aph.project_id IS NOT NULL
---AND aph.po_header_id IS NULL
- ORDER BY aph.invoice_num, apl.amount;
+   AND aph.vendor_id = sup.vendor_id
+   AND aph.org_id = 81 --7905--82 --101 --82
+      /*AND aph.invoice_num IN --LIKE 'USD%YUL%'
+      ('09144701')*/
+   AND aph.invoice_type_lookup_code --LIKE 'D%'--'PREPAYMENT'
+   IN ('CREDIT','DEBIT')
+   --AND sup.segment1 = '00000186'
+--AND aph.AMOUNT_PAID <> aph.INVOICE_AMOUNT
+
+--AND aph.invoice_id = 30418--19067
+;
+
+SELECT /*xe.event_status_code,
+       xe.process_status_code,
+       xe.transaction_date,
+       xte.**/
+ 1
+  FROM xla.xla_transaction_entities xte, xla.xla_events xe
+ WHERE 1 = 1
+      --AND xe.event_id
+   AND xe.entity_id = xte.entity_id
+   AND xte.ledger_id = 1 --2021
+   AND xte.source_id_int_1 = aph.invoice_id --54897273 --54896869--54868663
+   AND xte.transaction_number = aph.invoice_num --LIKE 'HKM18060401%'--54834283
+   AND xte.application_id = 200 --AP --200--707
+   AND xe.event_status_code = 'P'
+   AND xe.process_status_code = 'P'
+   AND xe.transaction_date >= to_date('2018-01-01', 'yyyy-mm-dd')
+   AND xe.transaction_date <= to_date('2018-01-31', 'yyyy-mm-dd')
+--AND xte.entity_id >= 29967072
+--AND xte.entity_code = 'RCV_ACCOUNTING_EVENTS'
+
+ )
+ ORDER BY apl.invoice_id DESC, aph.invoice_num, apl.amount;
+
+SELECT * FROM apps.gl_ledgers;
 
 SELECT *
   FROM ap_invoices_all aph

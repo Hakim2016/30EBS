@@ -27,11 +27,12 @@ SELECT pol.line_num,
       --AND fu.user_name LIKE 'HAND%'
    AND poh.po_header_id = pol.po_header_id
       --AND poh.segment1 = '10062173'--'10000023'
-   AND poh.org_id = 7905
+   --AND poh.org_id = 81--7905
 --101 --84 --101
       --AND poh.cancel_flag = 'N'
    --AND poh.approved_flag = 'Y'
-   AND poh.TYPE_LOOKUP_CODE = 'STANDARD'
+   --AND poh.TYPE_LOOKUP_CODE = 'STANDARD'
+   AND poh.CREATED_BY = 1206
       --AND poh.
       --AND poh.creation_date >= to_date('20170101', 'yyyymmdd')
    --AND poh.segment1 = '10000415' --'10026376' --'10000341' --'10051165'
