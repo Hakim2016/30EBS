@@ -14,16 +14,31 @@ BEGIN
 END;
 */
 
-SELECT *
-  FROM oe_order_headers_all ooh
- WHERE 1 = 1
-      --AND ooh.org_id = 101
-   AND ooh.order_number IN ('11001269') --('23000461') --('53020044'); --('53020400', '53020422');
-;
-SELECT xsh.source_system,
+SELECT ool.unit_selling_price * ool.ordered_quantity total,
+       ool.line_number,
+       ool.schedule_ship_date,
        ooh.*
-  FROM oe_order_headers_all       ooh,
-       xxpjm_so_addtn_headers_all xsh
+  FROM oe_order_headers_all ooh, oe_order_lines_all ool
+ WHERE 1 = 1
+   AND ooh.header_id = ool.header_id
+      --AND ooh.org_id = 101
+   AND ool.unit_selling_price <> 0
+   AND ooh.order_number LIKE '19041%' /*IN (
+   '190417001',
+'190417002',
+'190417003',
+'190417004',
+'190417005',
+'190417006',
+'190417007',
+'190417008',
+'190417009',
+'190417010'
+   
+   )*/ --('23000461') --('53020044'); --('53020400', '53020422');
+;
+SELECT xsh.source_system, ooh.*
+  FROM oe_order_headers_all ooh, xxpjm_so_addtn_headers_all xsh
  WHERE 1 = 1
    AND ooh.header_id = xsh.so_header_id
       --AND ooh.org_id = 101
@@ -101,8 +116,8 @@ SELECT ooh.creation_date,
       --AND ooh.creation_date >= to_date('20180101', 'yyyymmdd')
    AND ooh.order_number --= '11001269'
        IN (
-       --'12003056'
-       '12002949',
+           --'12003056'
+           '12002949',
            '12003690',
            '12003758',
            '12003759',
@@ -122,8 +137,7 @@ SELECT ooh.creation_date,
            '12004152',
            '12004185',
            '12004190',
-           '12004198'
-           )
+           '12004198')
 
 --AND ool.ordered_item IN ('ST02938-IN')
 --('LB3901-PL210A')--('JED0210-VN','JED0211-VN','JED0212-VN','JED0219-VN','JED0220-VN','JED0225-VN');
@@ -132,35 +146,36 @@ SELECT ooh.creation_date,
 SELECT *
   FROM oe_order_headers_all ooh
  WHERE 1 = 1
-   --AND ooh.org_id = 82
-   AND ooh.order_number = '12003779'--'12003779'
-   /*IN ('12002949',
-                            '12003690',
-                            '12003758',
-                            '12003759',
-                            '12003779',
-                            '12003785',
-                            '12003797',
-                            '12003805',
-                            '12003840',
-                            '12003848',
-                            '12003860',
-                            '12003884',
-                            '12003918',
-                            '12004029',
-                            '12004111',
-                            '12004119',
-                            '12004130',
-                            '12004152',
-                            '12004185',
-                            '12004190',
-                            '12004198')
-                            */;
+      --AND ooh.org_id = 82
+   AND ooh.order_number = '12003779' --'12003779'
+/*IN ('12002949',
+'12003690',
+'12003758',
+'12003759',
+'12003779',
+'12003785',
+'12003797',
+'12003805',
+'12003840',
+'12003848',
+'12003860',
+'12003884',
+'12003918',
+'12004029',
+'12004111',
+'12004119',
+'12004130',
+'12004152',
+'12004185',
+'12004190',
+'12004198')
+*/
+;
 
 SELECT ppa.org_id, ppa.*
   FROM pa_projects_all ppa
  WHERE 1 = 1
- --AND ppa.org_id = 82
+      --AND ppa.org_id = 82
    AND ppa.segment1 IN ('12002949',
                         '12003690',
                         '12003758',
@@ -171,7 +186,7 @@ SELECT ppa.org_id, ppa.*
                         '12003797',
                         '12003805',
                         '12003840',
-                        '12003848',--
+                        '12003848', --
                         '12003860',
                         '12003884',
                         '12003918',
@@ -240,11 +255,7 @@ SELECT ooh.order_number,
  ORDER BY ool.last_update_date;
 
 --packing list
-SELECT v.project_number,
-       v.mfg_number,
-       v.task_number,
-       v.status_code,
-       v.*
+SELECT v.project_number, v.mfg_number, v.task_number, v.status_code, v.*
   FROM xxinv_packing_lists_v v
  WHERE 1 = 1
       --AND v.status_code LIKE 'DRAFT%'
@@ -315,8 +326,7 @@ SELECT case_type,
       --AND (oe_header_id = 2127868)
    AND v.project_number = '11001299' --'53020362' --'53020261' --'53020362'
    AND (scrap_flag = 'N')
- ORDER BY list_number DESC,
-          case_number ASC;
+ ORDER BY list_number DESC, case_number ASC;
 
 --shipping
 SELECT --delivery_id,
@@ -443,16 +453,11 @@ SELECT xpmm.proj_milestone_id,
 --AND xpmm.fully_packing_date IS NOT NULL
 --AND xpmm.fully_delivery_date IS NOT NULL
 --AND ROWNUM < 5
- ORDER BY hou.name,
-          pp.segment1;
+ ORDER BY hou.name, pp.segment1;
 
 --tax invoice
-SELECT xth.invoice_number,
-       xtl.item_number,
-       xth.status_code,
-       xtl.*
-  FROM xxar_tax_invoice_headers_v xth,
-       xxar_tax_invoice_lines_v   xtl
+SELECT xth.invoice_number, xtl.item_number, xth.status_code, xtl.*
+  FROM xxar_tax_invoice_headers_v xth, xxar_tax_invoice_lines_v xtl
  WHERE 1 = 1
    AND xth.header_id = xtl.header_id
    AND xth.invoice_number = 'SPE-17000226' --'DP-15000334'
@@ -485,8 +490,7 @@ SELECT rct.customer_trx_id,
            AND rownum = 1) item_num,
        rctl.description,
        rctl.*
-  FROM ra_customer_trx_all       rct,
-       ra_customer_trx_lines_all rctl
+  FROM ra_customer_trx_all rct, ra_customer_trx_lines_all rctl
  WHERE 1 = 1
    AND rct.customer_trx_id = rctl.customer_trx_id
    AND rct.trx_number = 'SPE-17000226' --'SPR-17000624' --'JPE-18000001'
@@ -536,8 +540,7 @@ SELECT xe.event_id,
 ;
 
 SELECT *
-  FROM xla.xla_transaction_entities xte,
-       xla_events                   xe
+  FROM xla.xla_transaction_entities xte, xla_events xe
  WHERE 1 = 1
    AND xte.application_id = 222
    AND xe.application_id = xte.application_id

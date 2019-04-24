@@ -51,13 +51,11 @@ SELECT v.request_id rqst_id,
          WHERE 1 = 1
            AND fa.application_id = v.responsibility_application_id) app_name,
        v.responsibility_id,
-<<<<<<< HEAD
        fr.responsibility_key/*,
 =======
        fr.responsibility_key,
        fcr.outfile_name,
        fcr.output_file_type,--change Output_file_type to 'PS'
->>>>>>> 461b3011e905a742257846dea4bb4850f49959c9
        fnd_webfile.get_url(3, --log 输出类型 --3 log
                            v.request_id, --请求ID
                            'APPLSYSPUB/PUB',
@@ -79,14 +77,11 @@ SELECT v.request_id rqst_id,
    AND fu.employee_id = pap.person_id(+)
    --AND pap.effective_end_date > SYSDATE
    AND fr.responsibility_id = v.responsibility_id
-<<<<<<< HEAD
       --AND v.request_id = 3444008--3247893--16839045--16282868--16253168--16221488--13165995--16098690--15981725--15956670
       --= 3099146--17493023--17524251--17523985
-=======
       --AND v.request_id = 18192510--18188486--18073759--16839045--16282868--16253168--16221488--13165995--16098690--15981725--15956670
       --=17659658--17493023--17524251--17523985
       --IN (17374943, 17374944, 17375642,17375545,17294974)
->>>>>>> 461b3011e905a742257846dea4bb4850f49959c9
       --AND v.program_short_name LIKE 'XX%'--= 'XXPAB008'--'XXINVB014'--'XXPAUPDATESTATUS'
       --AND v.program LIKE --'Create Accounting%'
       --AND v.status_code IN ('E','G')
@@ -99,10 +94,10 @@ SELECT v.request_id rqst_id,
    )*/
     
    LIKE 
-<<<<<<< HEAD
+   'Initialize Credit Summaries Table'
    --'收款自动结算'
    --'Automatic Clearing for Receipts'
-   'CUX%刷新%'
+   --'CUX%刷新%'
    --'CUX:在建工程明细表'
    --'Build Attribute Mapping'
    --'%毛利%'
@@ -125,8 +120,7 @@ SELECT v.request_id rqst_id,
    --'XXPA:Project EQ Cost of Sales Recognition Request(HEA/HBS)'
   /* AND v.user_concurrent_program_name 
    LIKE */
-=======
-   '%ost%llect%'
+   --'%ost%llect%'
    --'%Project Cost Data Outbound'
    --'XXINV:Stock Master Report'
    --'%Stock%Report%'
@@ -137,7 +131,6 @@ SELECT v.request_id rqst_id,
    --'Transfer Journal%'
    --'XXPO:Auto PO Receive to Stock After Inspection'
    --'XXPO:Auto PO Receive to Stock After Inspection'
->>>>>>> 461b3011e905a742257846dea4bb4850f49959c9
    --'PRC%'
    --'XXAR:HEA/HBS Credit Note Application Print'
    --'XXPA:Project COGS Monthly Report%'
@@ -228,7 +221,7 @@ SELECT v.request_id rqst_id,
 --AND v.request_date > TRUNC(SYSDATE)
 --AND v.request_date <> v.requested_start_date
 --AND trunc(v.request_date) = to_date('2018-07-13','yyyy-mm-dd')
-AND v.argument_text LIKE '%83,%'--'%2018%'--'%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
+--AND v.argument_text LIKE '%83,%'--'%2018%'--'%OVERSEA%'--'%SHE_FAC_ORG%%'--'HEA_Oracle,%'
 --AND v.requestor = 'HAND_HKM'--'HAND_LCR'--'70264934'--'HAND_HKM'
 --AND v.request_id = 17225733--17204202-->= 16727489
 --AND v.actual_completion_date IS NULL

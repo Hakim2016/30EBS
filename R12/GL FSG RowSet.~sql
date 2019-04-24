@@ -1,0 +1,80 @@
+--v1.0 行集 及 相关
+--v2.0 账户分配, 计算 关联行集
+--ALTER SESSION SET nls_language = american;
+--ALTER SESSION SET nls_language = 'SIMPLIFIED CHINESE';
+
+--1.Accounting Assignments
+SELECT rs.name,
+       rs.axis_set_type,
+       acc_sgn.axis_seq,
+       --r.name,
+       r.description,
+       acc_sgn.sign,
+       acc_sgn.dr_cr_net_code,
+       acc_sgn.segment3_low,
+       acc_sgn.segment3_high,
+       acc_sgn.*
+  FROM rg_report_axis_contents acc_sgn --account assignments
+      ,
+       rg_report_axis_sets_v   rs --行集/列集
+      ,
+       rg_report_axes_v        r --行
+ WHERE 1 = 1
+   AND rs.axis_set_id = acc_sgn.axis_set_id
+   AND r.axis_set_id = rs.axis_set_id
+   AND r.sequence = acc_sgn.axis_seq
+   AND rs.name LIKE '利润表行集'--'CUX%IVCJ'
+--AND acc_sgn.axis_set_id = 4000
+--AND acc_sgn.axis_seq = 3
+ ORDER BY acc_sgn.axis_seq;
+
+--2.Calculations
+SELECT rs.name,
+       r.name,
+       r.sequence seq,
+       r.description,
+       cal.calculation_seq,
+       cal.operator,
+       cal.axis_seq_low,
+       cal.axis_seq_high,
+       cal.*
+  FROM rg_report_calculations cal,
+       rg_report_axis_sets_v  rs --行集
+      ,
+       rg_report_axes_v       r --行
+ WHERE 1 = 1
+   AND rs.axis_set_id = cal.axis_set_id
+   AND r.axis_set_id = rs.axis_set_id
+   AND r.sequence = cal.axis_seq
+      --AND cal.axis_set_id = 4000
+   AND rs.name LIKE '利润表行集'--'CUX%IVCJ'
+--AND cal.axis_seq = 60
+ ORDER BY r.sequence;
+
+SELECT *
+  FROM fnd_application
+ WHERE 1 = 1
+   AND application_id = 101;
+
+SELECT rs.name, rs.*
+  FROM rg_report_axis_sets_v rs --行集
+ WHERE 1 = 1
+   AND rs.name LIKE 'CUX%';
+
+SELECT r.name,
+       r.description,
+       r.sequence,
+       r.display_flag,
+       r.display_zero_amount_flag,
+       r.display_precision,
+       r.calculation_precedence_flag,
+       r.*
+  FROM rg_report_axes_v      r --行
+      ,
+       rg_report_axis_sets_v rs
+ WHERE 1 = 1
+   AND r.axis_set_id = rs.axis_set_id
+   AND rs.name LIKE 'CUX%'
+      --AND r.axis_set_id = 4000
+   AND r.sequence IN (1, 12)
+ ORDER BY r.sequence;

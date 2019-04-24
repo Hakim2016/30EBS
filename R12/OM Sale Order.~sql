@@ -101,8 +101,8 @@ SELECT ooh.creation_date,
       --AND ooh.creation_date >= to_date('20180101', 'yyyymmdd')
    AND ooh.order_number --= '11001269'
        IN (
-       '12003056'
-       /*'12002949',
+       --'12003056'
+       '12002949',
            '12003690',
            '12003758',
            '12003759',
@@ -122,7 +122,7 @@ SELECT ooh.creation_date,
            '12004152',
            '12004185',
            '12004190',
-           '12004198'*/
+           '12004198'
            )
 
 --AND ool.ordered_item IN ('ST02938-IN')
